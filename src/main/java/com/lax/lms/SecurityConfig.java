@@ -26,7 +26,7 @@ public class SecurityConfig {
                             authority.getAuthority().equals("ROLE_LIBRARIAN"));
 
             if (isLibrarian) {
-                response.sendRedirect("/librarian/dashboard");
+                response.sendRedirect("/librarian");
             } else {
                 response.sendRedirect("/user/dashboard");
             }
@@ -46,6 +46,11 @@ public class SecurityConfig {
                         "/error", "/favicon.ico",
                         "/css/**", "/js/**", "/images/**"
                 ).permitAll()
+
+                .requestMatchers(org.springframework.http.HttpMethod.POST,
+                        "/books/*/borrow",
+                        "/borrowings/*/return"
+                ).hasRole("USER")
 
                 .requestMatchers("/librarian/**")
                 .hasRole("LIBRARIAN")

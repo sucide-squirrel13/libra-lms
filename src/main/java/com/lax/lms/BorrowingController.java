@@ -38,10 +38,18 @@ public class BorrowingController {
             RedirectAttributes redirectAttributes) {
 
         try {
+            if (authentication == null || !authentication.isAuthenticated()) {
+                throw new IllegalStateException("You must be logged in to borrow books.");
+            }
+
             LibraryUser user = userRepository
                     .findByEmailIgnoreCase(authentication.getName())
                     .orElseThrow(() ->
                             new IllegalStateException("User account not found."));
+
+            if (!"USER".equalsIgnoreCase(user.getRole())) {
+                throw new IllegalStateException("Only regular users can borrow books.");
+            }
 
             borrowingService.borrowBook(user.getId(), bookId);
 
@@ -64,10 +72,18 @@ public class BorrowingController {
             RedirectAttributes redirectAttributes) {
 
         try {
+            if (authentication == null || !authentication.isAuthenticated()) {
+                throw new IllegalStateException("You must be logged in to return books.");
+            }
+
             LibraryUser user = userRepository
                     .findByEmailIgnoreCase(authentication.getName())
                     .orElseThrow(() ->
                             new IllegalStateException("User account not found."));
+
+            if (!"USER".equalsIgnoreCase(user.getRole())) {
+                throw new IllegalStateException("Only regular users can return books.");
+            }
 
             borrowingService.returnBook(borrowingId, user.getId());
 

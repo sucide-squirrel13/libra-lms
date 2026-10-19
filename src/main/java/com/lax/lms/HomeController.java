@@ -34,7 +34,15 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home() {
+    public String home(Model model) {
+        var featuredBooks = bookRepository.findAll()
+                .stream()
+                .filter(b -> b.getAvailableCopies() > 0)
+                .limit(4)
+                .toList();
+        model.addAttribute("featuredBooks", featuredBooks);
+        model.addAttribute("totalBooks", bookRepository.count());
+        model.addAttribute("totalCopies", bookRepository.countTotalCopies());
         return "home";
     }
 

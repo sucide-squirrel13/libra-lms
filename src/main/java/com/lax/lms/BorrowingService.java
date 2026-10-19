@@ -39,6 +39,11 @@ public class BorrowingService {
                         new IllegalArgumentException("User not found."));
 
         try {
+            if (!"USER".equalsIgnoreCase(user.getRole())) {
+                throw new IllegalStateException(
+                        "Only regular users can borrow books.");
+            }
+
             // Lock the book row until this transaction completes.
             Book book = bookRepository.findByIdForUpdate(bookId)
                     .orElseThrow(() ->
@@ -99,6 +104,11 @@ public class BorrowingService {
                         new IllegalArgumentException("User not found."));
 
         try {
+            if (!"USER".equalsIgnoreCase(user.getRole())) {
+                throw new IllegalStateException(
+                        "Only regular users can return books.");
+            }
+
             Borrowing borrowing = borrowingRepository.findById(borrowingId)
                     .orElseThrow(() ->
                             new IllegalArgumentException(

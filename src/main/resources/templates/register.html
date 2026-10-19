@@ -3,9 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register | Libra LMS</title>
+    <title>Create Account | Libra LMS</title>
+
+    <!-- Google Fonts: Newsreader & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 
     <style>
+        :root {
+            --bg: #0d1017;
+            --panel: #141923;
+            --border: rgba(212, 175, 55, 0.22);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --text: #f8f7f4;
+            --muted: #a6a19a;
+            --gold: #d4af37;
+            --gold-light: #e5c158;
+            --danger: #fca5a5;
+            --danger-bg: rgba(153, 27, 27, 0.35);
+        }
+
         * {
             box-sizing: border-box;
         }
@@ -15,82 +36,169 @@
             min-height: 100vh;
             display: grid;
             place-items: center;
-            padding: 24px;
-            background: #0b1120;
-            color: #e5edf7;
-            font-family: Arial, sans-serif;
+            padding: 32px 20px;
+            background:
+                radial-gradient(circle at 15% 15%, rgba(212, 175, 55, 0.08), transparent 35%),
+                radial-gradient(circle at 85% 85%, rgba(212, 175, 55, 0.04), transparent 30%),
+                var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans, "Plus Jakarta Sans", sans-serif);
         }
 
         .card {
             width: 100%;
-            max-width: 430px;
-            padding: 32px;
-            background: #151f32;
-            border: 1px solid #26364d;
-            border-radius: 18px;
+            max-width: 460px;
+            padding: 44px 38px;
+            background: rgba(20, 25, 35, 0.94);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.05));
+            color: var(--gold);
+            font-family: var(--font-serif, "Newsreader", serif);
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .brand-title {
+            font-family: var(--font-serif, "Newsreader", serif);
+            font-size: 21px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .brand-title span {
+            color: var(--gold);
         }
 
         h1 {
-            margin-top: 0;
-            color: #5eead4;
+            margin: 0 0 8px;
+            font-family: var(--font-serif, "Newsreader", Georgia, serif);
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #ffffff;
         }
 
         p {
-            color: #a9b8cc;
+            margin: 0 0 24px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
         }
 
         label {
             display: block;
-            margin: 18px 0 8px;
+            margin: 16px 0 8px;
+            color: #e5e0d8;
+            font-size: 12px;
+            font-weight: 600;
         }
 
         input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #35465f;
-            border-radius: 8px;
-            background: #0b1120;
-            color: white;
+            min-height: 46px;
+            padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            outline: none;
+            background: rgba(13, 16, 23, 0.7);
+            color: var(--text);
+            font-size: 13px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.14);
         }
 
         button {
             width: 100%;
+            min-height: 48px;
             margin-top: 24px;
-            padding: 13px;
             border: 0;
-            border-radius: 8px;
-            background: #2dd4bf;
-            color: #062521;
-            font-weight: bold;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #d4af37, #c49d30);
+            color: #10141a;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(212, 175, 55, 0.35);
+        }
+
+        button:active {
+            transform: translateY(0);
         }
 
         .message {
-            padding: 12px;
-            border-radius: 8px;
+            padding: 12px 14px;
+            border-radius: 10px;
             margin: 14px 0;
+            font-size: 12px;
+            line-height: 1.5;
         }
 
         .error {
-            background: #451a24;
-            color: #fecaca;
+            background: var(--danger-bg);
+            border: 1px solid rgba(248, 113, 113, 0.28);
+            color: var(--danger);
         }
 
         a {
-            color: #5eead4;
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: var(--gold-light);
+            text-decoration: underline;
         }
 
         .footer {
             margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border-subtle);
             text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.8;
         }
     </style>
 </head>
 
 <body>
 <div class="card">
+    <div class="brand-header">
+        <div class="brand-icon">L</div>
+        <div class="brand-title">Libra<span>.</span></div>
+    </div>
+
     <h1>Create your account</h1>
-    <p>Join Libra LMS to explore the library catalogue.</p>
+    <p>Join Libra LMS to explore our curated literary collections and manage your borrowings.</p>
 
     <div class="message error"
          th:if="${errorMessage}"
@@ -98,11 +206,16 @@
     </div>
 
     <form th:action="@{/register}" method="post">
+        <!-- CSRF PROTECTION -->
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}">
 
         <label for="fullName">Full name</label>
         <input id="fullName"
                type="text"
                name="fullName"
+               placeholder="Eleanor Vance"
                maxlength="100"
                autocomplete="name"
                required>
@@ -111,6 +224,7 @@
         <input id="email"
                type="email"
                name="email"
+               placeholder="eleanor@example.com"
                maxlength="254"
                autocomplete="email"
                required>
@@ -119,18 +233,19 @@
         <input id="password"
                type="password"
                name="password"
+               placeholder="At least 8 characters"
                minlength="8"
                autocomplete="new-password"
                required>
 
-        <button type="submit">Create Account</button>
+        <button type="submit">Create Account →</button>
     </form>
 
     <div class="footer">
         Already registered?
         <a th:href="@{/login}">Log in</a>
-        <br><br>
-        <a th:href="@{/}">Back to Home</a>
+        <br>
+        <a th:href="@{/}">← Back to Home</a>
     </div>
 </div>
 </body>

@@ -4,6 +4,8 @@
 <body>
 
 <header class="navbar" th:fragment="navigation">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
 
     <!-- BRAND -->
     <a th:href="@{/}" class="brand">
@@ -31,9 +33,9 @@
 
         <!-- DASHBOARD -->
         <a class="nav-link"
-           th:href="${user.role != null and user.role.toString() == 'LIBRARIAN'}
-                    ? @{/librarian/dashboard}
-                    : @{/user/dashboard}">
+           th:href="${user != null and user.role != null and user.role.toString() == 'LIBRARIAN'}
+                    ? @{/librarian}
+                    : (${user != null} ? @{/user/dashboard} : @{/login})">
             Dashboard
         </a>
 
@@ -44,18 +46,19 @@
 
         <!-- USER BORROWINGS -->
         <a class="nav-link"
-           th:if="${user.role != null and user.role.toString() == 'USER'}"
+           th:if="${user != null and user.role != null and user.role.toString() == 'USER'}"
            th:href="@{/user/borrowings}">
             My Borrowings
         </a>
 
-        <!-- PROFILE AREA -->
-        <div class="profile-area">
+        <!-- PROFILE AREA (When Authenticated) -->
+        <div class="profile-area" th:if="${user != null}">
 
             <!-- PROFILE TRIGGER -->
             <button type="button"
                     class="profile-trigger"
                     id="profile-trigger"
+                    onclick="window.toggleLibraProfile(event)"
                     aria-expanded="false"
                     aria-controls="profile-menu">
 
@@ -87,8 +90,7 @@
 
             <!-- PROFILE DROPDOWN -->
             <div class="profile-menu"
-                 id="profile-menu"
-                 hidden>
+                 id="profile-menu">
 
                 <!-- PROFILE INFORMATION -->
                 <div class="profile-heading">
@@ -162,7 +164,7 @@
                 <!-- DASHBOARD -->
                 <a class="profile-menu-link"
                    th:href="${user.role != null and user.role.toString() == 'LIBRARIAN'}
-                            ? @{/librarian/dashboard}
+                            ? @{/librarian}
                             : @{/user/dashboard}">
 
                     <span aria-hidden="true">⌂</span>
@@ -214,7 +216,34 @@
 
         </div>
 
+        <!-- AUTH ACTIONS (When Unauthenticated) -->
+        <div class="auth-actions" th:if="${user == null}" style="display: flex; align-items: center; gap: 8px;">
+            <a class="nav-link" th:href="@{/login}">Log In</a>
+            <a class="btn btn-primary btn-sm" th:href="@{/register}">Register</a>
+        </div>
+
     </nav>
+
+    <!-- INSTANT INLINE TOGGLE LOGIC -->
+    <script>
+        window.toggleLibraProfile = window.toggleLibraProfile || function(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            var menu = document.getElementById("profile-menu");
+            var trigger = document.getElementById("profile-trigger");
+            if (!menu) return;
+            var isOpen = menu.classList.toggle("open");
+            if (trigger) trigger.setAttribute("aria-expanded", String(isOpen));
+        };
+        window.closeLibraProfile = window.closeLibraProfile || function() {
+            var menu = document.getElementById("profile-menu");
+            var trigger = document.getElementById("profile-trigger");
+            if (menu) menu.classList.remove("open");
+            if (trigger) trigger.setAttribute("aria-expanded", "false");
+        };
+    </script>
 
     <!-- SHARED NAVBAR JAVASCRIPT -->
     <script th:src="@{/js/navbar.js}" defer></script>

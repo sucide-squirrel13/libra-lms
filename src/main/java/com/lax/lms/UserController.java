@@ -1,5 +1,6 @@
 package com.lax.lms;
 
+import com.lax.lms.repository.BookRepository;
 import com.lax.lms.repository.BorrowingRepository;
 import com.lax.lms.repository.LibraryUserRepository;
 
@@ -16,13 +17,16 @@ public class UserController {
 
     private final LibraryUserRepository userRepository;
     private final BorrowingRepository borrowingRepository;
+    private final BookRepository bookRepository;
 
     public UserController(
             LibraryUserRepository userRepository,
-            BorrowingRepository borrowingRepository) {
+            BorrowingRepository borrowingRepository,
+            BookRepository bookRepository) {
 
         this.userRepository = userRepository;
         this.borrowingRepository = borrowingRepository;
+        this.bookRepository = bookRepository;
     }
 
     @GetMapping("/user/dashboard")
@@ -58,10 +62,17 @@ public class UserController {
                 .limit(5)
                 .toList();
 
+        List<Book> featuredBooks = bookRepository.findAll()
+                .stream()
+                .filter(b -> b.getAvailableCopies() > 0)
+                .limit(4)
+                .toList();
+
         model.addAttribute("user", user);
         model.addAttribute("activeBorrowings", activeBorrowings);
         model.addAttribute("overdueBorrowings", overdueBorrowings);
         model.addAttribute("recentBorrowings", recentBorrowings);
+        model.addAttribute("featuredBooks", featuredBooks);
         model.addAttribute("totalBorrowingRecords", borrowings.size());
 
         return "user-dashboard";
