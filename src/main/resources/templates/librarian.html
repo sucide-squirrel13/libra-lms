@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Libra LMS | Librarian Dashboard</title>
+
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0b1120;
+            --panel: #131d30;
+            --panel-hover: #1a2840;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --border: #26354b;
+            --accent: #65e6bd;
+            --accent-text: #071b16;
+            --input: #0b1120;
+            --danger: #ef4444;
+            --success-bg: #143c30;
+            --success-text: #75edba;
+        }
+
+        body.light {
+            color-scheme: light;
+            --bg: #f3f6fb;
+            --panel: #ffffff;
+            --panel-hover: #edf2f8;
+            --text: #172033;
+            --muted: #64748b;
+            --border: #e1e7ef;
+            --accent: #087f66;
+            --accent-text: #ffffff;
+            --input: #f8fafc;
+            --danger: #dc2626;
+            --success-bg: #dcfce7;
+            --success-text: #166534;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background .25s, color .25s;
+        }
+
+        button, input, select {
+            font: inherit;
+        }
+
+        button, a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .layout {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 245px minmax(0, 1fr);
+        }
+
+        /* Sidebar */
+
+        aside {
+            padding: 25px 17px;
+            background: var(--panel);
+            border-right: 1px solid var(--border);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 5px 10px 30px;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 39px;
+            height: 39px;
+            background: var(--accent);
+            color: var(--accent-text);
+            border-radius: 12px;
+        }
+
+        .brand span:last-child {
+            color: var(--accent);
+        }
+
+        .nav-label {
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            margin: 18px 10px 10px;
+        }
+
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 12px;
+            margin: 4px 0;
+            border: 0;
+            border-radius: 9px;
+            background: transparent;
+            color: var(--muted);
+            text-align: left;
+            font-size: 14px;
+            text-decoration: none;
+            transition: background .2s, color .2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--panel-hover);
+            color: var(--accent);
+        }
+
+        .sidebar-note {
+            margin-top: 45px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* Main area */
+
+        main {
+            min-width: 0;
+        }
+
+        .topbar {
+            min-height: 78px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 18px 30px;
+            border-bottom: 1px solid var(--border);
+            background: var(--panel);
+        }
+
+        .topbar small {
+            display: block;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .theme-button,
+        .secondary-button {
+            background: var(--panel-hover);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 10px 13px;
+            border-radius: 9px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .avatar {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: var(--accent-text);
+            font-weight: 800;
+        }
+
+        .content {
+            padding: 30px;
+            max-width: 1500px;
+            margin: auto;
+        }
+
+        .welcome {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 28px;
+        }
+
+        h1 {
+            font-size: clamp(25px, 3vw, 34px);
+            margin: 0 0 8px;
+        }
+
+        .muted {
+            color: var(--muted);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .primary-button {
+            background: var(--accent);
+            color: var(--accent-text);
+            border: 0;
+            padding: 12px 17px;
+            border-radius: 9px;
+            font-weight: 750;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .primary-button:hover {
+            opacity: .88;
+        }
+
+        /* Statistics */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            min-width: 0;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 22px;
+            border-radius: 14px;
+            transition: transform .2s, border-color .2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+
+        .stat-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .stat-icon {
+            font-size: 23px;
+        }
+
+        .stat-number {
+            font-size: 31px;
+            font-weight: 800;
+            margin-top: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .stat-foot {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        /* Panels and tables */
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .panel-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .panel-header h2 {
+            margin: 0 0 5px;
+            font-size: 19px;
+        }
+
+        .search {
+            padding: 11px 13px;
+            width: min(300px, 100%);
+            background: var(--input);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 9px;
+            outline-color: var(--accent);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th, td {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        .book-title {
+            font-weight: 700;
+        }
+
+        .book-author {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 9px;
+            border-radius: 20px;
+            background: var(--success-bg);
+            color: var(--success-text);
+            font-size: 12px;
+        }
+
+        .status.unavailable {
+            background: #451a1a;
+            color: #fecaca;
+        }
+
+        body.light .status.unavailable {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .action-group {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .delete-button {
+            background: #7f1d1d;
+            color: #fecaca;
+            border: 1px solid #991b1b;
+            padding: 10px 12px;
+            border-radius: 9px;
+        }
+
+        .empty {
+            padding: 35px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .flash-message {
+            padding: 13px 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            background: var(--panel);
+            color: var(--text);
+        }
+
+        footer {
+            padding: 22px 30px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Responsive layout */
+
+        @media (max-width: 1100px) {
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 850px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            aside {
+                border-right: 0;
+                border-bottom: 1px solid var(--border);
+                padding: 15px;
+            }
+
+            .brand {
+                padding: 5px 8px 15px;
+            }
+
+            .nav-label,
+            .sidebar-note {
+                display: none;
+            }
+
+            .nav-list {
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 5px;
+            }
+
+            .nav-link {
+                width: auto;
+                white-space: nowrap;
+            }
+
+            .topbar {
+                padding: 15px 20px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar small {
+                display: none;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .topbar {
+                padding: 14px;
+            }
+
+            .stat-card {
+                padding: 18px;
+            }
+
+            .stat-number {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside>
+        <div class="brand">
+            <div class="brand-icon">L</div>
+            <div>Libra <span>LMS</span></div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <nav class="nav-list">
+            <button class="nav-link active"
+                    type="button"
+                    data-view="dashboard">
+                ▦ Dashboard
+            </button>
+
+            <button class="nav-link"
+                    type="button"
+                    data-view="books">
+                ▤ Manage Books
+            </button>
+
+            <a class="nav-link" href="/librarian/borrowings">
+                ⇄ Borrowings
+            </a>
+
+            <a class="nav-link" href="/librarian/users">
+                ♙ Users
+            </a>
+
+            <a class="nav-link" href="/librarian/audit-logs">
+                ◷ Audit Logs
+            </a>
+
+            <button class="nav-link"
+                    type="button"
+                    data-view="settings">
+                ⚙ Settings
+            </button>
+        </nav>
+
+        <div class="sidebar-note">
+            <strong>Library workspace</strong><br>
+            Manage your catalogue, monitor borrowing activity, and keep your library organized.
+        </div>
+    </aside>
+
+    <main>
+
+        <header class="topbar">
+            <div>
+                <strong id="page-title">Dashboard</strong>
+                <small>Librarian workspace</small>
+            </div>
+
+            <div class="top-actions">
+                <button class="theme-button"
+                        id="theme-toggle"
+                        type="button">
+                    ☀️ Light mode
+                </button>
+
+                <div class="avatar" title="Librarian">L</div>
+            </div>
+        </header>
+
+        <div class="content">
+
+            <div class="flash-message"
+                 th:if="${message}"
+                 th:text="${message}">
+                Operation completed.
+            </div>
+
+            <!-- DASHBOARD -->
+
+            <section class="view active" id="dashboard">
+
+                <div class="welcome">
+                    <div>
+                        <h1>Welcome back, Librarian 👋</h1>
+                        <p class="muted">
+                            Here's the current overview of your library.
+                        </p>
+                    </div>
+
+                    <button class="primary-button add-book-button"
+                            type="button">
+                        + Add New Book
+                    </button>
+                </div>
+
+                <div class="stats">
+
+                    <div class="stat-card">
+                        <div class="stat-top">
+                            Book Titles <span class="stat-icon">📚</span>
+                        </div>
+                        <div class="stat-number"
+                             th:text="${totalTitles}">0</div>
+                        <div class="stat-foot">
+                            Book records in the catalogue
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-top">
+                            Total Copies <span class="stat-icon">📦</span>
+                        </div>
+                        <div class="stat-number"
+                             th:text="${totalCopies}">0</div>
+                        <div class="stat-foot">
+                            Total physical copies
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-top">
+                            Available Copies <span class="stat-icon">✅</span>
+                        </div>
+                        <div class="stat-number"
+                             th:text="${availableCopies}">0</div>
+                        <div class="stat-foot">
+                            Copies currently available
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-top">
+                            Active Borrowings <span class="stat-icon">🔄</span>
+                        </div>
+                        <div class="stat-number"
+                             th:text="${activeBorrowings}">0</div>
+                        <div class="stat-foot">
+                            Books not yet returned
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-top">
+                            Overdue Borrowings <span class="stat-icon">⏰</span>
+                        </div>
+                        <div class="stat-number"
+                             th:text="${overdueBorrowings}">0</div>
+                        <div class="stat-foot">
+                            Active loans past their due date
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-top">
+                            Registered Users <span class="stat-icon">👥</span>
+                        </div>
+                        <div class="stat-number"
+                             th:text="${registeredUsers}">0</div>
+                        <div class="stat-foot">
+                            Library accounts
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <div>
+                            <h2>Library Catalogue</h2>
+                            <p class="muted">
+                                Books stored in your library database.
+                            </p>
+                        </div>
+
+                        <input class="search"
+                               id="book-search"
+                               type="search"
+                               placeholder="Search title, author, or category..."
+                               aria-label="Search books">
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>BOOK</th>
+                                <th>BOOK ID</th>
+                                <th>CATEGORY</th>
+                                <th>AVAILABILITY</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                            </thead>
+
+                            <tbody id="book-table">
+
+                            <tr th:each="book : ${books}">
+                                <td>
+                                    <div class="book-title"
+                                         th:text="${book.title}">
+                                        Book title
+                                    </div>
+
+                                    <div class="book-author"
+                                         th:text="${book.author}">
+                                        Author
+                                    </div>
+                                </td>
+
+                                <td th:text="${book.id}">1</td>
+
+                                <td th:text="${book.category}">
+                                    Category
+                                </td>
+
+                                <td>
+                                    <span class="status"
+                                          th:classappend="${book.availableCopies <= 0} ? ' unavailable' : ''"
+                                          th:text="${book.availableCopies > 0 ? book.availableCopies + ' available' : 'Out of stock'}">
+                                        Available
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="action-group">
+
+                                        <a class="secondary-button"
+                                           th:href="@{/librarian/books/edit/{id}(id=${book.id})}">
+                                            Edit
+                                        </a>
+
+                                        <form th:action="@{/librarian/books/delete/{id}(id=${book.id})}"
+                                              method="post"
+                                              onsubmit="return confirm('Are you sure you want to delete this book?');">
+
+                                            <button class="delete-button"
+                                                    type="submit">
+                                                Delete
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr th:if="${#lists.isEmpty(books)}">
+                                <td colspan="5" class="empty">
+                                    No books added yet. Click "Add New Book" to get started.
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- MANAGE BOOKS -->
+
+            <section class="view" id="books">
+
+                <div class="welcome">
+                    <div>
+                        <h1>Manage Books</h1>
+                        <p class="muted">
+                            Add, search, edit, and remove catalogue records.
+                        </p>
+                    </div>
+
+                    <button class="primary-button add-book-button"
+                            type="button">
+                        + Add New Book
+                    </button>
+                </div>
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <div>
+                            <h2>All Books</h2>
+                            <p class="muted">
+                                Records retrieved from PostgreSQL.
+                            </p>
+                        </div>
+
+                        <input class="search"
+                               id="book-search-2"
+                               type="search"
+                               placeholder="Search books..."
+                               aria-label="Search all books">
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>BOOK</th>
+                                <th>BOOK ID</th>
+                                <th>CATEGORY</th>
+                                <th>AVAILABILITY</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                            </thead>
+
+                            <tbody id="book-table-2">
+
+                            <tr th:each="book : ${books}">
+                                <td>
+                                    <div class="book-title"
+                                         th:text="${book.title}">
+                                        Book title
+                                    </div>
+
+                                    <div class="book-author"
+                                         th:text="${book.author}">
+                                        Author
+                                    </div>
+                                </td>
+
+                                <td th:text="${book.id}">1</td>
+
+                                <td th:text="${book.category}">
+                                    Category
+                                </td>
+
+                                <td>
+                                    <span class="status"
+                                          th:classappend="${book.availableCopies <= 0} ? ' unavailable' : ''"
+                                          th:text="${book.availableCopies > 0 ? book.availableCopies + ' available' : 'Out of stock'}">
+                                        Available
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="action-group">
+
+                                        <a class="secondary-button"
+                                           th:href="@{/librarian/books/edit/{id}(id=${book.id})}">
+                                            Edit
+                                        </a>
+
+                                        <form th:action="@{/librarian/books/delete/{id}(id=${book.id})}"
+                                              method="post"
+                                              onsubmit="return confirm('Are you sure you want to delete this book?');">
+
+                                            <button class="delete-button"
+                                                    type="submit">
+                                                Delete
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr th:if="${#lists.isEmpty(books)}">
+                                <td colspan="5" class="empty">
+                                    No books added yet.
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SETTINGS -->
+
+            <section class="view" id="settings">
+
+                <div class="welcome">
+                    <div>
+                        <h1>Settings</h1>
+                        <p class="muted">
+                            Personalize your library workspace.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <div>
+                            <h2>Appearance</h2>
+                            <p class="muted">
+                                Switch between dark and light themes.
+                            </p>
+                        </div>
+
+                        <button class="secondary-button"
+                                id="theme-toggle-settings"
+                                type="button">
+                            Change theme
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+
+        <footer>
+            Libra LMS · Library Management System · Development Preview
+        </footer>
+
+    </main>
+
+</div>
+
+<script>
+    // Navigate to the actual Add Book form.
+    document.querySelectorAll(".add-book-button").forEach(button => {
+        button.addEventListener("click", () => {
+            window.location.href = "/librarian/books/new";
+        });
+    });
+
+    // Dark/light theme.
+    const themeButton = document.getElementById("theme-toggle");
+    const settingsThemeButton =
+        document.getElementById("theme-toggle-settings");
+
+    function applyTheme(theme) {
+        document.body.classList.toggle("light", theme === "light");
+
+        themeButton.textContent =
+            theme === "light" ? "🌙 Dark mode" : "☀️ Light mode";
+
+        localStorage.setItem("libra-theme", theme);
+    }
+
+    function toggleTheme() {
+        const isLight = document.body.classList.contains("light");
+        applyTheme(isLight ? "dark" : "light");
+    }
+
+    themeButton.addEventListener("click", toggleTheme);
+    settingsThemeButton.addEventListener("click", toggleTheme);
+
+    applyTheme(localStorage.getItem("libra-theme") || "dark");
+
+    // Sidebar navigation for local dashboard sections.
+    document.querySelectorAll(".nav-link[data-view]").forEach(button => {
+        button.addEventListener("click", () => {
+
+            document.querySelectorAll(".nav-link[data-view]")
+                .forEach(link => link.classList.remove("active"));
+
+            document.querySelectorAll(".view")
+                .forEach(view => view.classList.remove("active"));
+
+            button.classList.add("active");
+
+            const target = document.getElementById(button.dataset.view);
+
+            if (target) {
+                target.classList.add("active");
+            }
+
+            document.getElementById("page-title").textContent =
+                button.textContent.trim();
+        });
+    });
+
+    // Search independently in both catalogue tables.
+    function setupTableSearch(inputId, tableId) {
+        const input = document.getElementById(inputId);
+        const table = document.getElementById(tableId);
+
+        if (!input || !table) {
+            return;
+        }
+
+        input.addEventListener("input", function () {
+            const query = this.value.trim().toLowerCase();
+
+            table.querySelectorAll("tr[th\\:each], tr").forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? "" : "none";
+            });
+        });
+    }
+
+    setupTableSearch("book-search", "book-table");
+    setupTableSearch("book-search-2", "book-table-2");
+</script>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Libra LMS | Add Book</title>
+
+    <style>
+        :root {
+            --bg: #0b1120;
+            --panel: #131d30;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --border: #26354b;
+            --accent: #65e6bd;
+            --input: #0b1120;
+        }
+
+        body.light {
+            --bg: #f3f6fb;
+            --panel: #ffffff;
+            --text: #172033;
+            --muted: #64748b;
+            --border: #e1e7ef;
+            --accent: #087f66;
+            --input: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 35px auto;
+            padding: 30px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+        }
+
+        .top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        p {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        label {
+            display: block;
+            margin: 20px 0 8px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--input);
+            color: var(--text);
+        }
+
+        button, .back {
+            display: inline-block;
+            padding: 12px 16px;
+            border: 0;
+            border-radius: 8px;
+            background: var(--accent);
+            color: #071b16;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .submit {
+            width: 100%;
+            margin-top: 25px;
+        }
+
+        .secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .error {
+            color: #ff8080;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="top">
+        <h1>📚 Add a New Book</h1>
+
+        <button type="button" class="secondary" id="theme-toggle">
+            ☀️ Light
+        </button>
+    </div>
+
+    <p>Enter the book details to add it to your library catalogue.</p>
+
+    <form th:action="@{/librarian/books}"
+          th:object="${book}"
+          method="post">
+
+        <label for="title">Book Title</label>
+        <input id="title"
+               type="text"
+               th:field="*{title}"
+               placeholder="e.g. Clean Code"
+               required>
+        <div class="error"
+             th:if="${#fields.hasErrors('title')}"
+             th:errors="*{title}"></div>
+
+        <label for="author">Author</label>
+        <input id="author"
+               type="text"
+               th:field="*{author}"
+               placeholder="e.g. Robert C. Martin"
+               required>
+        <div class="error"
+             th:if="${#fields.hasErrors('author')}"
+             th:errors="*{author}"></div>
+
+        <label for="isbn">ISBN</label>
+        <input id="isbn"
+               type="text"
+               th:field="*{isbn}"
+               placeholder="Enter a unique ISBN"
+               required>
+        <div class="error"
+             th:if="${#fields.hasErrors('isbn')}"
+             th:errors="*{isbn}"></div>
+
+        <label for="category">Category</label>
+        <input id="category"
+               type="text"
+               th:field="*{category}"
+               placeholder="e.g. Computer Science"
+               required>
+        <div class="error"
+             th:if="${#fields.hasErrors('category')}"
+             th:errors="*{category}"></div>
+
+        <label for="quantity">Number of Copies</label>
+        <input id="quantity"
+               type="number"
+               th:field="*{quantity}"
+               min="1"
+               value="1"
+               required>
+        <div class="error"
+             th:if="${#fields.hasErrors('quantity')}"
+             th:errors="*{quantity}"></div>
+
+        <button class="submit" type="submit">
+            Save Book to Library
+        </button>
+    </form>
+
+    <p>
+        <a class="back" th:href="@{/librarian}">
+            ← Back to Dashboard
+        </a>
+    </p>
+
+</div>
+
+<script>
+    const toggle = document.getElementById("theme-toggle");
+
+    function applyTheme(theme) {
+        document.body.classList.toggle("light", theme === "light");
+
+        toggle.textContent =
+            theme === "light" ? "🌙 Dark" : "☀️ Light";
+
+        localStorage.setItem("libra-theme", theme);
+    }
+
+    toggle.addEventListener("click", () => {
+        const isLight = document.body.classList.contains("light");
+
+        applyTheme(isLight ? "dark" : "light");
+    });
+
+    applyTheme(localStorage.getItem("libra-theme") || "dark");
+</script>
+
+</body>
+</html>

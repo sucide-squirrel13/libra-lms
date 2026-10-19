@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>User Management | Libra LMS</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b1120;
+            color: #e5e7eb;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 22px 6%;
+            background: #111b2e;
+            border-bottom: 1px solid #263449;
+        }
+
+        .brand {
+            color: #5eead4;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        a {
+            color: #5eead4;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            max-width: 1250px;
+            margin: 35px auto;
+            padding: 0 25px;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #9caec2;
+            margin-bottom: 30px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            padding: 24px;
+            background: #111b2e;
+            border: 1px solid #263449;
+            border-radius: 12px;
+        }
+
+        .stat-card p {
+            color: #9caec2;
+            margin: 0 0 12px;
+        }
+
+        .stat-card h2 {
+            color: #5eead4;
+            font-size: 30px;
+            margin: 0;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #263449;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 650px;
+            border-collapse: collapse;
+            background: #111b2e;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #263449;
+        }
+
+        th {
+            color: #5eead4;
+            background: #152238;
+        }
+
+        tbody tr:hover {
+            background: #17253a;
+        }
+
+        .role {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .user-role {
+            background: #123b32;
+            color: #99f6e4;
+        }
+
+        .librarian-role {
+            background: #253449;
+            color: #cbd5e1;
+        }
+
+        .empty {
+            padding: 35px;
+            text-align: center;
+            background: #111b2e;
+            border: 1px solid #263449;
+            border-radius: 12px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px 5%;
+            }
+
+            main {
+                padding: 0 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="brand">📚 Libra LMS</div>
+
+    <nav>
+        <a href="/librarian">Manage Books</a>
+        <a href="/librarian/borrowings">Borrowings</a>
+        <a href="/librarian/users">Users</a>
+        <a href="/">Home</a>
+    </nav>
+</header>
+
+<main>
+
+    <h1>User Management</h1>
+
+    <p class="subtitle">
+        View registered library members and their account roles.
+    </p>
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <p>Registered Members</p>
+            <h2 th:text="${totalUsers}">0</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Librarian Accounts</p>
+            <h2 th:text="${librarianCount}">0</h2>
+        </div>
+
+    </section>
+
+    <div class="table-wrapper" th:if="${!users.isEmpty()}">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Account ID</th>
+                    <th>Full Name</th>
+                    <th>Email Address</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="user : ${users}">
+
+                    <td th:text="${user.id}">1</td>
+
+                    <td th:text="${user.fullName}">Full Name</td>
+
+                    <td th:text="${user.email}">user@example.com</td>
+
+                    <td>
+                        <span
+                            class="role"
+                            th:classappend="${user.role == 'LIBRARIAN'} ? ' librarian-role' : ' user-role'"
+                            th:text="${user.role}">
+                            USER
+                        </span>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="empty" th:if="${users.isEmpty()}">
+        <h2>No registered accounts</h2>
+        <p>Accounts will appear here when users register.</p>
+    </div>
+
+</main>
+
+</body>
+</html>

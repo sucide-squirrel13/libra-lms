@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Borrowing Management | Libra LMS</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #0b1120;
+            --surface: #111b2e;
+            --surface-light: #152238;
+            --border: #263449;
+            --primary: #5eead4;
+            --primary-strong: #2dd4bf;
+            --text: #e5e7eb;
+            --muted: #9caec2;
+            --danger: #fca5a5;
+            --success-bg: #123b32;
+            --danger-bg: #4c2029;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* FIXED NAVBAR */
+
+        .navbar {
+            min-height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 12px 4%;
+
+            background: rgba(8, 13, 25, 0.96);
+            border-bottom: 1px solid var(--border);
+
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: 800;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+
+        .brand span {
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 14px;
+            border-radius: 9px;
+            color: #b9c5d6;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+            background: rgba(45, 212, 191, 0.12);
+        }
+
+        /* MAIN CONTENT */
+
+        main {
+            width: min(1400px, 100%);
+            margin: 0 auto;
+            padding: 112px 25px 45px;
+        }
+
+        .page-heading {
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            margin: 0 0 10px;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: clamp(28px, 4vw, 38px);
+            letter-spacing: -0.8px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        /* STATISTICS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: #3b596d;
+        }
+
+        .stat-card p {
+            color: var(--muted);
+            margin: 0 0 15px;
+            font-size: 14px;
+        }
+
+        .stat-card h2 {
+            font-size: 34px;
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .stat-card.overdue h2 {
+            color: var(--danger);
+        }
+
+        .stat-card .stat-icon {
+            position: absolute;
+            top: 19px;
+            right: 20px;
+            font-size: 25px;
+            opacity: 0.8;
+        }
+
+        /* TABLE */
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            font-size: 21px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--surface);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: collapse;
+            background: var(--surface);
+        }
+
+        th,
+        td {
+            padding: 16px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        th {
+            background: var(--surface-light);
+            color: var(--primary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            white-space: nowrap;
+        }
+
+        td {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #17253a;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .record-id {
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .book-title {
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .borrower-name {
+            color: #dbeafe;
+            font-weight: 600;
+        }
+
+        .email {
+            color: var(--muted);
+            overflow-wrap: anywhere;
+        }
+
+        .date {
+            white-space: nowrap;
+        }
+
+        .overdue-date {
+            color: var(--danger);
+            font-weight: 700;
+        }
+
+        /* STATUS BADGES */
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 11px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .borrowed {
+            background: var(--success-bg);
+            color: #99f6e4;
+        }
+
+        .returned {
+            background: #253449;
+            color: #cbd5e1;
+        }
+
+        .overdue-label {
+            background: var(--danger-bg);
+            color: #fecaca;
+        }
+
+        /* EMPTY STATE */
+
+        .empty {
+            text-align: center;
+            padding: 45px 25px;
+            margin-top: 20px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--surface);
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        .empty h2 {
+            margin: 0 0 10px;
+            font-size: 23px;
+        }
+
+        .empty p {
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        footer {
+            padding: 22px;
+            text-align: center;
+            color: #718096;
+            font-size: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* RESPONSIVE DESIGN */
+
+        @media (max-width: 900px) {
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .stat-card:last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .navbar {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 10px;
+                padding: 13px 5%;
+            }
+
+            .brand {
+                font-size: 22px;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: flex-start;
+                gap: 4px;
+            }
+
+            .nav-link {
+                padding: 9px 10px;
+                font-size: 12px;
+            }
+
+            main {
+                padding: 155px 16px 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card:last-child {
+                grid-column: auto;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-card h2 {
+                font-size: 30px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <a class="brand" th:href="@{/librarian}">
+        📚 <span>Libra</span> LMS
+    </a>
+
+    <nav class="nav-links" aria-label="Librarian navigation">
+
+        <a class="nav-link"
+           th:href="@{/librarian}">
+            Manage Books
+        </a>
+
+        <a class="nav-link active"
+           th:href="@{/librarian/borrowings}"
+           aria-current="page">
+            Borrowing Records
+        </a>
+
+        <a class="nav-link"
+           th:href="@{/}">
+            Home
+        </a>
+
+    </nav>
+
+</header>
+
+<main>
+
+    <section class="page-heading">
+
+        <p class="eyebrow">Library Administration</p>
+
+        <h1>Borrowing Management</h1>
+
+        <p class="subtitle">
+            Monitor borrowed books, overdue loans, and completed returns.
+        </p>
+
+    </section>
+
+    <!-- SUMMARY STATISTICS -->
+
+    <section class="stats">
+
+        <article class="stat-card">
+
+            <span class="stat-icon" aria-hidden="true">📖</span>
+
+            <p>Active Borrowings</p>
+
+            <h2 th:text="${activeBorrowings}">0</h2>
+
+        </article>
+
+        <article class="stat-card overdue">
+
+            <span class="stat-icon" aria-hidden="true">⚠️</span>
+
+            <p>Overdue Books</p>
+
+            <h2 th:text="${overdueBorrowings}">0</h2>
+
+        </article>
+
+        <article class="stat-card">
+
+            <span class="stat-icon" aria-hidden="true">✓</span>
+
+            <p>Returned Books</p>
+
+            <h2 th:text="${returnedBorrowings}">0</h2>
+
+        </article>
+
+    </section>
+
+    <!-- ALL BORROWING RECORDS -->
+
+    <section th:if="${!borrowings.isEmpty()}">
+
+        <div class="section-heading">
+            <h2>All Borrowing Records</h2>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Record ID</th>
+                        <th>Book Title</th>
+                        <th>Borrower</th>
+                        <th>Email</th>
+                        <th>Borrow Date</th>
+                        <th>Due Date</th>
+                        <th>Return Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr th:each="loan : ${borrowings}">
+
+                        <td class="record-id"
+                            th:text="${loan.id}">
+                            1
+                        </td>
+
+                        <td class="book-title"
+                            th:text="${loan.book.title}">
+                            Book Title
+                        </td>
+
+                        <td class="borrower-name"
+                            th:text="${loan.user.fullName}">
+                            User Name
+                        </td>
+
+                        <td class="email"
+                            th:text="${loan.user.email}">
+                            user@example.com
+                        </td>
+
+                        <td class="date"
+                            th:text="${loan.borrowDate}">
+                            2026-10-18
+                        </td>
+
+                        <td class="date"
+                            th:classappend="${loan.status == 'BORROWED' and loan.dueDate.isBefore(today)} ? ' overdue-date' : ''"
+                            th:text="${loan.dueDate}">
+                            2026-11-01
+                        </td>
+
+                        <td class="date"
+                            th:text="${loan.returnDate != null ? loan.returnDate : '—'}">
+                            —
+                        </td>
+
+                        <td>
+
+                            <span class="status"
+                                  th:classappend="${loan.status == 'RETURNED'} ? ' returned' : (${loan.dueDate.isBefore(today)} ? ' overdue-label' : ' borrowed')"
+                                  th:text="${loan.status == 'RETURNED' ? 'Returned' : (loan.dueDate.isBefore(today) ? 'Overdue' : 'Borrowed')}">
+                                Borrowed
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <!-- EMPTY STATE -->
+
+    <section class="empty"
+             th:if="${borrowings.isEmpty()}">
+
+        <div class="empty-icon" aria-hidden="true">📚</div>
+
+        <h2>No borrowing records yet</h2>
+
+        <p>
+            Borrowing activity will appear here when users borrow books.
+        </p>
+
+    </section>
+
+</main>
+
+<footer>
+    Libra LMS · Library Administration
+</footer>
+
+</body>
+</html>

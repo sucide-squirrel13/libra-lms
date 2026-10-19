@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Security Audit Logs | Libra LMS</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b1120;
+            color: #e5e7eb;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 22px 6%;
+            background: #111b2e;
+            border-bottom: 1px solid #263449;
+        }
+
+        .brand {
+            color: #5eead4;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        a {
+            color: #5eead4;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            max-width: 1400px;
+            margin: 35px auto;
+            padding: 0 25px;
+        }
+
+        .subtitle {
+            color: #9caec2;
+            line-height: 1.6;
+        }
+
+        .notice {
+            margin: 24px 0;
+            padding: 15px;
+            background: #17253a;
+            border: 1px solid #334155;
+            border-radius: 9px;
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px;
+            margin: 28px 0;
+        }
+
+        .stat-card {
+            background: #111b2e;
+            border: 1px solid #263449;
+            border-radius: 12px;
+            padding: 23px;
+        }
+
+        .stat-card p {
+            color: #9caec2;
+            margin: 0 0 12px;
+        }
+
+        .stat-card h2 {
+            margin: 0;
+            color: #5eead4;
+            font-size: 30px;
+        }
+
+        .stat-card.failed h2 {
+            color: #fca5a5;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #263449;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 850px;
+            border-collapse: collapse;
+            background: #111b2e;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #263449;
+            vertical-align: top;
+        }
+
+        th {
+            background: #152238;
+            color: #5eead4;
+            white-space: nowrap;
+        }
+
+        tbody tr:hover {
+            background: #17253a;
+        }
+
+        td {
+            overflow-wrap: anywhere;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .success {
+            background: #123b32;
+            color: #99f6e4;
+        }
+
+        .failure {
+            background: #4c2029;
+            color: #fecaca;
+        }
+
+        .empty {
+            padding: 35px;
+            margin-top: 20px;
+            text-align: center;
+            background: #111b2e;
+            border: 1px solid #263449;
+            border-radius: 12px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px 5%;
+            }
+
+            main {
+                padding: 0 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="brand">📚 Libra LMS</div>
+
+    <nav>
+        <a href="/librarian">Manage Books</a>
+        <a href="/librarian/borrowings">Borrowings</a>
+        <a href="/librarian/users">Users</a>
+        <a href="/librarian/audit-logs">Audit Logs</a>
+    </nav>
+</header>
+
+<main>
+
+    <h1>Security Audit Dashboard</h1>
+
+    <p class="subtitle">
+        Review recorded application activities and their outcomes.
+    </p>
+
+    <div class="notice">
+        <strong>Audit monitoring:</strong>
+        This dashboard displays events saved by the application's
+        AuditService. It does not automatically capture every action
+        or failed login yet; those integrations are upcoming.
+    </div>
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <p>Total Recorded Events</p>
+            <h2 th:text="${totalEvents}">0</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Successful Events</p>
+            <h2 th:text="${successfulEvents}">0</h2>
+        </div>
+
+        <div class="stat-card failed">
+            <p>Failed Events</p>
+            <h2 th:text="${failedEvents}">0</h2>
+        </div>
+
+    </section>
+
+    <div class="table-wrapper" th:if="${!logs.isEmpty()}">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Event ID</th>
+                    <th>Actor</th>
+                    <th>Action</th>
+                    <th>Details</th>
+                    <th>Outcome</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="log : ${logs}">
+
+                    <td th:text="${log.id}">1</td>
+
+                    <td th:text="${log.actorEmail != null ? log.actorEmail : 'SYSTEM'}">
+                        SYSTEM
+                    </td>
+
+                    <td th:text="${log.action}">BOOK_BORROW</td>
+
+                    <td th:text="${log.details != null ? log.details : '—'}">
+                        Activity details
+                    </td>
+
+                    <td>
+                        <span
+                            class="badge"
+                            th:classappend="${log.outcome == 'SUCCESS'} ? ' success' : ' failure'"
+                            th:text="${log.outcome}">
+                            SUCCESS
+                        </span>
+                    </td>
+
+                    <td th:text="${log.createdAt}">2026-10-18T12:00</td>
+
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="empty" th:if="${logs.isEmpty()}">
+        <h2>No audit events recorded yet</h2>
+        <p>
+            Events will appear here after the application begins
+            recording activities through AuditService.
+        </p>
+    </div>
+
+</main>
+
+</body>
+</html>
