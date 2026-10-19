@@ -1,41 +1,58 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <body>
 
 <header class="navbar" th:fragment="navigation">
 
+    <!-- BRAND -->
     <a th:href="@{/}" class="brand">
         <span class="brand-logo">L</span>
-        <span>Libra LMS</span>
+        <span class="brand-name">Libra LMS</span>
     </a>
 
+    <!-- MOBILE MENU BUTTON -->
     <button type="button"
             class="mobile-menu-button"
             id="mobile-menu-button"
             aria-label="Toggle navigation"
-            aria-expanded="false">
+            aria-expanded="false"
+            aria-controls="nav-right">
         ☰
     </button>
 
+    <!-- NAVIGATION -->
     <nav class="nav-right" id="nav-right">
 
-        <a class="nav-link" th:href="@{/}">Home</a>
+        <!-- HOME -->
+        <a class="nav-link" th:href="@{/}">
+            Home
+        </a>
 
-        <a class="nav-link" th:href="@{/user/dashboard}">
+        <!-- DASHBOARD -->
+        <a class="nav-link"
+           th:href="${user.role != null and user.role.toString() == 'LIBRARIAN'}
+                    ? @{/librarian/dashboard}
+                    : @{/user/dashboard}">
             Dashboard
         </a>
 
+        <!-- BOOK CATALOGUE -->
         <a class="nav-link" th:href="@{/books}">
             Explore Books
         </a>
 
-        <a class="nav-link" th:href="@{/user/borrowings}">
+        <!-- USER BORROWINGS -->
+        <a class="nav-link"
+           th:if="${user.role != null and user.role.toString() == 'USER'}"
+           th:href="@{/user/borrowings}">
             My Borrowings
         </a>
 
-        <!-- PROFILE BUTTON -->
+        <!-- PROFILE AREA -->
         <div class="profile-area">
 
+            <!-- PROFILE TRIGGER -->
             <button type="button"
                     class="profile-trigger"
                     id="profile-trigger"
@@ -48,7 +65,12 @@
                          alt="Profile picture">
 
                     <span class="avatar-initial"
-                          id="navbar-initial">U</span>
+                          id="navbar-initial"
+                          th:text="${user.fullName != null and !user.fullName.isEmpty()
+                                    ? user.fullName.substring(0, 1).toUpperCase()
+                                    : 'U'}">
+                        U
+                    </span>
 
                 </span>
 
@@ -57,13 +79,18 @@
                     User
                 </span>
 
-                <span aria-hidden="true">⌄</span>
+                <span class="profile-chevron" aria-hidden="true">
+                    ⌄
+                </span>
 
             </button>
 
             <!-- PROFILE DROPDOWN -->
-            <div class="profile-menu" id="profile-menu">
+            <div class="profile-menu"
+                 id="profile-menu"
+                 hidden>
 
+                <!-- PROFILE INFORMATION -->
                 <div class="profile-heading">
 
                     <span class="avatar" id="menu-avatar">
@@ -72,67 +99,113 @@
                              alt="Profile picture">
 
                         <span class="avatar-initial"
-                              id="menu-initial">U</span>
+                              id="menu-initial"
+                              th:text="${user.fullName != null and !user.fullName.isEmpty()
+                                        ? user.fullName.substring(0, 1).toUpperCase()
+                                        : 'U'}">
+                            U
+                        </span>
 
                     </span>
 
-                    <div>
-                        <strong th:text="${user.fullName}">User</strong>
+                    <div class="profile-user-details">
+
+                        <strong th:text="${user.fullName}">
+                            User
+                        </strong>
+
                         <small th:text="${user.email}">
                             user@example.com
                         </small>
+
+                        <small class="profile-role"
+                               th:text="${user.role}">
+                            USER
+                        </small>
+
                     </div>
 
                 </div>
 
-                <!-- PHOTO UPLOAD -->
+                <!-- CHANGE PROFILE PICTURE -->
                 <form th:action="@{/profile/photo}"
                       method="post"
                       enctype="multipart/form-data"
                       id="profile-photo-form">
 
+                    <!-- CSRF PROTECTION -->
                     <input type="hidden"
                            th:name="${_csrf.parameterName}"
                            th:value="${_csrf.token}">
 
+                    <!-- HIDDEN FILE INPUT -->
                     <input type="file"
                            name="photo"
                            id="profile-photo"
                            accept="image/png,image/jpeg"
                            hidden>
 
+                    <!-- OPEN FILE PICKER -->
                     <button type="button"
                             class="menu-button upload-button"
                             id="change-photo-button">
-                        📷 Change Profile Picture
+
+                        <span aria-hidden="true">📷</span>
+                        Change Profile Picture
+
                     </button>
 
                 </form>
 
+                <div class="profile-divider"></div>
+
+                <!-- DASHBOARD -->
                 <a class="profile-menu-link"
-                   th:href="@{/user/dashboard}">
-                    🏠 Dashboard
+                   th:href="${user.role != null and user.role.toString() == 'LIBRARIAN'}
+                            ? @{/librarian/dashboard}
+                            : @{/user/dashboard}">
+
+                    <span aria-hidden="true">⌂</span>
+                    Dashboard
+
                 </a>
 
+                <!-- EXPLORE BOOKS -->
                 <a class="profile-menu-link"
                    th:href="@{/books}">
-                    📚 Explore Books
+
+                    <span aria-hidden="true">▤</span>
+                    Explore Books
+
                 </a>
 
+                <!-- MY BORROWINGS -->
                 <a class="profile-menu-link"
+                   th:if="${user.role != null and user.role.toString() == 'USER'}"
                    th:href="@{/user/borrowings}">
-                    📋 My Borrowings
+
+                    <span aria-hidden="true">◷</span>
+                    My Borrowings
+
                 </a>
 
-                <form th:action="@{/logout}" method="post">
+                <div class="profile-divider"></div>
 
+                <!-- LOGOUT -->
+                <form th:action="@{/logout}"
+                      method="post">
+
+                    <!-- CSRF PROTECTION -->
                     <input type="hidden"
                            th:name="${_csrf.parameterName}"
                            th:value="${_csrf.token}">
 
                     <button type="submit"
                             class="menu-button logout-button">
-                        ↪ Log Out
+
+                        <span aria-hidden="true">↪</span>
+                        Log Out
+
                     </button>
 
                 </form>
@@ -143,145 +216,8 @@
 
     </nav>
 
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-        const trigger = document.getElementById("profile-trigger");
-        const menu = document.getElementById("profile-menu");
-        const mobileButton = document.getElementById("mobile-menu-button");
-        const nav = document.getElementById("nav-right");
-        const photoInput = document.getElementById("profile-photo");
-        const photoForm = document.getElementById("profile-photo-form");
-        const changePhotoButton =
-            document.getElementById("change-photo-button");
-
-        // Profile dropdown
-        trigger.addEventListener("click", function (event) {
-
-            event.stopPropagation();
-
-            const open = menu.classList.toggle("open");
-
-            trigger.setAttribute("aria-expanded", String(open));
-
-        });
-
-        document.addEventListener("click", function (event) {
-
-            if (!menu.contains(event.target) &&
-                !trigger.contains(event.target)) {
-
-                menu.classList.remove("open");
-                trigger.setAttribute("aria-expanded", "false");
-
-            }
-
-        });
-
-        // Mobile navigation
-        mobileButton.addEventListener("click", function () {
-
-            const open = nav.classList.toggle("mobile-open");
-
-            mobileButton.setAttribute("aria-expanded", String(open));
-            mobileButton.textContent = open ? "✕" : "☰";
-
-        });
-
-        nav.querySelectorAll(".nav-link").forEach(function (link) {
-
-            link.addEventListener("click", function () {
-
-                nav.classList.remove("mobile-open");
-                mobileButton.setAttribute("aria-expanded", "false");
-                mobileButton.textContent = "☰";
-
-            });
-
-        });
-
-        // Open photo picker only after the button is clicked
-        changePhotoButton.addEventListener("click", function () {
-            photoInput.click();
-        });
-
-        // Validate and upload selected photo
-        photoInput.addEventListener("change", function () {
-
-            if (!photoInput.files || photoInput.files.length === 0) {
-                return;
-            }
-
-            const file = photoInput.files[0];
-
-            if (!["image/png", "image/jpeg"].includes(file.type)) {
-                alert("Please select a PNG or JPEG image.");
-                photoInput.value = "";
-                return;
-            }
-
-            if (file.size > 3 * 1024 * 1024) {
-                alert("The profile picture must be smaller than 3 MB.");
-                photoInput.value = "";
-                return;
-            }
-
-            photoForm.requestSubmit();
-
-        });
-
-        // Initials fallback
-        const nameElement =
-            document.querySelector(".profile-heading strong");
-
-        const initial = nameElement && nameElement.textContent.trim()
-            ? nameElement.textContent.trim().charAt(0).toUpperCase()
-            : "U";
-
-        document.getElementById("navbar-initial").textContent = initial;
-        document.getElementById("menu-initial").textContent = initial;
-
-        // Load profile pictures
-        document.querySelectorAll(".avatar img").forEach(function (img) {
-
-            function showPhoto() {
-
-                if (img.naturalWidth > 0) {
-                    img.closest(".avatar").classList.add("has-photo");
-                }
-
-            }
-
-            img.addEventListener("load", showPhoto);
-
-            img.addEventListener("error", function () {
-                img.closest(".avatar").classList.remove("has-photo");
-            });
-
-            if (img.complete && img.naturalWidth > 0) {
-                showPhoto();
-            }
-
-        });
-
-        // Escape closes the dropdown
-        document.addEventListener("keydown", function (event) {
-
-            if (event.key === "Escape") {
-
-                menu.classList.remove("open");
-                trigger.setAttribute("aria-expanded", "false");
-
-                nav.classList.remove("mobile-open");
-                mobileButton.setAttribute("aria-expanded", "false");
-                mobileButton.textContent = "☰";
-
-            }
-
-        });
-
-    });
-    </script>
+    <!-- SHARED NAVBAR JAVASCRIPT -->
+    <script th:src="@{/js/navbar.js}" defer></script>
 
 </header>
 

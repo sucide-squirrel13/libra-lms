@@ -57,26 +57,6 @@ public class BorrowingController {
         return "redirect:/user/borrowings";
     }
 
-    @GetMapping("/user/borrowings")
-    public String showBorrowings(
-            Authentication authentication,
-            Model model) {
-
-        LibraryUser user = userRepository
-                .findByEmailIgnoreCase(authentication.getName())
-                .orElseThrow(() ->
-                        new IllegalStateException("User account not found."));
-
-        List<Borrowing> borrowings =
-                borrowingRepository.findByUserIdOrderByBorrowDateDesc(
-                        user.getId());
-
-        model.addAttribute("borrowings", borrowings);
-        model.addAttribute("today", LocalDate.now());
-
-        return "user-borrowings";
-    }
-
     @PostMapping("/borrowings/{borrowingId}/return")
     public String returnBook(
             @PathVariable Long borrowingId,

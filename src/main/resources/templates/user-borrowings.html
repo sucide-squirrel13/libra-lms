@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
@@ -7,251 +8,479 @@
 
     <title>My Borrowings | Libra LMS</title>
 
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --bg: #f6f7fb;
+            --surface: #ffffff;
+            --text: #171a2b;
+            --muted: #7e849b;
+            --border: #e9ebf3;
+            --primary: #6558e8;
+            --primary-light: #f0efff;
+            --green: #159b72;
+            --green-bg: #e8f8f1;
+            --red: #dc4c64;
+            --red-bg: #fff0f2;
+            --orange: #c77a1b;
+            --orange-bg: #fff5e7;
+            --shadow: 0 12px 35px rgba(32, 36, 76, 0.045);
+            --radius: 20px;
+        }
+
         * {
             box-sizing: border-box;
         }
 
-        :root {
-            --background: #0b1120;
-            --surface: #111b2e;
-            --surface-light: #152238;
-            --border: #263449;
-            --primary: #5eead4;
-            --primary-strong: #2dd4bf;
-            --text: #e5e7eb;
-            --muted: #9caec2;
-            --danger: #fca5a5;
-            --success-bg: #123b32;
-            --danger-bg: #4c2029;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: var(--background);
+            background: var(--bg);
             color: var(--text);
-            min-height: 100vh;
+            font-family: "DM Sans", sans-serif;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
         }
 
         a {
-            color: var(--primary);
+            color: inherit;
             text-decoration: none;
         }
 
-        /* FIXED NAVBAR */
-
-        .navbar {
-            min-height: 76px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            padding: 12px 4%;
-
-            background: rgba(8, 13, 25, 0.96);
-            border-bottom: 1px solid var(--border);
-
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-        }
-
-        .brand {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--primary);
-            font-size: 24px;
-            font-weight: 800;
-            white-space: nowrap;
-            text-decoration: none;
-        }
-
-        .brand span {
-            color: #ffffff;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .nav-link {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 14px;
-            border-radius: 9px;
-            color: #b9c5d6;
-            font-size: 14px;
-            font-weight: 600;
-            transition: background 0.2s ease, color 0.2s ease;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            color: var(--primary);
-            background: rgba(45, 212, 191, 0.12);
-        }
-
-        /* MAIN CONTENT */
-
-        main {
-            width: min(1100px, 100%);
+        .borrowing-page {
+            max-width: 1440px;
             margin: 0 auto;
-            padding: 112px 24px 45px;
+            padding: 36px 5%;
         }
 
         .page-heading {
-            margin-bottom: 28px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: fade-up 0.55s ease both;
         }
 
         .eyebrow {
-            margin: 0 0 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
             color: var(--primary);
-            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 800;
             letter-spacing: 2px;
-            font-size: 12px;
-            font-weight: 700;
+            text-transform: uppercase;
         }
 
-        h1 {
-            margin: 0 0 10px;
-            font-size: clamp(28px, 4vw, 38px);
-            letter-spacing: -0.8px;
+        .eyebrow::before {
+            content: "";
+            width: 22px;
+            height: 2px;
+            background: var(--primary);
         }
 
-        .subtitle {
-            color: var(--muted);
-            line-height: 1.7;
+        h1,
+        h2,
+        h3 {
+            font-family: "Manrope", sans-serif;
+        }
+
+        .page-heading h1 {
             margin: 0;
+            font-size: clamp(28px, 4vw, 38px);
+            font-weight: 800;
+            letter-spacing: -1.5px;
         }
 
-        /* FLASH MESSAGES */
-
-        .message {
-            padding: 15px 18px;
-            margin: 20px 0;
-            border-radius: 10px;
-            line-height: 1.5;
-            border: 1px solid transparent;
+        .page-heading p {
+            margin: 10px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
         }
 
-        .success {
-            background: var(--success-bg);
-            color: #99f6e4;
-            border-color: #176653;
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 12px 17px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.25s ease;
+            white-space: nowrap;
         }
 
-        .error {
-            background: var(--danger-bg);
-            color: #fecaca;
-            border-color: #7f2938;
+        .back-button:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
         }
 
-        /* TABLE */
+        /* Statistics */
 
-        .section-heading {
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 17px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            padding: 23px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            animation: fade-up 0.55s ease both;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .stat-card:nth-child(2) {
+            animation-delay: 0.08s;
+        }
+
+        .stat-card:nth-child(3) {
+            animation-delay: 0.16s;
+        }
+
+        .stat-card:nth-child(4) {
+            animation-delay: 0.24s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 18px 38px rgba(32, 36, 76, 0.09);
+        }
+
+        .stat-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            margin-top: 30px;
-            margin-bottom: 15px;
+            margin-bottom: 19px;
         }
 
-        .section-heading h2 {
-            margin: 0;
+        .stat-label {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stat-icon {
+            display: grid;
+            width: 42px;
+            height: 42px;
+            place-items: center;
+            border-radius: 13px;
             font-size: 20px;
         }
 
-        .table-wrapper {
-            overflow-x: auto;
-            margin-top: 18px;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            background: var(--surface);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        .icon-purple {
+            background: var(--primary-light);
         }
 
-        table {
+        .icon-green {
+            background: var(--green-bg);
+        }
+
+        .icon-red {
+            background: var(--red-bg);
+        }
+
+        .icon-orange {
+            background: var(--orange-bg);
+        }
+
+        .stat-number {
+            font-family: "Manrope", sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .stat-caption {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        /* Reminder */
+
+        .reminder {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 27px;
+            padding: 19px 22px;
+            background: linear-gradient(110deg, #f0efff, #f9f8ff);
+            border: 1px solid #e4e1ff;
+            border-radius: 17px;
+            animation: fade-up 0.65s ease both;
+        }
+
+        .reminder-icon {
+            display: grid;
+            flex-shrink: 0;
+            width: 43px;
+            height: 43px;
+            place-items: center;
+            background: white;
+            border-radius: 13px;
+            font-size: 21px;
+        }
+
+        .reminder-content {
+            flex: 1;
+        }
+
+        .reminder-content strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        .reminder-content p {
+            margin: 0;
+            color: #77738e;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* Main borrowing panel */
+
+        .borrowing-panel {
+            overflow: hidden;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            animation: fade-up 0.7s ease both;
+        }
+
+        .panel-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 25px 27px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-heading h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .panel-heading p {
+            margin: 7px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .record-count {
+            padding: 7px 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        /* Search and filters */
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 20px 27px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: min(340px, 100%);
+            padding: 12px 14px;
+            background: #f8f9fc;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(101, 88, 232, 0.08);
+        }
+
+        .search-box span {
+            color: var(--muted);
+        }
+
+        .search-box input {
+            width: 100%;
+            min-width: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-size: 12px;
+        }
+
+        .search-box input::placeholder {
+            color: #a1a6b8;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 10px 13px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 5px 13px rgba(101, 88, 232, 0.2);
+        }
+
+        /* Borrowing table */
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .borrowing-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 750px;
-            background: var(--surface);
+            text-align: left;
         }
 
-        th,
-        td {
-            padding: 17px 16px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
+        .borrowing-table th {
+            padding: 15px 22px;
+            background: #fafbfe;
+            color: #8c92a7;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .borrowing-table td {
+            padding: 19px 22px;
+            border-bottom: 1px solid #f0f1f6;
+            font-size: 12px;
             vertical-align: middle;
         }
 
-        th {
-            color: var(--primary);
-            background: var(--surface-light);
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.7px;
-            white-space: nowrap;
-        }
-
-        td {
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        tbody tr {
+        .borrowing-table tbody tr {
             transition: background 0.2s ease;
         }
 
-        tbody tr:hover {
-            background: #17253a;
+        .borrowing-table tbody tr:hover {
+            background: #fcfcff;
         }
 
-        tbody tr:last-child td {
+        .borrowing-table tbody tr:last-child td {
             border-bottom: none;
         }
 
-        .book-title {
-            font-weight: 700;
-            color: #f1f5f9;
+        .book-info {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            min-width: 200px;
         }
 
-        .date {
+        .book-cover {
+            display: grid;
+            flex-shrink: 0;
+            width: 45px;
+            height: 57px;
+            place-items: center;
+            background: linear-gradient(145deg, #e9e5ff, #f6f4ff);
+            border-radius: 7px;
+            box-shadow: 2px 4px 9px rgba(32, 36, 76, 0.08);
+            font-size: 21px;
+        }
+
+        .book-title {
+            max-width: 220px;
+            margin-bottom: 5px;
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.5;
+        }
+
+        .book-subtitle {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .date-main {
+            color: #34384b;
+            font-weight: 700;
             white-space: nowrap;
         }
 
-        .overdue-date {
-            color: var(--danger);
-            font-weight: 700;
+        .date-caption {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 10px;
+            white-space: nowrap;
         }
-
-        /* STATUS BADGES */
 
         .status {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 7px 11px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 700;
+            padding: 7px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 800;
             white-space: nowrap;
         }
 
@@ -259,161 +488,174 @@
             content: "";
             width: 6px;
             height: 6px;
-            border-radius: 50%;
             background: currentColor;
+            border-radius: 50%;
         }
 
-        .borrowed {
-            background: var(--success-bg);
-            color: #99f6e4;
+        .status-active {
+            background: var(--green-bg);
+            color: var(--green);
         }
 
-        .returned {
-            background: #253449;
-            color: #cbd5e1;
+        .status-overdue {
+            background: var(--red-bg);
+            color: var(--red);
         }
 
-        .overdue {
-            background: var(--danger-bg);
-            color: #fecaca;
+        .status-returned {
+            background: #f0f1f5;
+            color: #70768b;
         }
 
-        /* RETURN BUTTON */
-
-        .return-form {
-            margin: 0;
+        .status-pending {
+            background: var(--orange-bg);
+            color: var(--orange);
         }
 
-        .return-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 14px;
-            background: var(--primary-strong);
-            color: #06201e;
-            border: none;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: transform 0.2s ease, background 0.2s ease;
+        .action-label {
+            color: #a0a5b6;
+            font-size: 11px;
         }
 
-        .return-button:hover {
-            background: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .return-button:focus-visible,
-        a:focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 3px;
-        }
-
-        .completed {
-            color: #94a3b8;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        /* EMPTY STATE */
-
-        .empty {
-            margin-top: 24px;
-            padding: 45px 25px;
+        .empty-state {
+            display: none;
+            padding: 65px 20px;
             text-align: center;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
+        }
+
+        .empty-state.visible {
+            display: block;
         }
 
         .empty-icon {
-            font-size: 42px;
-            margin-bottom: 12px;
+            display: grid;
+            width: 68px;
+            height: 68px;
+            place-items: center;
+            margin: 0 auto 17px;
+            background: var(--primary-light);
+            border-radius: 20px;
+            font-size: 30px;
         }
 
-        .empty h2 {
-            margin: 0 0 10px;
-            font-size: 23px;
+        .empty-state h3 {
+            margin: 0 0 8px;
+            font-size: 17px;
         }
 
-        .empty p {
+        .empty-state p {
+            max-width: 350px;
+            margin: 0 auto;
             color: var(--muted);
-            line-height: 1.7;
-        }
-
-        .browse-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 12px;
-            padding: 12px 18px;
-            border-radius: 9px;
-            background: var(--primary-strong);
-            color: #06201e;
-            font-weight: 700;
-            transition: transform 0.2s ease;
-        }
-
-        .browse-button:hover {
-            transform: translateY(-2px);
-        }
-
-        footer {
-            padding: 22px;
-            text-align: center;
-            color: #718096;
             font-size: 12px;
-            border-top: 1px solid var(--border);
+            line-height: 1.8;
         }
 
-        /* RESPONSIVE DESIGN */
+        .panel-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 17px 27px;
+            background: #fcfcfe;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 11px;
+        }
 
-        @media (max-width: 760px) {
-            .navbar {
+        .footer-highlight {
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        .page-footer {
+            padding: 28px 0 5px;
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+        }
+
+        @keyframes fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(17px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1050px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .toolbar {
                 align-items: flex-start;
                 flex-direction: column;
-                gap: 10px;
-                padding: 13px 5%;
             }
 
-            .brand {
-                font-size: 22px;
-            }
-
-            .nav-links {
+            .search-box {
                 width: 100%;
-                justify-content: flex-start;
-                gap: 4px;
             }
+        }
 
-            .nav-link {
-                padding: 9px 10px;
-                font-size: 12px;
-            }
-
-            main {
-                padding: 155px 16px 35px;
+        @media (max-width: 650px) {
+            .borrowing-page {
+                padding: 25px 16px;
             }
 
             .page-heading {
-                margin-bottom: 22px;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .nav-links {
-                gap: 2px;
+                align-items: flex-start;
+                flex-direction: column;
             }
 
-            .nav-link {
-                padding: 8px 7px;
-                font-size: 11px;
+            .stats-grid {
+                gap: 12px;
             }
 
-            main {
-                padding-top: 165px;
+            .stat-card {
+                padding: 17px;
+            }
+
+            .stat-number {
+                font-size: 27px;
+            }
+
+            .stat-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 17px;
+            }
+
+            .reminder {
+                align-items: flex-start;
+                padding: 16px;
+            }
+
+            .panel-heading,
+            .toolbar {
+                padding: 18px;
+            }
+
+            .filter-buttons {
+                display: grid;
+                width: 100%;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .filter-btn {
+                width: 100%;
+            }
+
+            .borrowing-table th,
+            .borrowing-table td {
+                padding: 14px 16px;
+            }
+
+            .panel-footer {
+                padding: 15px 18px;
             }
         }
 
@@ -421,7 +663,7 @@
             *,
             *::before,
             *::after {
-                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
                 transition-duration: 0.01ms !important;
             }
         }
@@ -430,181 +672,325 @@
 
 <body>
 
-<header class="navbar">
+    <!-- Shared navigation -->
+    <div th:replace="~{fragments/navbar :: navigation}"></div>
 
-    <a class="brand" th:href="@{/user/dashboard}">
-        📚 <span>Libra</span> LMS
-    </a>
+    <main class="borrowing-page">
 
-    <nav class="nav-links" aria-label="User navigation">
+        <!-- Page heading -->
+        <section class="page-heading">
+            <div>
+                <div class="eyebrow">YOUR READING JOURNEY</div>
+                <h1>My Borrowings<span style="color: var(--primary);">.</span></h1>
+                <p>Keep track of your books, return dates, and reading history.</p>
+            </div>
 
-        <a class="nav-link"
-           th:href="@{/user/dashboard}">
-            Dashboard
-        </a>
+            <a class="back-button" th:href="@{/user/dashboard}">
+                <span>←</span> Back to Dashboard
+            </a>
+        </section>
 
-        <a class="nav-link"
-           th:href="@{/}">
-            Home
-        </a>
+        <!-- Statistics -->
+        <section class="stats-grid">
 
-        <a class="nav-link"
-           th:href="@{/books}">
-            Explore Books
-        </a>
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">Total Records</span>
+                    <span class="stat-icon icon-purple">📚</span>
+                </div>
+                <div class="stat-number"
+                     th:text="${totalBorrowingRecords != null ? totalBorrowingRecords : 0}">
+                    0
+                </div>
+                <div class="stat-caption">Your complete borrowing history</div>
+            </article>
 
-        <a class="nav-link active"
-           th:href="@{/user/borrowings}"
-           aria-current="page">
-            My Borrowings
-        </a>
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">Currently Borrowed</span>
+                    <span class="stat-icon icon-green">📖</span>
+                </div>
+                <div class="stat-number"
+                     th:text="${overdueBorrowings != null ? #lists.size(overdueBorrowings) : 0}">
+                    0
+                </div>
+                <div class="stat-caption">Books not yet returned</div>
+            </article>
 
-    </nav>
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">Overdue Books</span>
+                    <span class="stat-icon icon-red">⏰</span>
+                </div>
+                <div class="stat-number"
+                     th:text="${overdueBorrowings != null ? #lists.size(overdueBorrowings) : 0}">
+                    0
+                </div>
+                <div class="stat-caption">Books requiring your attention</div>
+            </article>
 
-</header>
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">Returned Books</span>
+                    <span class="stat-icon icon-orange">✓</span>
+                </div>
+                <div class="stat-number"
+                     th:text="${returnedBorrowings != null ? #lists.size(returnedBorrowings) : 0}">
+                    0
+                </div>
+                <div class="stat-caption">Successfully returned books</div>
+            </article>
 
-<main>
+        </section>
 
-    <section class="page-heading">
+        <!-- Reminder -->
+        <section class="reminder">
+            <div class="reminder-icon">💡</div>
+            <div class="reminder-content">
+                <strong>Keep your reading streak alive!</strong>
+                <p>Check your due dates regularly and return books on time so other readers can enjoy them too.</p>
+            </div>
+        </section>
 
-        <p class="eyebrow">Your Library Activity</p>
+        <!-- Borrowing history -->
+        <section class="borrowing-panel">
 
-        <h1>My Borrowings</h1>
+            <div class="panel-heading">
+                <div>
+                    <h2>Borrowing History</h2>
+                    <p>All your current and previous book transactions.</p>
+                </div>
 
-        <p class="subtitle">
-            Track your borrowed books, due dates, and completed returns.
-        </p>
+                <span class="record-count">
+                    <span id="visibleCount">0</span> RECORDS
+                </span>
+            </div>
 
-    </section>
+            <!-- Search and filters -->
+            <div class="toolbar">
 
-    <!-- Success message -->
-    <div class="message success"
-         th:if="${successMessage}"
-         th:text="${successMessage}"
-         role="status">
-    </div>
+                <label class="search-box">
+                    <span>⌕</span>
+                    <input
+                        type="search"
+                        id="bookSearch"
+                        placeholder="Search by book title..."
+                        aria-label="Search borrowing history">
+                </label>
 
-    <!-- Error message -->
-    <div class="message error"
-         th:if="${errorMessage}"
-         th:text="${errorMessage}"
-         role="alert">
-    </div>
+                <div class="filter-buttons" role="group" aria-label="Filter borrowing records">
+                    <button class="filter-btn active" data-filter="all" type="button">All Books</button>
+                    <button class="filter-btn" data-filter="active" type="button">Active</button>
+                    <button class="filter-btn" data-filter="overdue" type="button">Overdue</button>
+                    <button class="filter-btn" data-filter="returned" type="button">Returned</button>
+                </div>
 
-    <!-- Borrowing records -->
-    <section th:if="${!borrowings.isEmpty()}">
+            </div>
 
-        <div class="section-heading">
-            <h2>Your Borrowing History</h2>
-        </div>
+            <!-- Records table -->
+            <div class="table-wrapper">
+                <table class="borrowing-table">
 
-        <div class="table-wrapper">
-
-            <table>
-                <thead>
+                    <thead>
                     <tr>
-                        <th>Book</th>
+                        <th>Book Details</th>
                         <th>Borrowed On</th>
                         <th>Due Date</th>
                         <th>Returned On</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
-                </thead>
+                    </thead>
 
-                <tbody>
+                    <tbody id="borrowingRows">
 
-                    <tr th:each="loan : ${borrowings}">
+                    <!-- Active borrowing records -->
+                    <tr th:each="record : ${activeBorrowings}"
+                        th:attr="data-status=${record.dueDate != null and record.dueDate.isBefore(T(java.time.LocalDate).now()) ? 'overdue' : 'active'}">
 
-                        <td class="book-title"
-                            th:text="${loan.book.title}">
-                            Book Title
-                        </td>
-
-                        <td class="date"
-                            th:text="${loan.borrowDate}">
-                            2026-10-18
-                        </td>
-
-                        <td class="date"
-                            th:classappend="${loan.status == 'BORROWED' and loan.dueDate.isBefore(today)} ? ' overdue-date' : ''"
-                            th:text="${loan.dueDate}">
-                            2026-11-01
-                        </td>
-
-                        <td class="date"
-                            th:text="${loan.returnDate != null ? loan.returnDate : '—'}">
-                            —
+                        <td>
+                            <div class="book-info">
+                                <div class="book-cover">📘</div>
+                                <div>
+                                    <div class="book-title"
+                                         th:text="${record.book != null ? record.book.title : 'Untitled Book'}">
+                                        Book Title
+                                    </div>
+                                    <div class="book-subtitle">Library collection</div>
+                                </div>
+                            </div>
                         </td>
 
                         <td>
+                            <div class="date-main"
+                                 th:text="${record.borrowDate != null ? #temporals.format(record.borrowDate, 'dd MMM yyyy') : '—'}">
+                                01 Jan 2026
+                            </div>
+                        </td>
 
+                        <td>
+                            <div class="date-main"
+                                 th:text="${record.dueDate != null ? #temporals.format(record.dueDate, 'dd MMM yyyy') : '—'}">
+                                08 Jan 2026
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="date-main">—</div>
+                        </td>
+
+                        <td>
                             <span class="status"
-                                  th:classappend="${loan.status == 'RETURNED'} ? ' returned' : (${loan.dueDate.isBefore(today)} ? ' overdue' : ' borrowed')"
-                                  th:text="${loan.status == 'RETURNED' ? 'Returned' : (loan.dueDate.isBefore(today) ? 'Overdue' : 'Borrowed')}">
+                                  th:classappend="${record.dueDate != null and record.dueDate.isBefore(T(java.time.LocalDate).now()) ? ' status-overdue' : ' status-active'}"
+                                  th:text="${record.dueDate != null and record.dueDate.isBefore(T(java.time.LocalDate).now()) ? 'Overdue' : 'Borrowed'}">
                                 Borrowed
                             </span>
-
                         </td>
 
                         <td>
-
-                            <form class="return-form"
-                                  th:if="${loan.status == 'BORROWED'}"
-                                  th:action="@{/borrowings/{id}/return(id=${loan.id})}"
-                                  method="post">
-
-                                <!-- Spring Security CSRF is automatically included
-                                     if your application uses Thymeleaf's Spring integration. -->
-
-                                <button class="return-button"
-                                        type="submit">
-                                    Return Book
-                                </button>
-
-                            </form>
-
-                            <span class="completed"
-                                  th:if="${loan.status == 'RETURNED'}">
-                                Completed
-                            </span>
-
+                            <span class="action-label">Contact librarian</span>
                         </td>
 
                     </tr>
 
-                </tbody>
-            </table>
+                    <!-- Returned borrowing records -->
+                    <tr th:each="record : ${returnedBorrowings}"
+                        data-status="returned">
 
-        </div>
+                        <td>
+                            <div class="book-info">
+                                <div class="book-cover">📗</div>
+                                <div>
+                                    <div class="book-title"
+                                         th:text="${record.book != null ? record.book.title : 'Untitled Book'}">
+                                        Book Title
+                                    </div>
+                                    <div class="book-subtitle">Library collection</div>
+                                </div>
+                            </div>
+                        </td>
 
-    </section>
+                        <td>
+                            <div class="date-main"
+                                 th:text="${record.borrowDate != null ? #temporals.format(record.borrowDate, 'dd MMM yyyy') : '—'}">
+                                01 Jan 2026
+                            </div>
+                        </td>
 
-    <!-- Empty state -->
-    <section class="empty"
-             th:if="${borrowings.isEmpty()}">
+                        <td>
+                            <div class="date-main"
+                                 th:text="${record.dueDate != null ? #temporals.format(record.dueDate, 'dd MMM yyyy') : '—'}">
+                                08 Jan 2026
+                            </div>
+                        </td>
 
-        <div class="empty-icon" aria-hidden="true">📚</div>
+                        <td>
+                            <div class="date-main"
+                                 th:text="${record.returnDate != null ? #temporals.format(record.returnDate, 'dd MMM yyyy') : '—'}">
+                                08 Jan 2026
+                            </div>
+                        </td>
 
-        <h2>No borrowing records yet</h2>
+                        <td>
+                            <span class="status status-returned">Returned</span>
+                        </td>
 
-        <p>
-            You haven't borrowed any books yet.
-            Explore the catalogue to find your next read.
-        </p>
+                        <td>
+                            <span class="action-label">Completed</span>
+                        </td>
 
-        <a class="browse-button"
-           th:href="@{/books}">
-            Explore Books →
-        </a>
+                    </tr>
 
-    </section>
+                    </tbody>
+                </table>
+            </div>
 
-</main>
+            <!-- Empty results -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">📚</div>
+                <h3 id="emptyTitle">No borrowing records found</h3>
+                <p id="emptyMessage">
+                    Your borrowing history will appear here when you borrow books from the library.
+                </p>
+            </div>
 
-<footer>
-    Libra LMS · Your personal library space
-</footer>
+            <div class="panel-footer">
+                <span>Showing <span id="footerCount" class="footer-highlight">0</span> records</span>
+                <span>Libra LMS <span style="color: var(--primary);">●</span> Your personal library</span>
+            </div>
+
+        </section>
+
+        <footer class="page-footer">
+            Made for readers. Powered by Libra LMS.
+        </footer>
+
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const searchInput = document.getElementById("bookSearch");
+            const filterButtons = document.querySelectorAll(".filter-btn");
+            const rows = Array.from(document.querySelectorAll("#borrowingRows tr"));
+            const emptyState = document.getElementById("emptyState");
+            const emptyTitle = document.getElementById("emptyTitle");
+            const emptyMessage = document.getElementById("emptyMessage");
+            const visibleCount = document.getElementById("visibleCount");
+            const footerCount = document.getElementById("footerCount");
+
+            let currentFilter = "all";
+
+            function filterRecords() {
+                const query = searchInput.value.trim().toLowerCase();
+                let visible = 0;
+
+                rows.forEach(row => {
+                    const title = row.querySelector(".book-title")?.textContent.toLowerCase() || "";
+                    const status = row.dataset.status || "";
+
+                    const matchesSearch = title.includes(query);
+                    const matchesFilter = currentFilter === "all" || status === currentFilter;
+                    const shouldShow = matchesSearch && matchesFilter;
+
+                    row.style.display = shouldShow ? "" : "none";
+
+                    if (shouldShow) {
+                        visible++;
+                    }
+                });
+
+                visibleCount.textContent = visible;
+                footerCount.textContent = visible;
+
+                emptyState.classList.toggle("visible", visible === 0);
+
+                if (visible === 0 && query.length > 0) {
+                    emptyTitle.textContent = "No matching books";
+                    emptyMessage.textContent = "Try another title or change your filters.";
+                } else if (visible === 0 && currentFilter !== "all") {
+                    emptyTitle.textContent = "No books in this category";
+                    emptyMessage.textContent = "There are no borrowing records matching this status.";
+                } else {
+                    emptyTitle.textContent = "No borrowing records found";
+                    emptyMessage.textContent = "Your borrowing history will appear here when you borrow books from the library.";
+                }
+            }
+
+            searchInput.addEventListener("input", filterRecords);
+
+            filterButtons.forEach(button => {
+                button.addEventListener("click", () => {
+                    filterButtons.forEach(item => item.classList.remove("active"));
+                    button.classList.add("active");
+
+                    currentFilter = button.dataset.filter;
+                    filterRecords();
+                });
+            });
+
+            filterRecords();
+        });
+    </script>
 
 </body>
 </html>

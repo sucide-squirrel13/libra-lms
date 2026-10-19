@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<header class="navbar" th:fragment="navigation">
+
+    <!-- BRAND -->
+    <a th:href="@{/}" class="brand">
+        <span class="brand-logo">L</span>
+        <span class="brand-name">Libra LMS</span>
+    </a>
+
+    <!-- MOBILE MENU -->
+    <button type="button"
+            class="mobile-menu-button"
+            id="mobile-menu-button"
+            aria-label="Toggle navigation"
+            aria-expanded="false"
+            aria-controls="nav-right">
+        ☰
+    </button>
+
+    <!-- NAVIGATION -->
+    <nav class="nav-right" id="nav-right">
+
+        <a class="nav-link" th:href="@{/}">
+            Home
+        </a>
+
+        <a class="nav-link"
+           th:href="${#authorization.expression('hasRole(''LIBRARIAN'')')
+                    ? '/librarian/dashboard' : '/user/dashboard'}">
+            Dashboard
+        </a>
+
+        <a class="nav-link" th:href="@{/books}">
+            Explore Books
+        </a>
+
+        <!-- Only USER accounts see My Borrowings -->
+        <a class="nav-link"
+           th:if="${#authorization.expression('hasRole(''USER'')')}"
+           th:href="@{/user/borrowings}">
+            My Borrowings
+        </a>
+
+        <!-- PROFILE -->
+        <div class="profile-area">
+
+            <button type="button"
+                    class="profile-trigger"
+                    id="profile-trigger"
+                    aria-expanded="false"
+                    aria-controls="profile-menu">
+
+                <span class="avatar" id="navbar-avatar">
+
+                    <img th:src="@{/profile/photo}"
+                         alt="Profile picture">
+
+                    <span class="avatar-initial"
+                          id="navbar-initial">U</span>
+
+                </span>
+
+                <span class="profile-trigger-name"
+                      th:text="${user.fullName}">
+                    User
+                </span>
+
+                <span class="profile-chevron" aria-hidden="true">⌄</span>
+
+            </button>
+
+            <!-- PROFILE DROPDOWN -->
+            <div class="profile-menu" id="profile-menu" hidden>
+
+                <div class="profile-heading">
+
+                    <span class="avatar" id="menu-avatar">
+
+                        <img th:src="@{/profile/photo}"
+                             alt="Profile picture">
+
+                        <span class="avatar-initial"
+                              id="menu-initial">U</span>
+
+                    </span>
+
+                    <div class="profile-user-details">
+
+                        <strong th:text="${user.fullName}">
+                            User
+                        </strong>
+
+                        <small th:text="${user.email}">
+                            user@example.com
+                        </small>
+
+                        <small class="profile-role"
+                               sec:authorize="hasRole('LIBRARIAN')">
+                            Librarian
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <!-- CHANGE PROFILE PICTURE -->
+                <form th:action="@{/profile/photo}"
+                      method="post"
+                      enctype="multipart/form-data"
+                      id="profile-photo-form">
+
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}">
+
+                    <input type="file"
+                           name="photo"
+                           id="profile-photo"
+                           accept="image/png,image/jpeg"
+                           hidden>
+
+                    <button type="button"
+                            class="menu-button upload-button"
+                            id="change-photo-button">
+                        <span aria-hidden="true">📷</span>
+                        Change Profile Picture
+                    </button>
+
+                </form>
+
+                <div class="profile-divider"></div>
+
+                <a class="profile-menu-link"
+                   th:href="${#authorization.expression('hasRole(''LIBRARIAN'')')
+                            ? '/librarian/dashboard' : '/user/dashboard'}">
+                    <span aria-hidden="true">⌂</span>
+                    Dashboard
+                </a>
+
+                <a class="profile-menu-link" th:href="@{/books}">
+                    <span aria-hidden="true">▤</span>
+                    Explore Books
+                </a>
+
+                <a class="profile-menu-link"
+                   th:if="${#authorization.expression('hasRole(''USER'')')}"
+                   th:href="@{/user/borrowings}">
+                    <span aria-hidden="true">◷</span>
+                    My Borrowings
+                </a>
+
+                <div class="profile-divider"></div>
+
+                <form th:action="@{/logout}" method="post">
+
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}">
+
+                    <button type="submit"
+                            class="menu-button logout-button">
+                        <span aria-hidden="true">↪</span>
+                        Log Out
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <!-- LOAD SHARED NAVBAR JAVASCRIPT -->
+    <script th:src="@{/js/navbar.js}" defer></script>
+
+</header>
+
+</body>
+</html>

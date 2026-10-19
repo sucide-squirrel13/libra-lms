@@ -38,3 +38,8 @@ target/
 *.log
 .env
 application-local.properties
+*.class
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
