@@ -7,7 +7,7 @@
 
     <title>Login | Libra LMS</title>
 
-    <!-- Google Fonts: Newsreader & Plus Jakarta Sans -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
@@ -19,14 +19,12 @@
         :root {
             --bg: #0d1017;
             --panel: #141923;
-            --panel-light: #1c2230;
             --border: rgba(212, 175, 55, 0.2);
             --border-subtle: rgba(255, 255, 255, 0.08);
             --text: #f8f7f4;
             --muted: #a6a19a;
             --gold: #d4af37;
             --gold-light: #e5c158;
-            --gold-dark: #b89726;
             --danger: #fca5a5;
             --danger-bg: rgba(153, 27, 27, 0.35);
             --success: #86efac;
@@ -49,27 +47,19 @@
             place-items: center;
             color: var(--text);
             background:
-                radial-gradient(
-                    circle at 15% 15%,
-                    rgba(212, 175, 55, 0.08),
-                    transparent 35%
-                ),
-                radial-gradient(
-                    circle at 85% 85%,
-                    rgba(212, 175, 55, 0.04),
-                    transparent 30%
-                ),
+                radial-gradient(circle at 15% 15%,
+                    rgba(212, 175, 55, 0.08), transparent 35%),
+                radial-gradient(circle at 85% 85%,
+                    rgba(212, 175, 55, 0.04), transparent 30%),
                 var(--bg);
-            font-family: var(--font-sans, "Plus Jakarta Sans", sans-serif);
+            font-family: "Plus Jakarta Sans", sans-serif;
         }
 
-        button,
-        input {
+        button, input {
             font: inherit;
         }
 
-        button,
-        a {
+        button, a {
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -78,6 +68,8 @@
             max-width: 1140px;
             animation: pageEnter 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
+
+        /* HEADER */
 
         .topbar {
             display: flex;
@@ -102,16 +94,20 @@
             place-items: center;
             border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 12px;
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.05));
+            background: linear-gradient(
+                135deg,
+                rgba(212, 175, 55, 0.2),
+                rgba(212, 175, 55, 0.05)
+            );
             color: var(--gold);
-            font-family: var(--font-serif, "Newsreader", serif);
+            font-family: "Newsreader", serif;
             font-size: 22px;
             font-weight: 700;
             box-shadow: 0 4px 16px rgba(212, 175, 55, 0.15);
         }
 
         .brand-name {
-            font-family: var(--font-serif, "Newsreader", serif);
+            font-family: "Newsreader", serif;
             font-size: 24px;
             font-weight: 600;
             letter-spacing: -0.4px;
@@ -129,6 +125,8 @@
             font-weight: 600;
         }
 
+        /* MAIN CARD */
+
         .main-card {
             display: grid;
             grid-template-columns: 1.05fr 0.95fr;
@@ -142,7 +140,8 @@
             -webkit-backdrop-filter: blur(24px);
         }
 
-        /* Classical Library Visual Section */
+        /* VISUAL PANEL */
+
         .visual-panel {
             position: relative;
             isolation: isolate;
@@ -215,12 +214,12 @@
 
         .visual-copy h1 {
             margin: 0;
-            font-family: var(--font-serif, "Newsreader", "Playfair Display", Georgia, serif);
+            font-family: "Newsreader", Georgia, serif;
             font-size: clamp(34px, 3.8vw, 48px);
             font-weight: 500;
             line-height: 1.15;
             letter-spacing: -1px;
-            color: #ffffff;
+            color: #fff;
         }
 
         .visual-copy h1 span {
@@ -249,7 +248,8 @@
             letter-spacing: 1px;
         }
 
-        /* Login Form Section */
+        /* LOGIN PANEL */
+
         .form-panel {
             display: flex;
             flex-direction: column;
@@ -264,16 +264,15 @@
 
         .form-heading .eyebrow {
             margin-bottom: 10px;
-            color: var(--gold);
         }
 
         .form-heading h2 {
             margin: 0;
-            font-family: var(--font-serif, "Newsreader", Georgia, serif);
+            font-family: "Newsreader", Georgia, serif;
             font-size: 30px;
             font-weight: 600;
             letter-spacing: -0.6px;
-            color: #ffffff;
+            color: #fff;
         }
 
         .form-heading p {
@@ -283,7 +282,8 @@
             line-height: 1.6;
         }
 
-        /* Login Mode Switch */
+        /* LOGIN MODE */
+
         .mode-switch {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -320,13 +320,18 @@
         .mode-button.active {
             color: #10141a;
             border-color: var(--gold);
-            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            background: linear-gradient(
+                135deg,
+                var(--gold),
+                var(--gold-light)
+            );
             font-weight: 700;
             box-shadow: 0 4px 14px rgba(212, 175, 55, 0.25);
         }
 
         .mode-button:focus-visible,
         .login-button:focus-visible,
+        .google-button:focus-visible,
         a:focus-visible {
             outline: 2px solid var(--gold);
             outline-offset: 3px;
@@ -342,6 +347,8 @@
             font-size: 12px;
             line-height: 1.5;
         }
+
+        /* MESSAGES */
 
         .message {
             margin: 0 0 18px;
@@ -363,6 +370,8 @@
             border-color: rgba(134, 239, 172, 0.28);
             background: var(--success-bg);
         }
+
+        /* FORM FIELDS */
 
         .field {
             margin-bottom: 18px;
@@ -404,13 +413,70 @@
         }
 
         .field input::placeholder {
-            color: #6d665b;
-        }
+	            color: #6d665b;
+	        }
 
-        .field input:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.14);
-        }
+	 .field input:focus {
+	            border-color: var(--gold);
+        	    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.14);
+          }
+
+	/* PASSWORD VISIBILITY TOGGLE */
+
+	.field input[type="password"],
+	.field input[type="text"] {
+	    padding-right: 48px;
+	}
+
+	.password-toggle {
+ 	   position: absolute;
+	    top: 50%;
+	    right: 12px;
+	    transform: translateY(-50%);
+	    z-index: 5;
+
+	    display: grid;
+	    place-items: center;
+
+	    width: 36px;
+	    height: 36px;
+	    padding: 0;
+
+	    border: none;
+	    border-radius: 6px;
+
+	    background: transparent;
+	    color: var(--gold);
+
+	    font-size: 18px;
+	    cursor: pointer;
+
+	    opacity: 1;
+	    visibility: visible;
+
+	    transition: color 0.2s ease, background 0.2s ease;
+	}
+
+	.input-wrap {
+	    position: relative;
+	    width: 100%;
+	}
+
+	.input-wrap .password-toggle {
+	    display: grid !important;
+	    visibility: visible !important;
+	    opacity: 1 !important;
+	}	
+
+	.password-toggle:hover {
+	    color: var(--gold);
+	    background: rgba(212, 175, 55, 0.1);
+	}
+
+	.password-toggle:focus-visible {
+	    outline: 2px solid var(--gold);
+	    outline-offset: 2px;
+	}
 
         .password-row {
             display: flex;
@@ -429,8 +495,9 @@
             font-size: 11px;
         }
 
+        /* LOGIN BUTTON */
+
         .login-button {
-            position: relative;
             width: 100%;
             min-height: 48px;
             display: flex;
@@ -446,13 +513,12 @@
             font-weight: 700;
             cursor: pointer;
             box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .login-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 28px rgba(212, 175, 55, 0.35);
-            filter: brightness(1.05);
         }
 
         .login-button:active {
@@ -468,6 +534,70 @@
             color: #8c8577;
             font-size: 11px;
         }
+
+        /* GOOGLE SIGN-IN */
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 22px 0;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .divider-text {
+            color: #999;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .google-button {
+            width: 100%;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 13px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .google-button:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.35);
+            color: white;
+            text-decoration: none;
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .google-note {
+            margin-top: 10px;
+            color: #797368;
+            font-size: 10px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        /* FOOTER */
 
         .form-footer {
             margin-top: 26px;
@@ -487,7 +617,6 @@
 
         a:hover {
             color: var(--gold-light);
-            text-decoration: underline;
         }
 
         .footer-links {
@@ -504,11 +633,14 @@
             text-align: center;
         }
 
+        /* ANIMATIONS */
+
         @keyframes pageEnter {
             from {
                 opacity: 0;
                 transform: translateY(14px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -520,11 +652,14 @@
                 opacity: 0.65;
                 transform: translateY(4px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+
+        /* RESPONSIVE DESIGN */
 
         @media (max-width: 840px) {
             body {
@@ -568,6 +703,11 @@
                 font-size: 20px;
             }
 
+            .topbar-note {
+                font-size: 9px;
+                letter-spacing: 1px;
+            }
+
             .visual-panel {
                 min-height: 240px;
                 padding: 22px;
@@ -596,6 +736,24 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+	#togglePassword {
+	    display: block !important;
+	    position: absolute !important;
+	    top: 50% !important;
+	    right: 8px !important;
+	    transform: translateY(-50%) !important;
+	    z-index: 9999 !important;
+	    width: 40px !important;
+	    height: 40px !important;
+	    color: #d4af37 !important;
+	    background: #252b38 !important;
+	    border: 1px solid #d4af37 !important;
+	    opacity: 1 !important;
+	    visibility: visible !important;
+	    cursor: pointer !important;
+	}
+
     </style>
 </head>
 
@@ -603,14 +761,18 @@
 
 <div class="page-shell">
 
+    <!-- HEADER -->
+
     <header class="topbar">
 
         <a class="brand" th:href="@{/}" aria-label="Libra LMS home">
+
             <div class="brand-icon" aria-hidden="true">L</div>
 
             <div class="brand-name">
                 Libra<span>.</span>
             </div>
+
         </a>
 
         <div class="topbar-note">
@@ -619,13 +781,16 @@
 
     </header>
 
+    <!-- MAIN CARD -->
+
     <main class="main-card">
 
-        <!-- Classical Library visual section -->
+        <!-- VISUAL PANEL -->
+
         <section class="visual-panel">
 
             <div class="visual-top">
-                <span class="status-dot"></span>
+                <span class="status-dot" aria-hidden="true"></span>
                 Curated Collection
             </div>
 
@@ -641,7 +806,8 @@
                 </h1>
 
                 <p>
-                    Explore timeless literature, research materials, and track your reading journeys with distinguished elegance.
+                    Explore timeless literature, research materials,
+                    and track your reading journeys with distinguished elegance.
                 </p>
 
             </div>
@@ -653,14 +819,19 @@
 
         </section>
 
-        <!-- Authentication section -->
+        <!-- AUTHENTICATION PANEL -->
+
         <section class="form-panel">
 
             <div class="form-heading">
 
-                <div class="eyebrow">Welcome to Libra</div>
+                <div class="eyebrow">
+                    Welcome to Libra
+                </div>
 
-                <h2 id="formTitle">Welcome back</h2>
+                <h2 id="formTitle">
+                    Welcome back
+                </h2>
 
                 <p id="formSubtitle">
                     Sign in to continue your reading journey.
@@ -668,7 +839,8 @@
 
             </div>
 
-            <!-- Choose the login mode -->
+            <!-- LOGIN MODE SWITCH -->
+
             <div class="mode-switch"
                  role="group"
                  aria-label="Choose account type">
@@ -700,41 +872,57 @@
                aria-live="polite">
 
                 Sign in to browse books and manage your borrowings.
+
             </p>
 
-            <!-- Spring Security error message -->
+            <!-- LOGIN ERROR -->
+
             <div class="message error"
                  th:if="${errorMessage}"
                  th:text="${errorMessage}"
                  role="alert">
             </div>
 
-            <!-- Existing success message -->
+            <!-- GOOGLE AUTHENTICATION ERROR -->
+
+            <div class="message error"
+                 th:if="${param.oauth2error}"
+                 role="alert">
+
+                Google sign-in failed. Please try again or use your email and password.
+
+            </div>
+
+            <!-- LOGIN SUCCESS -->
+
             <div class="message success"
                  th:if="${successMessage}"
                  th:text="${successMessage}"
                  role="status">
             </div>
 
-            <!-- Keep the existing login endpoint and field names -->
+            <!-- EMAIL AND PASSWORD LOGIN -->
+
             <form th:action="@{/login}"
                   method="post"
                   id="loginForm">
 
                 <div class="field">
 
-                    <label for="email">Email address</label>
+                    <label for="email">
+                        Email address
+                    </label>
 
                     <div class="input-wrap">
 
                         <span class="input-icon" aria-hidden="true">✉</span>
 
                         <input id="email"
-                                type="email"
-                                name="email"
-                                placeholder="you@example.com"
-                                autocomplete="username"
-                                required>
+                               type="email"
+                               name="email"
+                               placeholder="you@example.com"
+                               autocomplete="username"
+                               required>
 
                     </div>
 
@@ -744,7 +932,9 @@
 
                     <div class="password-row">
 
-                        <label for="password">Password</label>
+                        <label for="password">
+                            Password
+                        </label>
 
                         <span class="password-note">
                             Keep it private
@@ -762,6 +952,16 @@
                                placeholder="Enter your password"
                                autocomplete="current-password"
                                required>
+			
+			<button type="button"
+			        class="password-toggle"
+			        id="togglePassword"
+			        aria-label="Show password"
+	                        aria-pressed="false">
+
+                            👁
+
+			</button>
 
                     </div>
 
@@ -771,25 +971,86 @@
                         class="login-button"
                         id="loginButton">
 
-                    <span id="loginButtonText">Sign in to your account</span>
+                    <span id="loginButtonText">
+                        Sign in to your account
+                    </span>
+
                     <span aria-hidden="true">→</span>
 
                 </button>
 
                 <div class="secure-note">
+
                     <span aria-hidden="true">🔒</span>
-                    Protected by encrypted enterprise authentication.
+
+                    Protected by encrypted authentication.
+
                 </div>
 
             </form>
 
+            <!-- GOOGLE SIGN-IN DIVIDER -->
+
+            <div class="divider">
+
+                <span class="divider-line"></span>
+
+                <span class="divider-text">
+                    OR CONTINUE WITH
+                </span>
+
+                <span class="divider-line"></span>
+
+            </div>
+
+            <!-- GOOGLE SIGN-IN BUTTON -->
+
+            <a class="google-button"
+               th:href="@{/oauth2/authorization/google}"
+               aria-label="Continue with Google">
+
+                <svg class="google-icon"
+                     viewBox="0 0 48 48"
+                     aria-hidden="true">
+
+                    <path fill="#EA4335"
+                          d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 3.06 13.22l7.98 6.19C12.86 13.72 18.02 9.5 24 9.5z"/>
+
+                    <path fill="#4285F4"
+                          d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.77 7.18l7.73 6C44.4 37.98 46.98 31.8 46.98 24.55z"/>
+
+                    <path fill="#FBBC05"
+                          d="M10.04 28.59A14.4 14.4 0 0 1 9.25 24c0-1.59.27-3.13.76-4.59l-7.98-6.19A23.9 23.9 0 0 0 0 24c0 3.87.93 7.52 2.58 10.78l7.46-6.19z"/>
+
+                    <path fill="#34A853"
+                          d="M24 48c6.48 0 11.93-2.13 15.9-5.8l-7.73-6c-2.14 1.44-4.87 2.3-8.17 2.3-5.98 0-11.14-4.22-12.96-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+
+                </svg>
+
+                Continue with Google
+
+            </a>
+
+            <p class="google-note">
+                Sign in securely using your Google account.
+            </p>
+
+            <!-- FOOTER -->
+
             <div class="form-footer">
 
                 Don't have an account?
-                <a th:href="@{/register}">Create an account</a>
+
+                <a th:href="@{/register}">
+                    Create an account
+                </a>
 
                 <div class="footer-links">
-                    <a th:href="@{/}">← Back to Home</a>
+
+                    <a th:href="@{/}">
+                        ← Back to Home
+                    </a>
+
                 </div>
 
             </div>
@@ -798,13 +1059,16 @@
 
     </main>
 
+    <!-- COPYRIGHT -->
+
     <div class="copyright">
         © 2026 Libra LMS · The digital library, thoughtfully organized.
     </div>
 
 </div>
 
-<!-- Login-mode animation -->
+<!-- LOGIN MODE SCRIPT -->
+
 <script>
     document.addEventListener("DOMContentLoaded", () => {
 
@@ -818,6 +1082,35 @@
 
         const formPanel = document.querySelector(".form-panel");
 
+	// PASSWORD VISIBILITY TOGGLE
+
+	const passwordInput = document.getElementById("password");
+	const togglePassword = document.getElementById("togglePassword");
+
+	if (passwordInput && togglePassword) {
+
+	    togglePassword.addEventListener("click", () => {
+
+	        const isPasswordHidden = passwordInput.type === "password";
+
+	        passwordInput.type = isPasswordHidden ? "text" : "password";
+
+	        togglePassword.textContent = isPasswordHidden ? "🙈" : "👁";
+
+	        togglePassword.setAttribute(
+	            "aria-label",
+	            isPasswordHidden ? "Hide password" : "Show password"
+	        );
+
+        	togglePassword.setAttribute(
+	            "aria-pressed",
+	            String(isPasswordHidden)
+	        );
+
+	    });
+
+	}
+
         function setLoginMode(mode) {
 
             const isLibrarian = mode === "librarian";
@@ -825,8 +1118,15 @@
             memberMode.classList.toggle("active", !isLibrarian);
             librarianMode.classList.toggle("active", isLibrarian);
 
-            memberMode.setAttribute("aria-pressed", String(!isLibrarian));
-            librarianMode.setAttribute("aria-pressed", String(isLibrarian));
+            memberMode.setAttribute(
+                "aria-pressed",
+                String(!isLibrarian)
+            );
+
+            librarianMode.setAttribute(
+                "aria-pressed",
+                String(isLibrarian)
+            );
 
             if (isLibrarian) {
 
@@ -853,15 +1153,17 @@
 
                 loginButtonText.textContent =
                     "Sign in to your account";
+
             }
 
             formPanel.style.animation = "none";
 
-            // Restart transition
+            // Restart animation
             void formPanel.offsetWidth;
 
             formPanel.style.animation =
                 "modeEnter 0.3s ease both";
+
         }
 
         memberMode.addEventListener("click", () => {
@@ -871,6 +1173,7 @@
         librarianMode.addEventListener("click", () => {
             setLoginMode("librarian");
         });
+
     });
 </script>
 

@@ -36,7 +36,8 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            AuthenticationSuccessHandler authenticationSuccessHandler)
+            AuthenticationSuccessHandler authenticationSuccessHandler,
+            GoogleOidcUserService googleOidcUserService)
             throws Exception {
 
         http.authorizeHttpRequests(authorize -> authorize
@@ -47,7 +48,8 @@ public class SecurityConfig {
                         "/css/**", "/js/**", "/images/**"
                 ).permitAll()
 
-                .requestMatchers(org.springframework.http.HttpMethod.POST,
+                .requestMatchers(
+                        org.springframework.http.HttpMethod.POST,
                         "/books/*/borrow",
                         "/borrowings/*/return"
                 ).hasRole("USER")
@@ -61,6 +63,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
         );
 
+        // Existing email/password login
         http.formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
@@ -69,6 +72,16 @@ public class SecurityConfig {
                 .successHandler(authenticationSuccessHandler)
                 .failureUrl("/login?error")
                 .permitAll()
+        );
+
+        // Google OAuth login
+        http.oauth2Login(oauth2 -> oauth2
+                .loginPage("/login")
+                .userInfoEndpoint(userInfo -> userInfo
+                        .oidcUserService(googleOidcUserService)
+                )
+                .successHandler(authenticationSuccessHandler)
+                .failureUrl("/login?oauth2error")
         );
 
         http.logout(logout -> logout
