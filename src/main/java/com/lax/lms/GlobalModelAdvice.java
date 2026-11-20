@@ -22,14 +22,13 @@ public class GlobalModelAdvice {
             Authentication authentication,
             Model model) {
 
-        if (authentication == null
-                || !authentication.isAuthenticated()
-                || authentication.getName() == null
-                || authentication.getName().equals("anonymousUser")) {
+        String email = AuthenticatedEmailResolver.resolve(authentication);
+
+        if (email == null) {
             return;
         }
 
-        userRepository.findByEmailIgnoreCase(authentication.getName())
+        userRepository.findByEmailIgnoreCase(email)
                 .ifPresent(user -> model.addAttribute("user", user));
     }
 }

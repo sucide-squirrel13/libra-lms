@@ -109,7 +109,7 @@ public class BorrowingService {
                         "Only regular users can return books.");
             }
 
-            Borrowing borrowing = borrowingRepository.findById(borrowingId)
+            Borrowing borrowing = borrowingRepository.findByIdForUpdate(borrowingId)
                     .orElseThrow(() ->
                             new IllegalArgumentException(
                                     "Borrowing record not found."));
@@ -124,26 +124,7 @@ public class BorrowingService {
                         "This book has already been returned.");
             }
 
-            // Lock the associated book before changing availability.
-            Book book = bookRepository.findByIdForUpdate(
-                            borrowing.getBook().getId())
-                    .orElseThrow(() ->
-                            new IllegalStateException("Book not found."));
-
-            if (book.getAvailableCopies() < 0
-                    || book.getAvailableCopies() >= book.getQuantity()) {
-
-                throw new IllegalStateException(
-                        "Book availability is inconsistent. Contact the librarian.");
-            }
-
-            borrowing.setReturnDate(LocalDate.now());
-            borrowing.setStatus("RETURNED");
-
-            book.setAvailableCopies(book.getAvailableCopies() + 1);
-
-            borrowingRepository.save(borrowing);
-            bookRepository.save(book);
+            Book book = completeBookReturn(borrowing);
 
             auditService.record(
                     user.getEmail(),
@@ -163,5 +144,65 @@ public class BorrowingService {
 
             throw exception;
         }
+    }
+
+    @Transactional
+    public void returnBookByLibrarian(Long borrowingId, String librarianEmail) {
+
+        try {
+            Borrowing borrowing = borrowingRepository.findByIdForUpdate(borrowingId)
+                    .orElseThrow(() ->
+                            new IllegalArgumentException("Borrowing record not found."));
+
+            if (!"BORROWED".equals(borrowing.getStatus())) {
+                throw new IllegalStateException("This book has already been returned.");
+            }
+
+            Book book = completeBookReturn(borrowing);
+
+            auditService.record(
+                    librarianEmail,
+                    "LIBRARIAN_BOOK_RETURN",
+                    "Returned book ID: " + book.getId()
+                            + "; borrowing ID: " + borrowingId,
+                    "SUCCESS");
+
+        } catch (IllegalArgumentException | IllegalStateException exception) {
+
+            auditService.record(
+                    librarianEmail,
+                    "LIBRARIAN_BOOK_RETURN",
+                    "Borrowing ID: " + borrowingId
+                            + "; reason: " + exception.getMessage(),
+                    "FAILURE");
+
+            throw exception;
+        }
+    }
+
+    private Book completeBookReturn(Borrowing borrowing) {
+
+        // Lock the associated book before changing availability.
+        Book book = bookRepository.findByIdForUpdate(
+                        borrowing.getBook().getId())
+                .orElseThrow(() ->
+                        new IllegalStateException("Book not found."));
+
+        if (book.getAvailableCopies() < 0
+                || book.getAvailableCopies() >= book.getQuantity()) {
+
+            throw new IllegalStateException(
+                    "Book availability is inconsistent. Contact the librarian.");
+        }
+
+        borrowing.setReturnDate(LocalDate.now());
+        borrowing.setStatus("RETURNED");
+
+        book.setAvailableCopies(book.getAvailableCopies() + 1);
+
+        borrowingRepository.save(borrowing);
+        bookRepository.save(book);
+
+        return book;
     }
 }

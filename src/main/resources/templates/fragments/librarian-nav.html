@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<header class="librarian-navbar" th:fragment="librarian-navbar(activePage)">
+    <link rel="stylesheet" th:href="@{/css/librarian-nav.css}">
+
+    <!-- BRAND -->
+    <a th:href="@{/librarian}" class="librarian-brand">
+        <span class="librarian-brand-logo">L</span>
+        <span class="librarian-brand-text">Libra <span class="gold-accent">LMS</span></span>
+    </a>
+
+    <!-- MOBILE MENU TOGGLE -->
+    <button type="button"
+            class="librarian-mobile-toggle"
+            id="librarian-mobile-toggle"
+            aria-label="Toggle navigation"
+            aria-expanded="false"
+            aria-controls="librarian-nav-menu">
+        ☰
+    </button>
+
+    <!-- NAVIGATION MENU -->
+    <nav class="librarian-nav-menu" id="librarian-nav-menu" aria-label="Librarian workspace navigation">
+
+        <!-- DASHBOARD -->
+        <a class="librarian-nav-link"
+           th:classappend="${activePage == 'dashboard'} ? ' active' : ''"
+           th:href="@{/librarian}"
+           data-view="dashboard">
+            <span class="nav-icon" aria-hidden="true">▦</span>
+            <span>Dashboard</span>
+        </a>
+
+        <!-- MANAGE BOOKS -->
+        <a class="librarian-nav-link"
+           th:classappend="${activePage == 'books'} ? ' active' : ''"
+           th:href="@{/librarian#books}"
+           data-view="books">
+            <span class="nav-icon" aria-hidden="true">▤</span>
+            <span>Manage Books</span>
+        </a>
+
+        <!-- BORROWING RECORDS -->
+        <a class="librarian-nav-link"
+           th:classappend="${activePage == 'borrowings'} ? ' active' : ''"
+           th:href="@{/librarian/borrowings}">
+            <span class="nav-icon" aria-hidden="true">⇄</span>
+            <span>Borrowing Records</span>
+        </a>
+
+        <!-- USER MANAGEMENT -->
+        <a class="librarian-nav-link"
+           th:classappend="${activePage == 'users'} ? ' active' : ''"
+           th:href="@{/librarian/users}">
+            <span class="nav-icon" aria-hidden="true">♙</span>
+            <span>User Management</span>
+        </a>
+
+        <!-- AUDIT LOGS -->
+        <a class="librarian-nav-link"
+           th:classappend="${activePage == 'audit-logs'} ? ' active' : ''"
+           th:href="@{/librarian/audit-logs}">
+            <span class="nav-icon" aria-hidden="true">◷</span>
+            <span>Audit Logs</span>
+        </a>
+
+        <!-- SETTINGS -->
+        <a class="librarian-nav-link"
+           th:classappend="${activePage == 'settings'} ? ' active' : ''"
+           th:href="@{/librarian#settings}"
+           data-view="settings">
+            <span class="nav-icon" aria-hidden="true">⚙</span>
+            <span>Settings</span>
+        </a>
+
+    </nav>
+
+    <!-- ACTIONS & PROFILE AREA -->
+    <div class="librarian-actions-area">
+
+        <!-- THEME TOGGLE BUTTON -->
+        <button class="librarian-theme-btn"
+                id="theme-toggle"
+                type="button"
+                aria-label="Toggle color theme">
+            ☀️ Light mode
+        </button>
+
+        <!-- PROFILE AREA -->
+        <div class="librarian-profile-area" id="librarian-profile-area">
+            <button type="button"
+                    class="librarian-profile-trigger"
+                    id="librarian-profile-trigger"
+                    aria-expanded="false"
+                    aria-controls="librarian-profile-menu">
+                <span class="librarian-avatar">
+                    <span th:text="${user != null and user.fullName != null and !user.fullName.isEmpty() ? user.fullName.substring(0, 1).toUpperCase() : 'L'}">L</span>
+                </span>
+                <span class="librarian-profile-name"
+                      th:text="${user != null ? user.fullName : 'Librarian'}">
+                    Librarian
+                </span>
+                <span class="librarian-chevron" aria-hidden="true">⌄</span>
+            </button>
+
+            <!-- PROFILE DROPDOWN MENU -->
+            <div class="librarian-profile-dropdown" id="librarian-profile-menu">
+                <div class="librarian-dropdown-header">
+                    <div class="librarian-avatar large">
+                        <span th:text="${user != null and user.fullName != null and !user.fullName.isEmpty() ? user.fullName.substring(0, 1).toUpperCase() : 'L'}">L</span>
+                    </div>
+                    <div class="librarian-user-info">
+                        <div class="librarian-user-name"
+                             th:text="${user != null ? user.fullName : 'Librarian'}">
+                            Librarian
+                        </div>
+                        <div class="librarian-user-email"
+                             th:text="${user != null ? user.email : 'librarian@libra.lms'}">
+                            librarian@libra.lms
+                        </div>
+                        <span class="librarian-role-badge">LIBRARIAN</span>
+                    </div>
+                </div>
+
+                <div class="librarian-dropdown-divider"></div>
+
+                <div class="librarian-dropdown-links">
+                    <a th:href="@{/librarian}" class="librarian-dropdown-item">
+                        <span aria-hidden="true">▦</span> Librarian Workspace
+                    </a>
+                    <a th:href="@{/books}" class="librarian-dropdown-item">
+                        <span aria-hidden="true">▤</span> Explore Books
+                    </a>
+                    <a th:href="@{/}" class="librarian-dropdown-item">
+                        <span aria-hidden="true">⌂</span> Public Home
+                    </a>
+                </div>
+
+                <div class="librarian-dropdown-divider"></div>
+
+                <!-- LOGOUT -->
+                <form th:action="@{/logout}" method="post" class="librarian-logout-form">
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}">
+                    <button type="submit" class="librarian-logout-button">
+                        <span aria-hidden="true">↪</span> Log Out
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT (loaded once, handles mobile toggle, outside click, theme, and view switching) -->
+    <script th:src="@{/js/librarian-nav.js}" defer></script>
+</header>
+
+</body>
+</html>

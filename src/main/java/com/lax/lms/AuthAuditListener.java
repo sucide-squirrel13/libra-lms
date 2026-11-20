@@ -16,7 +16,12 @@ public class AuthAuditListener {
 
     @EventListener
     public void onLoginSuccess(AuthenticationSuccessEvent event) {
-        String email = event.getAuthentication().getName();
+        String email = AuthenticatedEmailResolver.resolve(event.getAuthentication());
+        if (email == null) {
+            email = event.getAuthentication().getName() != null
+                    ? event.getAuthentication().getName()
+                    : "UNKNOWN";
+        }
 
         auditService.record(
                 email,

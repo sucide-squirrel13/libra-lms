@@ -4,3 +4,5 @@ target
 .vscode
 *.bak
 *.before-fix
+**/application-local.properties
+**/.env*

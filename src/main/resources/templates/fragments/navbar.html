@@ -35,7 +35,10 @@
         <a class="nav-link"
            th:href="${user != null and user.role != null and user.role.toString() == 'LIBRARIAN'}
                     ? @{/librarian}
-                    : (${user != null} ? @{/user/dashboard} : @{/login})">
+                    : (${user != null} ? @{/user/dashboard} : @{/login})"
+           th:text="${user != null and user.role != null and user.role.toString() == 'LIBRARIAN'}
+                    ? 'Librarian Dashboard'
+                    : 'Dashboard'">
             Dashboard
         </a>
 
@@ -168,7 +171,11 @@
                             : @{/user/dashboard}">
 
                     <span aria-hidden="true">⌂</span>
-                    Dashboard
+                    <span th:text="${user.role != null and user.role.toString() == 'LIBRARIAN'}
+                                  ? 'Librarian Dashboard'
+                                  : 'Dashboard'">
+                        Dashboard
+                    </span>
 
                 </a>
 

@@ -2,12 +2,12 @@ package com.lax.lms;
 
 import com.lax.lms.repository.LibraryUserRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,26 +27,42 @@ import java.util.Optional;
 public class ProfileController {
 
     private static final long MAX_IMAGE_SIZE = 3 * 1024 * 1024;
-
-    private final LibraryUserRepository userRepository;
-
-    private final Path uploadDirectory =
+    private static final Path DEFAULT_UPLOAD_DIRECTORY =
             Paths.get("uploads", "profiles").toAbsolutePath().normalize();
 
+    private final LibraryUserRepository userRepository;
+    private Path uploadDirectory;
+
+    @Autowired
     public ProfileController(LibraryUserRepository userRepository) {
+        this(userRepository, DEFAULT_UPLOAD_DIRECTORY);
+    }
+
+    public ProfileController(LibraryUserRepository userRepository, Path uploadDirectory) {
         this.userRepository = userRepository;
+        this.uploadDirectory = uploadDirectory != null
+                ? uploadDirectory.toAbsolutePath().normalize()
+                : DEFAULT_UPLOAD_DIRECTORY;
+    }
+
+    public void setUploadDirectory(Path uploadDirectory) {
+        this.uploadDirectory = uploadDirectory != null
+                ? uploadDirectory.toAbsolutePath().normalize()
+                : DEFAULT_UPLOAD_DIRECTORY;
     }
 
     @GetMapping("/profile/photo")
     public ResponseEntity<byte[]> getProfilePhoto(
-            @AuthenticationPrincipal UserDetails principal) {
+            Authentication authentication) {
 
-        if (principal == null) {
+        String email = AuthenticatedEmailResolver.resolve(authentication);
+
+        if (email == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         var userOptional =
-                userRepository.findByEmailIgnoreCase(principal.getUsername());
+                userRepository.findByEmailIgnoreCase(email);
 
         if (userOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -81,10 +97,12 @@ public class ProfileController {
     @PostMapping("/profile/photo")
     public String uploadProfilePhoto(
             @RequestParam("photo") MultipartFile photo,
-            @AuthenticationPrincipal UserDetails principal,
+            Authentication authentication,
             RedirectAttributes redirectAttributes) {
 
-        if (principal == null) {
+        String email = AuthenticatedEmailResolver.resolve(authentication);
+
+        if (email == null) {
             return "redirect:/login";
         }
 
@@ -133,7 +151,7 @@ public class ProfileController {
             }
 
             Optional<LibraryUser> userOptional =
-                    userRepository.findByEmailIgnoreCase(principal.getUsername());
+                    userRepository.findByEmailIgnoreCase(email);
 
             if (userOptional.isEmpty()) {
                 return "redirect:/login";

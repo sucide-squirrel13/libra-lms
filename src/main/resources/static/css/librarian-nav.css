@@ -1,0 +1,386 @@
+/* ==========================================================================
+   LIBRA LMS — LIBRARIAN SHARED NAVIGATION
+   Charcoal & Gold Visual Identity
+   ========================================================================== */
+
+:root {
+    --lib-nav-bg: #0b1120;
+    --lib-nav-panel: #111b2e;
+    --lib-nav-surface: #141923;
+    --lib-nav-border: rgba(212, 175, 55, 0.25);
+    --lib-nav-border-subtle: rgba(255, 255, 255, 0.08);
+    --lib-nav-gold: #d4af37;
+    --lib-nav-gold-bright: #e2c974;
+    --lib-nav-text: #f8f7f4;
+    --lib-nav-muted: #9ca3af;
+    --lib-nav-danger: #f87171;
+}
+
+.librarian-navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    width: 100%;
+    min-height: 72px;
+    padding: 10px 4%;
+
+    background: rgba(11, 17, 32, 0.95);
+    border-bottom: 1px solid var(--lib-nav-border);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-sizing: border-box;
+}
+
+.librarian-navbar * {
+    box-sizing: border-box;
+}
+
+/* BRAND */
+.librarian-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--lib-nav-text);
+    font-size: 1.25rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease;
+}
+
+.librarian-brand:hover {
+    opacity: 0.92;
+}
+
+.librarian-brand-logo {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--lib-nav-gold), #b89327);
+    color: #0b1120;
+    font-weight: 900;
+    font-size: 1.15rem;
+    box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+}
+
+.librarian-brand-text {
+    letter-spacing: -0.3px;
+}
+
+.librarian-brand-text .gold-accent {
+    color: var(--lib-nav-gold);
+    font-weight: 800;
+}
+
+/* NAVIGATION MENU */
+.librarian-nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.librarian-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 9px;
+    color: var(--lib-nav-muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    white-space: nowrap;
+    background: transparent;
+    cursor: pointer;
+}
+
+.librarian-nav-link:hover,
+.librarian-nav-link:focus-visible {
+    color: var(--lib-nav-text);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    outline: none;
+}
+
+.librarian-nav-link.active {
+    color: var(--lib-nav-gold);
+    background: rgba(212, 175, 55, 0.12);
+    border-color: rgba(212, 175, 55, 0.35);
+    font-weight: 700;
+}
+
+.librarian-nav-link .nav-icon {
+    font-size: 0.95rem;
+    opacity: 0.85;
+}
+
+.librarian-nav-link.active .nav-icon {
+    opacity: 1;
+}
+
+/* ACTIONS AREA */
+.librarian-actions-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+
+/* PROFILE TRIGGER */
+.librarian-profile-area {
+    position: relative;
+}
+
+.librarian-profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 4px 12px 4px 5px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--lib-nav-border-subtle);
+    border-radius: 12px;
+    color: var(--lib-nav-text);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.librarian-profile-trigger:hover,
+.librarian-profile-trigger:focus-visible,
+.librarian-profile-trigger[aria-expanded="true"] {
+    background: rgba(212, 175, 55, 0.08);
+    border-color: var(--lib-nav-border);
+    outline: none;
+}
+
+.librarian-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--lib-nav-gold), #b89327);
+    color: #0b1120;
+    font-weight: 800;
+    font-size: 0.92rem;
+    flex-shrink: 0;
+}
+
+.librarian-avatar.large {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+}
+
+.librarian-profile-name {
+    font-size: 0.86rem;
+    font-weight: 600;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.librarian-chevron {
+    font-size: 0.75rem;
+    color: var(--lib-nav-muted);
+    transition: transform 0.18s ease;
+}
+
+.librarian-profile-trigger[aria-expanded="true"] .librarian-chevron {
+    transform: rotate(180deg);
+}
+
+/* DROPDOWN MENU */
+.librarian-profile-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 270px;
+    padding: 14px;
+    background: var(--lib-nav-surface);
+    border: 1px solid var(--lib-nav-border);
+    border-radius: 14px;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75);
+    z-index: 10000;
+    display: none;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.librarian-profile-dropdown.open {
+    display: block !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+.librarian-dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+}
+
+.librarian-user-info {
+    overflow: hidden;
+    min-width: 0;
+}
+
+.librarian-user-name {
+    font-weight: 700;
+    color: var(--lib-nav-text);
+    font-size: 0.92rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.librarian-user-email {
+    font-size: 0.76rem;
+    color: var(--lib-nav-muted);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-top: 1px;
+}
+
+.librarian-role-badge {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--lib-nav-gold);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.librarian-dropdown-divider {
+    height: 1px;
+    background: var(--lib-nav-border-subtle);
+    margin: 6px 0;
+}
+
+.librarian-dropdown-links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px 0;
+}
+
+.librarian-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: #d1cdc7;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.librarian-dropdown-item:hover {
+    background: rgba(212, 175, 55, 0.08);
+    color: var(--lib-nav-gold);
+}
+
+.librarian-logout-form {
+    margin: 0;
+    padding-top: 4px;
+}
+
+.librarian-logout-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.22);
+    color: #fca5a5;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.librarian-logout-button:hover {
+    background: rgba(248, 113, 113, 0.16);
+    border-color: rgba(248, 113, 113, 0.35);
+}
+
+/* MOBILE TOGGLE BUTTON */
+.librarian-mobile-toggle {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: var(--lib-nav-gold);
+    font-size: 1.2rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+}
+
+/* RESPONSIVE BREAKPOINTS */
+@media (max-width: 992px) {
+    .librarian-mobile-toggle {
+        display: flex;
+    }
+
+    .librarian-nav-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 14px 18px 18px;
+        background: #0e1422;
+        border-bottom: 1px solid var(--lib-nav-border);
+        box-shadow: 0 16px 30px rgba(0, 0, 0, 0.6);
+        gap: 6px;
+    }
+
+    .librarian-nav-menu.mobile-open {
+        display: flex !important;
+    }
+
+    .librarian-nav-link {
+        width: 100%;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+
+    .librarian-profile-name {
+        display: none;
+    }
+}

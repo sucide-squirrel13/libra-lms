@@ -474,7 +474,7 @@
 
                     <!-- Active Loan Records -->
                     <tr th:each="record : ${activeBorrowings}"
-                        th:attr="data-status=${record.dueDate != null and record.dueDate.isBefore(T(java.time.LocalDate).now()) ? 'overdue' : 'active'}">
+                        th:attr="data-status=${record.dueDate != null and record.dueDate.isBefore(today) ? 'overdue' : 'active'}">
 
                         <td>
                             <div class="table-book-col">
@@ -514,8 +514,8 @@
 
                         <td>
                             <span class="badge"
-                                  th:classappend="${record.dueDate != null and record.dueDate.isBefore(T(java.time.LocalDate).now()) ? ' badge-danger' : ' badge-gold'}"
-                                  th:text="${record.dueDate != null and record.dueDate.isBefore(T(java.time.LocalDate).now()) ? '⚠ Overdue' : '● Active Loan'}">
+                                  th:classappend="${record.dueDate != null and record.dueDate.isBefore(today) ? ' badge-danger' : ' badge-gold'}"
+                                  th:text="${record.dueDate != null and record.dueDate.isBefore(today) ? '⚠ Overdue' : '● Active Loan'}">
                                 Active Loan
                             </span>
                         </td>

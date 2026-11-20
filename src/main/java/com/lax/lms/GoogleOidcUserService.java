@@ -48,7 +48,10 @@ public class GoogleOidcUserService extends OidcUserService {
             throws OAuth2AuthenticationException {
 
         OidcUser googleUser = super.loadUser(userRequest);
+        return processOidcUser(googleUser);
+    }
 
+    OidcUser processOidcUser(OidcUser googleUser) {
         String email = googleUser.getAttribute("email");
 
         Boolean emailVerified =
@@ -65,44 +68,53 @@ public class GoogleOidcUserService extends OidcUserService {
 
         String finalEmail = email;
 
-        boolean isLibrarian = LIBRARIAN_EMAILS.contains(email);
+        java.util.Optional<LibraryUser> existingUser =
+                userRepository.findByEmailIgnoreCase(email);
 
-        String assignedRole = isLibrarian
-                ? "LIBRARIAN"
-                : "USER";
+        LibraryUser libraryUser;
+        String assignedRole;
 
-        LibraryUser libraryUser = userRepository
-                .findByEmailIgnoreCase(email)
-                .orElseGet(() -> {
+        if (existingUser.isPresent()) {
+            libraryUser = existingUser.get();
+            // Existing database users retain their database-assigned role
+            if (libraryUser.getRole() != null && !libraryUser.getRole().isBlank()) {
+                assignedRole = libraryUser.getRole();
+            } else {
+                assignedRole = LIBRARIAN_EMAILS.contains(email) ? "LIBRARIAN" : "USER";
+                libraryUser.setRole(assignedRole);
+            }
+        } else {
+            // New Google users receive the intended default role
+            boolean isLibrarian = LIBRARIAN_EMAILS.contains(email);
+            assignedRole = isLibrarian ? "LIBRARIAN" : "USER";
 
-                    LibraryUser newUser = new LibraryUser();
+            LibraryUser newUser = new LibraryUser();
 
-                    String fullName = googleUser.getAttribute("name");
+            String fullName = googleUser.getAttribute("name");
 
-                    if (fullName == null || fullName.isBlank()) {
-                        fullName = finalEmail;
-                    }
+            if (fullName == null || fullName.isBlank()) {
+                fullName = finalEmail;
+            }
 
-                    newUser.setFullName(
-                            fullName.substring(
-                                    0, Math.min(fullName.length(), 100)
-                            )
-                    );
+            newUser.setFullName(
+                    fullName.substring(
+                            0, Math.min(fullName.length(), 100)
+                    )
+            );
 
-                    newUser.setEmail(finalEmail);
+            newUser.setEmail(finalEmail);
 
-                    // Google-only account:
-                    // Generate an unguessable password.
-                    newUser.setPassword(
-                            passwordEncoder.encode(
-                                    UUID.randomUUID().toString()
-                            )
-                    );
+            // Google-only account:
+            // Generate an unguessable password.
+            newUser.setPassword(
+                    passwordEncoder.encode(
+                            UUID.randomUUID().toString()
+                    )
+            );
 
-                    return newUser;
-                });
-
-        libraryUser.setRole(assignedRole);
+            newUser.setRole(assignedRole);
+            libraryUser = newUser;
+        }
 
         userRepository.save(libraryUser);
 

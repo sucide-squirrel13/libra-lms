@@ -42,8 +42,14 @@ public class BorrowingController {
                 throw new IllegalStateException("You must be logged in to borrow books.");
             }
 
+            String email = AuthenticatedEmailResolver.resolve(authentication);
+
+            if (email == null) {
+                throw new IllegalStateException("User account not found.");
+            }
+
             LibraryUser user = userRepository
-                    .findByEmailIgnoreCase(authentication.getName())
+                    .findByEmailIgnoreCase(email)
                     .orElseThrow(() ->
                             new IllegalStateException("User account not found."));
 
@@ -76,8 +82,14 @@ public class BorrowingController {
                 throw new IllegalStateException("You must be logged in to return books.");
             }
 
+            String email = AuthenticatedEmailResolver.resolve(authentication);
+
+            if (email == null) {
+                throw new IllegalStateException("User account not found.");
+            }
+
             LibraryUser user = userRepository
-                    .findByEmailIgnoreCase(authentication.getName())
+                    .findByEmailIgnoreCase(email)
                     .orElseThrow(() ->
                             new IllegalStateException("User account not found."));
 

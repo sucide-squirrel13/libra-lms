@@ -153,7 +153,7 @@ class BorrowingServiceSecurityTest {
         borrowing.setBorrowDate(LocalDate.now().minusDays(3));
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(regularUser));
-        when(borrowingRepository.findById(100L)).thenReturn(Optional.of(borrowing));
+        when(borrowingRepository.findByIdForUpdate(100L)).thenReturn(Optional.of(borrowing));
         when(bookRepository.findByIdForUpdate(testBook.getId())).thenReturn(Optional.of(testBook));
 
         borrowingService.returnBook(100L, 1L);
@@ -176,7 +176,7 @@ class BorrowingServiceSecurityTest {
                 .hasMessageContaining("Only regular users can return books");
 
         assertThat(testBook.getAvailableCopies()).isEqualTo(5);
-        verify(borrowingRepository, never()).findById(anyLong());
+        verify(borrowingRepository, never()).findByIdForUpdate(anyLong());
         verify(borrowingRepository, never()).save(any());
         verify(bookRepository, never()).save(any());
         verify(auditService).record(eq("librarian@example.com"), eq("BOOK_RETURN"),
@@ -194,7 +194,7 @@ class BorrowingServiceSecurityTest {
         borrowing.setBorrowDate(LocalDate.now().minusDays(2));
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(regularUser));
-        when(borrowingRepository.findById(100L)).thenReturn(Optional.of(borrowing));
+        when(borrowingRepository.findByIdForUpdate(100L)).thenReturn(Optional.of(borrowing));
 
         assertThatThrownBy(() -> borrowingService.returnBook(100L, 1L))
                 .isInstanceOf(IllegalStateException.class)
@@ -223,7 +223,7 @@ class BorrowingServiceSecurityTest {
         borrowing.setReturnDate(previousReturnDate);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(regularUser));
-        when(borrowingRepository.findById(100L)).thenReturn(Optional.of(borrowing));
+        when(borrowingRepository.findByIdForUpdate(100L)).thenReturn(Optional.of(borrowing));
 
         assertThatThrownBy(() -> borrowingService.returnBook(100L, 1L))
                 .isInstanceOf(IllegalStateException.class)
@@ -250,7 +250,7 @@ class BorrowingServiceSecurityTest {
         borrowing.setBorrowDate(LocalDate.now().minusDays(3));
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(regularUser));
-        when(borrowingRepository.findById(100L)).thenReturn(Optional.of(borrowing));
+        when(borrowingRepository.findByIdForUpdate(100L)).thenReturn(Optional.of(borrowing));
         when(bookRepository.findByIdForUpdate(testBook.getId())).thenReturn(Optional.of(testBook));
 
         assertThatThrownBy(() -> borrowingService.returnBook(100L, 1L))
@@ -263,6 +263,100 @@ class BorrowingServiceSecurityTest {
         verify(borrowingRepository, never()).save(any());
         verify(bookRepository, never()).save(any());
         verify(auditService).record(eq("reader@example.com"), eq("BOOK_RETURN"),
+                contains("inconsistent"), eq("FAILURE"));
+    }
+
+    @Test
+    @DisplayName("returnBookByLibrarian succeeds for BORROWED record, updates status, sets returnDate, increments copies, and records SUCCESS audit")
+    void returnBookByLibrarian_whenBorrowed_succeeds() {
+        testBook.setAvailableCopies(4);
+        Borrowing borrowing = new Borrowing();
+        borrowing.setUser(regularUser);
+        borrowing.setBook(testBook);
+        borrowing.setStatus("BORROWED");
+        borrowing.setBorrowDate(LocalDate.now().minusDays(3));
+
+        when(borrowingRepository.findByIdForUpdate(100L)).thenReturn(Optional.of(borrowing));
+        when(bookRepository.findByIdForUpdate(testBook.getId())).thenReturn(Optional.of(testBook));
+
+        borrowingService.returnBookByLibrarian(100L, "librarian@example.com");
+
+        assertThat(borrowing.getStatus()).isEqualTo("RETURNED");
+        assertThat(borrowing.getReturnDate()).isEqualTo(LocalDate.now());
+        assertThat(testBook.getAvailableCopies()).isEqualTo(5);
+        verify(borrowingRepository).save(borrowing);
+        verify(bookRepository).save(testBook);
+        verify(auditService).record(eq("librarian@example.com"), eq("LIBRARIAN_BOOK_RETURN"),
+                contains("Returned book ID: 10; borrowing ID: 100"), eq("SUCCESS"));
+    }
+
+    @Test
+    @DisplayName("returnBookByLibrarian throws IllegalStateException when borrowing record is already RETURNED")
+    void returnBookByLibrarian_whenAlreadyReturned_throwsAndAuditsFailure() {
+        testBook.setAvailableCopies(5);
+        LocalDate previousReturnDate = LocalDate.now().minusDays(1);
+        Borrowing borrowing = new Borrowing();
+        borrowing.setUser(regularUser);
+        borrowing.setBook(testBook);
+        borrowing.setStatus("RETURNED");
+        borrowing.setBorrowDate(LocalDate.now().minusDays(10));
+        borrowing.setReturnDate(previousReturnDate);
+
+        when(borrowingRepository.findByIdForUpdate(100L)).thenReturn(Optional.of(borrowing));
+
+        assertThatThrownBy(() -> borrowingService.returnBookByLibrarian(100L, "librarian@example.com"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("already been returned");
+
+        assertThat(borrowing.getStatus()).isEqualTo("RETURNED");
+        assertThat(borrowing.getReturnDate()).isEqualTo(previousReturnDate);
+        assertThat(testBook.getAvailableCopies()).isEqualTo(5);
+        verify(bookRepository, never()).findByIdForUpdate(anyLong());
+        verify(borrowingRepository, never()).save(any());
+        verify(bookRepository, never()).save(any());
+        verify(auditService).record(eq("librarian@example.com"), eq("LIBRARIAN_BOOK_RETURN"),
+                contains("already been returned"), eq("FAILURE"));
+    }
+
+    @Test
+    @DisplayName("returnBookByLibrarian throws IllegalArgumentException when borrowing record is not found")
+    void returnBookByLibrarian_whenBorrowingNotFound_throwsAndAuditsFailure() {
+        when(borrowingRepository.findByIdForUpdate(999L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> borrowingService.returnBookByLibrarian(999L, "librarian@example.com"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Borrowing record not found");
+
+        verify(bookRepository, never()).findByIdForUpdate(anyLong());
+        verify(borrowingRepository, never()).save(any());
+        verify(bookRepository, never()).save(any());
+        verify(auditService).record(eq("librarian@example.com"), eq("LIBRARIAN_BOOK_RETURN"),
+                contains("Borrowing record not found"), eq("FAILURE"));
+    }
+
+    @Test
+    @DisplayName("returnBookByLibrarian throws IllegalStateException when availableCopies is inconsistent")
+    void returnBookByLibrarian_whenAvailabilityInconsistent_throwsAndAuditsFailure() {
+        testBook.setAvailableCopies(5); // equal to quantity 5
+        Borrowing borrowing = new Borrowing();
+        borrowing.setUser(regularUser);
+        borrowing.setBook(testBook);
+        borrowing.setStatus("BORROWED");
+        borrowing.setBorrowDate(LocalDate.now().minusDays(3));
+
+        when(borrowingRepository.findByIdForUpdate(100L)).thenReturn(Optional.of(borrowing));
+        when(bookRepository.findByIdForUpdate(testBook.getId())).thenReturn(Optional.of(testBook));
+
+        assertThatThrownBy(() -> borrowingService.returnBookByLibrarian(100L, "librarian@example.com"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("availability is inconsistent");
+
+        assertThat(borrowing.getStatus()).isEqualTo("BORROWED");
+        assertThat(borrowing.getReturnDate()).isNull();
+        assertThat(testBook.getAvailableCopies()).isEqualTo(5);
+        verify(borrowingRepository, never()).save(any());
+        verify(bookRepository, never()).save(any());
+        verify(auditService).record(eq("librarian@example.com"), eq("LIBRARIAN_BOOK_RETURN"),
                 contains("inconsistent"), eq("FAILURE"));
     }
 }

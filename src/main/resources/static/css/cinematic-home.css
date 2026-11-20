@@ -1,0 +1,1099 @@
+/* ==========================================================================
+   LIBRA LMS — CINEMATIC HOME: "BEYOND THE PAGES"
+   Dark Academia · Modern Luxury · Editorial Typography · Cinematic Architecture
+   ========================================================================== */
+
+:root {
+    --cinematic-canvas: #070a10;
+    --cinematic-surface: #0e131d;
+    --cinematic-surface-elevated: #141b29;
+    --cinematic-surface-card: #182133;
+    --cinematic-surface-hover: #1f2a40;
+    
+    --cinematic-gold: #d4af37;
+    --cinematic-gold-bright: #ebd27a;
+    --cinematic-gold-deep: #a88426;
+    --cinematic-gold-foil: linear-gradient(135deg, #d4af37 0%, #ebd27a 50%, #b38b25 100%);
+    --cinematic-bronze: #c59b6d;
+    
+    --cinematic-text-main: #f8f7f4;
+    --cinematic-text-secondary: #c9c5bd;
+    --cinematic-text-muted: #8b8882;
+    --cinematic-text-dim: #5c5953;
+    
+    --cinematic-border: rgba(212, 175, 55, 0.22);
+    --cinematic-border-subtle: rgba(255, 255, 255, 0.07);
+    --cinematic-border-bright: rgba(212, 175, 55, 0.55);
+    
+    --cinematic-font-serif: "Newsreader", "Playfair Display", Georgia, serif;
+    --cinematic-font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    --cinematic-font-mono: "JetBrains Mono", monospace;
+    
+    --cinematic-radius-sm: 8px;
+    --cinematic-radius-md: 14px;
+    --cinematic-radius-lg: 20px;
+    --cinematic-radius-xl: 28px;
+    
+    --cinematic-shadow-card: 0 16px 40px -10px rgba(0, 0, 0, 0.65);
+    --cinematic-shadow-gold: 0 8px 32px rgba(212, 175, 55, 0.18);
+    --cinematic-shadow-hero: 0 30px 80px rgba(0, 0, 0, 0.85);
+}
+
+/* ==========================================================================
+   LENIS SMOOTH SCROLL NORMALIZATION (Official Lenis CSS)
+   Overrides native scroll-behavior: smooth to prevent frame-by-frame jitter,
+   guarantees natural document heights, and stabilizes ScrollTrigger pinning.
+   ========================================================================== */
+html.lenis,
+html.lenis body {
+    height: auto;
+}
+
+html.lenis,
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+    pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   BASE CANVAS & ATMOSPHERIC LIGHTING
+   -------------------------------------------------------------------------- */
+.cinematic-body {
+    background-color: var(--cinematic-canvas);
+    color: var(--cinematic-text-main);
+    font-family: var(--cinematic-font-sans);
+    line-height: 1.65;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.cinematic-glow-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.glow-orb-top {
+    position: absolute;
+    top: -150px;
+    left: 20%;
+    width: 650px;
+    height: 650px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0) 70%);
+    filter: blur(60px);
+}
+
+.glow-orb-right {
+    position: absolute;
+    top: 35%;
+    right: -100px;
+    width: 550px;
+    height: 550px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(197, 155, 109, 0.06) 0%, rgba(197, 155, 109, 0) 70%);
+    filter: blur(80px);
+}
+
+.glow-orb-bottom {
+    position: absolute;
+    bottom: 5%;
+    left: 10%;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.06) 0%, rgba(212, 175, 55, 0) 70%);
+    filter: blur(70px);
+}
+
+/* Container */
+.cinematic-container {
+    width: min(1320px, 92%);
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   1. HERO SECTION: CINEMATIC ARCHITECTURE & EDITORIAL INTRO
+   -------------------------------------------------------------------------- */
+.cinematic-hero {
+    position: relative;
+    min-height: 88vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 0 60px;
+    border-bottom: 1px solid var(--cinematic-border-subtle);
+    background-image: 
+        linear-gradient(180deg, rgba(7, 10, 16, 0.72) 0%, rgba(7, 10, 16, 0.94) 80%, var(--cinematic-canvas) 100%),
+        radial-gradient(ellipse at center, rgba(7, 10, 16, 0.4) 0%, rgba(7, 10, 16, 0.95) 100%),
+        url('/images/login-library.jpg');
+    background-size: cover;
+    background-position: center 30%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.cinematic-hero-content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 16px;
+    position: relative;
+}
+
+/* Architectural Eyebrow */
+.cinematic-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 18px;
+    border-radius: 9999px;
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px solid var(--cinematic-border);
+    color: var(--cinematic-gold);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
+}
+
+.cinematic-eyebrow::before,
+.cinematic-eyebrow::after {
+    content: "✦";
+    font-size: 0.65rem;
+    color: var(--cinematic-gold-bright);
+}
+
+/* Hero Headline */
+.cinematic-hero-title {
+    font-family: var(--cinematic-font-serif);
+    font-size: clamp(2.6rem, 5.8vw, 4.6rem);
+    font-weight: 400;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    color: var(--cinematic-text-main);
+    margin: 0 0 20px;
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.85);
+}
+
+.cinematic-hero-title .serif-italic-gold {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--cinematic-gold);
+    background: var(--cinematic-gold-foil);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+.cinematic-hero-sub {
+    font-size: clamp(1.02rem, 1.8vw, 1.18rem);
+    color: var(--cinematic-text-secondary);
+    max-width: 680px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+    font-weight: 400;
+}
+
+/* Architectural Search Form */
+.cinematic-search-bar {
+    display: flex;
+    align-items: center;
+    max-width: 620px;
+    margin: 0 auto 30px;
+    padding: 6px 8px 6px 22px;
+    background: rgba(14, 19, 29, 0.88);
+    border: 1px solid var(--cinematic-border);
+    border-radius: var(--cinematic-radius-md);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), inset 0 2px 8px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+}
+
+.cinematic-search-bar:focus-within {
+    border-color: var(--cinematic-gold);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 0 3px rgba(212, 175, 55, 0.2);
+    transform: translateY(-2px);
+}
+
+.cinematic-search-icon {
+    font-size: 1.1rem;
+    color: var(--cinematic-gold);
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.cinematic-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--cinematic-text-main);
+    font-family: inherit;
+    font-size: 0.96rem;
+    min-width: 0;
+}
+
+.cinematic-search-input::placeholder {
+    color: var(--cinematic-text-muted);
+}
+
+.cinematic-search-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    background: var(--cinematic-gold-foil);
+    color: #090d14;
+    border: none;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 750;
+    cursor: pointer;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    flex-shrink: 0;
+}
+
+.cinematic-search-btn:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+/* Quick Anchor Pills */
+.cinematic-hero-pills {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+}
+
+.cinematic-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--cinematic-border-subtle);
+    color: var(--cinematic-text-secondary);
+    text-decoration: none;
+    font-size: 0.84rem;
+    font-weight: 600;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.cinematic-pill:hover {
+    background: rgba(212, 175, 55, 0.12);
+    border-color: var(--cinematic-border);
+    color: var(--cinematic-gold-bright);
+    transform: translateY(-2px);
+}
+
+/* Telemetry Strip */
+.cinematic-telemetry {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    padding: 24px 30px;
+    background: rgba(14, 19, 29, 0.75);
+    border: 1px solid var(--cinematic-border-subtle);
+    border-radius: var(--cinematic-radius-lg);
+    box-shadow: var(--cinematic-shadow-card);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    text-align: left;
+}
+
+.telemetry-item {
+    border-right: 1px solid var(--cinematic-border-subtle);
+    padding-right: 16px;
+}
+
+.telemetry-item:last-child {
+    border-right: none;
+    padding-right: 0;
+}
+
+.telemetry-val {
+    font-family: var(--cinematic-font-serif);
+    font-size: 1.9rem;
+    font-weight: 500;
+    color: var(--cinematic-gold);
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.telemetry-label {
+    font-size: 0.76rem;
+    color: var(--cinematic-text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   2. EDITORIAL INTRODUCTION: SANCTUARY OF INTELLECT
+   -------------------------------------------------------------------------- */
+.editorial-intro-section {
+    padding: 90px 0;
+    border-bottom: 1px solid var(--cinematic-border-subtle);
+}
+
+.editorial-intro-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.editorial-quote-box {
+    position: relative;
+    padding-left: 28px;
+    border-left: 2px solid var(--cinematic-gold);
+}
+
+.editorial-quote-mark {
+    position: absolute;
+    top: -24px;
+    left: 22px;
+    font-family: var(--cinematic-font-serif);
+    font-size: 4rem;
+    color: rgba(212, 175, 55, 0.18);
+    line-height: 1;
+    pointer-events: none;
+}
+
+.editorial-quote-text {
+    font-family: var(--cinematic-font-serif);
+    font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+    font-style: italic;
+    color: var(--cinematic-text-main);
+    line-height: 1.4;
+    margin-bottom: 16px;
+}
+
+.editorial-quote-author {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--cinematic-gold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.editorial-manifesto {
+    background: var(--cinematic-surface-elevated);
+    border: 1px solid var(--cinematic-border-subtle);
+    border-radius: var(--cinematic-radius-lg);
+    padding: 34px;
+    box-shadow: var(--cinematic-shadow-card);
+}
+
+.editorial-manifesto h3 {
+    font-family: var(--cinematic-font-serif);
+    font-size: 1.4rem;
+    color: var(--cinematic-text-main);
+    margin-bottom: 12px;
+}
+
+.editorial-manifesto p {
+    font-size: 0.92rem;
+    color: var(--cinematic-text-secondary);
+    line-height: 1.7;
+    margin-bottom: 18px;
+}
+
+.seal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cinematic-gold);
+    padding: 4px 10px;
+    border: 1px solid var(--cinematic-border);
+    border-radius: 6px;
+    background: rgba(212, 175, 55, 0.06);
+}
+
+/* --------------------------------------------------------------------------
+   3. CURATED READING EXHIBITION (3D BOOK SHOWCASE)
+   -------------------------------------------------------------------------- */
+.exhibition-section {
+    padding: 90px 0;
+    border-bottom: 1px solid var(--cinematic-border-subtle);
+}
+
+.section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.section-tag {
+    font-size: 0.76rem;
+    color: var(--cinematic-gold);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.section-title {
+    font-family: var(--cinematic-font-serif);
+    font-size: clamp(1.9rem, 3.2vw, 2.5rem);
+    color: var(--cinematic-text-main);
+    margin: 0;
+    font-weight: 500;
+}
+
+.section-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--cinematic-gold);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 700;
+    transition: color 0.18s ease, transform 0.18s ease;
+}
+
+.section-link:hover {
+    color: var(--cinematic-gold-bright);
+    transform: translateX(3px);
+}
+
+.exhibition-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+/* 3D Physical Book Card */
+.book-showcase-card {
+    position: relative;
+    background: var(--cinematic-surface-elevated);
+    border: 1px solid var(--cinematic-border-subtle);
+    border-radius: var(--cinematic-radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--cinematic-shadow-card);
+    transition: transform 0.28s var(--ease-editorial, cubic-bezier(0.16, 1, 0.3, 1)),
+                border-color 0.28s ease,
+                box-shadow 0.28s ease;
+    perspective: 1000px;
+}
+
+.book-showcase-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--cinematic-border-bright);
+    box-shadow: var(--cinematic-shadow-hero), var(--cinematic-shadow-gold);
+}
+
+.book-cover-3d {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    border-radius: var(--cinematic-radius-sm);
+    background: linear-gradient(135deg, #1b2438 0%, #101623 100%);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6), 4px 6px 16px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+}
+
+.book-showcase-card:hover .book-cover-3d {
+    transform: rotateY(-6deg) rotateX(3deg) scale(1.02);
+}
+
+/* Spine shadow emulation */
+.book-cover-3d::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 12px;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.6) 0%, rgba(212, 175, 55, 0.15) 60%, transparent 100%);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.book-icon-center {
+    font-size: 2.8rem;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
+}
+
+.book-meta-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.book-category-tag {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cinematic-gold);
+    background: rgba(212, 175, 55, 0.12);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(212, 175, 55, 0.24);
+}
+
+.book-title-heading {
+    font-family: var(--cinematic-font-serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--cinematic-text-main);
+    line-height: 1.35;
+    margin: 0 0 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.book-author-line {
+    font-size: 0.82rem;
+    color: var(--cinematic-text-muted);
+    margin-bottom: 16px;
+}
+
+.book-footer-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid var(--cinematic-border-subtle);
+}
+
+.availability-pill {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #4ade80;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.availability-pill::before {
+    content: "●";
+    font-size: 0.65rem;
+}
+
+.btn-borrow-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid var(--cinematic-border);
+    color: var(--cinematic-gold-bright);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.btn-borrow-link:hover {
+    background: var(--cinematic-gold);
+    color: #0b1120;
+    border-color: var(--cinematic-gold);
+}
+
+/* --------------------------------------------------------------------------
+   4. INTERACTIVE DISCOVERY SECTION (DISCIPLINE CURATIONS)
+   -------------------------------------------------------------------------- */
+.discovery-section {
+    padding: 90px 0;
+    border-bottom: 1px solid var(--cinematic-border-subtle);
+}
+
+.discovery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.discipline-card {
+    background: var(--cinematic-surface-elevated);
+    border: 1px solid var(--cinematic-border-subtle);
+    border-radius: var(--cinematic-radius-lg);
+    padding: 30px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 200px;
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.discipline-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--cinematic-border);
+    box-shadow: var(--cinematic-shadow-card);
+}
+
+.discipline-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px solid var(--cinematic-border);
+    color: var(--cinematic-gold);
+    display: grid;
+    place-items: center;
+    font-size: 1.3rem;
+    margin-bottom: 18px;
+}
+
+.discipline-title {
+    font-family: var(--cinematic-font-serif);
+    font-size: 1.3rem;
+    color: var(--cinematic-text-main);
+    margin: 0 0 6px;
+    font-weight: 600;
+}
+
+.discipline-desc {
+    font-size: 0.85rem;
+    color: var(--cinematic-text-muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.discipline-explore-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--cinematic-gold);
+}
+
+/* --------------------------------------------------------------------------
+   5. IMMERSIVE STORYTELLING SECTION (THE THREE PILLARS)
+   -------------------------------------------------------------------------- */
+.storytelling-section {
+    padding: 100px 0;
+    border-bottom: 1px solid var(--cinematic-border-subtle);
+    position: relative;
+}
+
+.storytelling-pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 48px;
+}
+
+.story-pillar-card {
+    position: relative;
+    background: linear-gradient(180deg, var(--cinematic-surface-elevated) 0%, rgba(14, 19, 29, 0.6) 100%);
+    border: 1px solid var(--cinematic-border-subtle);
+    border-radius: var(--cinematic-radius-lg);
+    padding: 38px 30px;
+    box-shadow: var(--cinematic-shadow-card);
+    transition: transform 0.24s ease, border-color 0.24s ease;
+}
+
+.story-pillar-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--cinematic-border);
+}
+
+.pillar-number {
+    font-family: var(--cinematic-font-serif);
+    font-size: 2.4rem;
+    font-weight: 300;
+    color: rgba(212, 175, 55, 0.35);
+    line-height: 1;
+    margin-bottom: 16px;
+}
+
+.story-pillar-card h3 {
+    font-family: var(--cinematic-font-serif);
+    font-size: 1.35rem;
+    color: var(--cinematic-text-main);
+    margin: 0 0 10px;
+    font-weight: 600;
+}
+
+.story-pillar-card p {
+    font-size: 0.88rem;
+    color: var(--cinematic-text-secondary);
+    line-height: 1.7;
+}
+
+/* --------------------------------------------------------------------------
+   6. PRIVILEGES OF MEMBERSHIP (FEATURES PRESENTATION)
+   -------------------------------------------------------------------------- */
+.features-section {
+    padding: 90px 0;
+    border-bottom: 1px solid var(--cinematic-border-subtle);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px;
+}
+
+.feature-arch-card {
+    background: var(--cinematic-surface-elevated);
+    border: 1px solid var(--cinematic-border-subtle);
+    border-radius: var(--cinematic-radius-lg);
+    padding: 32px;
+    box-shadow: var(--cinematic-shadow-card);
+}
+
+.feature-arch-card .f-icon {
+    font-size: 1.6rem;
+    margin-bottom: 16px;
+    display: inline-block;
+}
+
+.feature-arch-card h3 {
+    font-family: var(--cinematic-font-serif);
+    font-size: 1.25rem;
+    color: var(--cinematic-text-main);
+    margin-bottom: 8px;
+}
+
+.feature-arch-card p {
+    font-size: 0.88rem;
+    color: var(--cinematic-text-secondary);
+    line-height: 1.65;
+}
+
+/* --------------------------------------------------------------------------
+   7. FINAL CALL TO ACTION (THE SCHOLAR'S INVITATION)
+   -------------------------------------------------------------------------- */
+.invitation-section {
+    padding: 90px 0;
+}
+
+.invitation-banner {
+    position: relative;
+    padding: 60px 52px;
+    border-radius: var(--cinematic-radius-xl);
+    background: linear-gradient(135deg, rgba(20, 27, 41, 0.95) 0%, rgba(12, 16, 24, 0.98) 100%);
+    border: 1px solid var(--cinematic-border);
+    box-shadow: var(--cinematic-shadow-hero);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    overflow: hidden;
+}
+
+.invitation-banner::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: var(--cinematic-gold-foil);
+}
+
+.invitation-text-block {
+    max-width: 620px;
+}
+
+.invitation-text-block h2 {
+    font-family: var(--cinematic-font-serif);
+    font-size: clamp(2rem, 3.4vw, 2.7rem);
+    color: var(--cinematic-text-main);
+    line-height: 1.2;
+    margin: 0 0 10px;
+    font-weight: 500;
+}
+
+.invitation-text-block p {
+    font-size: 0.98rem;
+    color: var(--cinematic-text-secondary);
+    line-height: 1.65;
+    margin: 0;
+}
+
+.invitation-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+.btn-cinematic-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: var(--cinematic-gold-foil);
+    color: #0b1019;
+    font-size: 0.92rem;
+    font-weight: 750;
+    text-decoration: none;
+    border-radius: var(--cinematic-radius-sm);
+    box-shadow: 0 4px 18px rgba(212, 175, 55, 0.3);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.btn-cinematic-primary:hover {
+    opacity: 0.92;
+    transform: translateY(-2px);
+}
+
+.btn-cinematic-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 24px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--cinematic-border-subtle);
+    color: var(--cinematic-text-secondary);
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--cinematic-radius-sm);
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.btn-cinematic-secondary:hover {
+    background: rgba(212, 175, 55, 0.08);
+    border-color: var(--cinematic-border);
+    color: var(--cinematic-gold-bright);
+}
+
+/* --------------------------------------------------------------------------
+   8. REFINED EDITORIAL FOOTER
+   -------------------------------------------------------------------------- */
+.cinematic-footer {
+    border-top: 1px solid var(--cinematic-border-subtle);
+    padding: 60px 0 36px;
+    background: #06090e;
+    color: var(--cinematic-text-muted);
+    font-size: 0.86rem;
+}
+
+.footer-main-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 48px;
+}
+
+.footer-brand-title {
+    font-family: var(--cinematic-font-serif);
+    font-size: 1.35rem;
+    color: var(--cinematic-text-main);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    margin-bottom: 12px;
+}
+
+.footer-brand-badge {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--cinematic-gold-foil);
+    color: #0b1019;
+    font-weight: 800;
+    font-size: 0.95rem;
+}
+
+.footer-desc {
+    line-height: 1.65;
+    color: var(--cinematic-text-muted);
+    max-width: 340px;
+}
+
+.footer-col-head {
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cinematic-gold);
+    margin-bottom: 16px;
+}
+
+.footer-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-link-list a {
+    color: var(--cinematic-text-secondary);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.footer-link-list a:hover {
+    color: var(--cinematic-gold);
+}
+
+.footer-bottom-row {
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+}
+
+.system-status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #4ade80;
+    font-weight: 600;
+}
+
+.system-status-indicator::before {
+    content: "●";
+    font-size: 0.7rem;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE DESIGN BREAKPOINTS
+   -------------------------------------------------------------------------- */
+@media (max-width: 1100px) {
+    .exhibition-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .discovery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .storytelling-pillars,
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    .editorial-intro-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+    }
+    .cinematic-telemetry {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .telemetry-item:nth-child(2) {
+        border-right: none;
+    }
+    .footer-main-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .cinematic-hero {
+        padding: 70px 0 40px;
+        min-height: auto;
+    }
+    .cinematic-search-bar {
+        flex-direction: column;
+        padding: 10px;
+        gap: 10px;
+    }
+    .cinematic-search-input {
+        width: 100%;
+    }
+    .cinematic-search-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .exhibition-grid,
+    .discovery-grid {
+        grid-template-columns: 1fr;
+    }
+    .invitation-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 36px 24px;
+    }
+    .invitation-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+    .invitation-actions a {
+        width: 100%;
+        justify-content: center;
+    }
+    .footer-main-grid {
+        grid-template-columns: 1fr;
+    }
+    .cinematic-telemetry {
+        grid-template-columns: 1fr;
+    }
+    .telemetry-item {
+        border-right: none;
+        border-bottom: 1px solid var(--cinematic-border-subtle);
+        padding-bottom: 12px;
+    }
+    .telemetry-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    .book-showcase-card:hover .book-cover-3d {
+        transform: none !important;
+    }
+}

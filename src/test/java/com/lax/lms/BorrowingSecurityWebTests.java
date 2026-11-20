@@ -14,6 +14,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
@@ -22,19 +26,30 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = {BorrowingController.class, HomeController.class})
+@WebMvcTest(controllers = {BorrowingController.class, HomeController.class, LibrarianBorrowingController.class})
 @Import({
         SecurityConfig.class,
         org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration.class,
@@ -47,6 +62,12 @@ class BorrowingSecurityWebTests {
 
     @MockitoBean
     private BorrowingService borrowingService;
+
+    @MockitoBean
+    private GoogleOidcUserService googleOidcUserService;
+
+    @MockitoBean
+    private ClientRegistrationRepository clientRegistrationRepository;
 
     @MockitoBean
     private BorrowingRepository borrowingRepository;
@@ -235,5 +256,176 @@ class BorrowingSecurityWebTests {
                         .with(validCsrf())
                         .with(authenticatedUser("reader@example.com", "ROLE_USER")))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("ROLE_LIBRARIAN can return book via /librarian/borrowings/{id}/return with valid CSRF")
+    void librarian_returnBook_succeedsAndRedirects() throws Exception {
+        doNothing().when(borrowingService).returnBookByLibrarian(1L, "librarian@example.com");
+
+        mockMvc.perform(post("/librarian/borrowings/1/return")
+                        .with(validCsrf())
+                        .with(authenticatedUser("librarian@example.com", "ROLE_LIBRARIAN")))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/librarian/borrowings"))
+                .andExpect(flash().attribute("message", "Book marked as returned successfully."));
+
+        verify(borrowingService).returnBookByLibrarian(1L, "librarian@example.com");
+    }
+
+    @Test
+    @DisplayName("ROLE_USER is denied access to /librarian/borrowings/{id}/return with 403 Forbidden")
+    void regularUser_librarianReturnBook_isDeniedWith403() throws Exception {
+        mockMvc.perform(post("/librarian/borrowings/1/return")
+                        .with(validCsrf())
+                        .with(authenticatedUser("reader@example.com", "ROLE_USER")))
+                .andExpect(status().isForbidden());
+
+        verify(borrowingService, never()).returnBookByLibrarian(anyLong(), anyString());
+    }
+
+    @Test
+    @DisplayName("ROLE_LIBRARIAN return request without valid CSRF is rejected with 403 Forbidden")
+    void librarian_returnBookWithoutCsrf_isForbidden() throws Exception {
+        mockMvc.perform(post("/librarian/borrowings/1/return")
+                        .with(authenticatedUser("librarian@example.com", "ROLE_LIBRARIAN")))
+                .andExpect(status().isForbidden());
+
+        verify(borrowingService, never()).returnBookByLibrarian(anyLong(), anyString());
+    }
+
+    @Test
+    @DisplayName("ROLE_LIBRARIAN return request handles service error and redirects with error flash message")
+    void librarian_returnBook_whenServiceThrows_redirectsWithErrorFlash() throws Exception {
+        doThrow(new IllegalStateException("This book has already been returned."))
+                .when(borrowingService).returnBookByLibrarian(1L, "librarian@example.com");
+
+        mockMvc.perform(post("/librarian/borrowings/1/return")
+                        .with(validCsrf())
+                        .with(authenticatedUser("librarian@example.com", "ROLE_LIBRARIAN")))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/librarian/borrowings"))
+                .andExpect(flash().attribute("errorMessage", "This book has already been returned."));
+
+        verify(borrowingService).returnBookByLibrarian(1L, "librarian@example.com");
+    }
+
+    @Test
+    @DisplayName("GET /librarian/borrowings renders Action column with Mark as Returned button and Completed badge")
+    void librarian_viewBorrowings_rendersActionColumnAndBadges() throws Exception {
+        Book book1 = new Book();
+        book1.setTitle("Spring Security in Action");
+        Borrowing activeBorrowing = new Borrowing();
+        ReflectionTestUtils.setField(activeBorrowing, "id", 101L);
+        activeBorrowing.setUser(regularUser);
+        activeBorrowing.setBook(book1);
+        activeBorrowing.setStatus("BORROWED");
+        activeBorrowing.setBorrowDate(LocalDate.now().minusDays(5));
+        activeBorrowing.setDueDate(LocalDate.now().plusDays(9));
+
+        Book book2 = new Book();
+        book2.setTitle("Effective Java");
+        Borrowing returnedBorrowing = new Borrowing();
+        ReflectionTestUtils.setField(returnedBorrowing, "id", 102L);
+        returnedBorrowing.setUser(regularUser);
+        returnedBorrowing.setBook(book2);
+        returnedBorrowing.setStatus("RETURNED");
+        returnedBorrowing.setBorrowDate(LocalDate.now().minusDays(15));
+        returnedBorrowing.setDueDate(LocalDate.now().minusDays(1));
+        returnedBorrowing.setReturnDate(LocalDate.now().minusDays(1));
+
+        when(borrowingRepository.findAllByOrderByBorrowDateDesc())
+                .thenReturn(List.of(activeBorrowing, returnedBorrowing));
+
+        mockMvc.perform(get("/librarian/borrowings")
+                        .with(authenticatedUser("librarian@example.com", "ROLE_LIBRARIAN")))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("<th>Action</th>")))
+                .andExpect(content().string(containsString("Mark as Returned")))
+                .andExpect(content().string(containsString("/librarian/borrowings/101/return")))
+                .andExpect(content().string(containsString("Completed")));
+    }
+
+    @Test
+    @DisplayName("GET / as guest renders public navigation with login link and catalogue browsing")
+    void guest_publicHome_rendersPublicNavigation() throws Exception {
+        when(bookRepository.findAll()).thenReturn(Collections.emptyList());
+        when(bookRepository.count()).thenReturn(0L);
+        when(bookRepository.countTotalCopies()).thenReturn(0L);
+
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("href=\"/books\"")))
+                .andExpect(content().string(containsString("Browse Catalogue")))
+                .andExpect(content().string(containsString("href=\"/login\"")))
+                .andExpect(content().string(not(containsString("Librarian Workspace"))))
+                .andExpect(content().string(not(containsString("Librarian Dashboard"))))
+                .andExpect(content().string(not(containsString("href=\"/user/borrowings\""))))
+                .andExpect(content().string(not(containsString("href=\"/user/dashboard\""))));
+    }
+
+    @Test
+    @DisplayName("GET / as student renders student navigation with Dashboard and student quick links")
+    void student_publicHome_rendersStudentNavigation() throws Exception {
+        when(bookRepository.findAll()).thenReturn(Collections.emptyList());
+        when(bookRepository.count()).thenReturn(0L);
+        when(bookRepository.countTotalCopies()).thenReturn(0L);
+
+        mockMvc.perform(get("/")
+                        .with(authenticatedUser("reader@example.com", "ROLE_USER")))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("href=\"/books\"")))
+                .andExpect(content().string(containsString("href=\"/user/dashboard\"")))
+                .andExpect(content().string(containsString("href=\"/user/borrowings\"")))
+                .andExpect(content().string(containsString("My Borrowings")))
+                .andExpect(content().string(containsString("Personal Dashboard")))
+                .andExpect(content().string(not(containsString("Librarian Dashboard"))))
+                .andExpect(content().string(not(containsString("Librarian Workspace"))));
+    }
+
+    @Test
+    @DisplayName("GET / as librarian renders Librarian Dashboard in navbar and Librarian Workspace in hero")
+    void librarian_publicHome_rendersLibrarianNavigation() throws Exception {
+        when(bookRepository.findAll()).thenReturn(Collections.emptyList());
+        when(bookRepository.count()).thenReturn(0L);
+        when(bookRepository.countTotalCopies()).thenReturn(0L);
+
+        mockMvc.perform(get("/")
+                        .with(authenticatedUser("librarian@example.com", "ROLE_LIBRARIAN")))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("href=\"/books\"")))
+                .andExpect(content().string(containsString("href=\"/librarian\"")))
+                .andExpect(content().string(containsString("Librarian Dashboard")))
+                .andExpect(content().string(containsString("Librarian Workspace")))
+                .andExpect(content().string(not(containsString("href=\"/user/borrowings\""))))
+                .andExpect(content().string(not(containsString("href=\"/user/dashboard\""))))
+                .andExpect(content().string(not(containsString("Personal Dashboard"))));
+    }
+
+    @Test
+    @DisplayName("GET /oauth2/authorization/google redirects to Google with prompt=select_account")
+    void oauth2AuthorizationGoogle_redirectsWithPromptSelectAccount() throws Exception {
+        ClientRegistration registration = ClientRegistration.withRegistrationId("google")
+                .clientId("test-client-id")
+                .clientSecret("test-client-secret")
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+                .scope("openid", "profile", "email")
+                .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
+                .tokenUri("https://oauth2.googleapis.com/token")
+                .userInfoUri("https://openidconnect.googleapis.com/v1/userinfo")
+                .userNameAttributeName("sub")
+                .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
+                .clientName("Google")
+                .build();
+
+        when(clientRegistrationRepository.findByRegistrationId("google")).thenReturn(registration);
+
+        mockMvc.perform(get("/oauth2/authorization/google"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", containsString("prompt=select_account")))
+                .andExpect(header().string("Location", containsString("https://accounts.google.com/o/oauth2/v2/auth")))
+                .andExpect(header().string("Location", containsString("client_id=test-client-id")));
     }
 }

@@ -5,7 +5,6 @@ import com.lax.lms.repository.BorrowingRepository;
 import com.lax.lms.repository.LibraryUserRepository;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,13 +34,12 @@ public class UserController {
             Authentication authentication,
             Model model) {
 
-        String email;
+        String email = AuthenticatedEmailResolver.resolve(authentication);
 
-	if (authentication.getPrincipal() instanceof OidcUser oidcUser) {
-	    email = oidcUser.getEmail();
-	} else {
-	    email = authentication.getName();
-	}
+        if (email == null) {
+            throw new IllegalStateException(
+                    "Logged-in user not found.");
+        }
 
         LibraryUser user = userRepository
                 .findByEmailIgnoreCase(email)
@@ -90,13 +88,12 @@ public class UserController {
             Authentication authentication,
             Model model) {
 
-        String email;
+        String email = AuthenticatedEmailResolver.resolve(authentication);
 
-	if (authentication.getPrincipal() instanceof OidcUser oidcUser) {
-	    email = oidcUser.getEmail();
-	} else {
-	    email = authentication.getName();
-	}
+        if (email == null) {
+            throw new IllegalStateException(
+                    "Logged-in user not found.");
+        }
 
         LibraryUser user = userRepository
                 .findByEmailIgnoreCase(email)
@@ -124,6 +121,7 @@ public class UserController {
                 .toList();
 
         model.addAttribute("user", user);
+        model.addAttribute("today", today);
         model.addAttribute("activeBorrowings", activeBorrowings);
         model.addAttribute("overdueBorrowings", overdueBorrowings);
         model.addAttribute("returnedBorrowings", returnedBorrowings);
