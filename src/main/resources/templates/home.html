@@ -1,499 +1,484 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Libra LMS | Beyond the Pages</title>
+    <title>Libra LMS | Archival Sanctuary</title>
 
-    <!-- Editorial Typography: Newsreader (Serif) + Plus Jakarta Sans (Interface) + JetBrains Mono -->
+    <!-- Bespoke Fonts: Wordmark & Onest + Newsreader & Plus Jakarta Sans -->
+    <link rel="stylesheet" th:href="@{/css/kage-fonts.css}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
           rel="stylesheet">
 
-    <!-- Shared Foundation Stylesheets -->
+    <!-- Stylesheets -->
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
-    <link rel="stylesheet" th:href="@{/css/cinematic-home.css}">
+    <link rel="stylesheet" th:href="@{/css/kage-scroll.css}">
 </head>
 
-<body class="cinematic-body">
+<body class="cinematic-body kage-home-active"
+      data-layout-hero="b" data-layout-story="b" data-layout-gallery="b"
+      data-layout-curriculum="b" data-layout-closing="b" data-layout-footer="b">
 
-<!-- Atmospheric Radial Ambient Glow Layer -->
-<div class="cinematic-glow-layer" aria-hidden="true">
-    <div class="glow-orb-top"></div>
-    <div class="glow-orb-right"></div>
-    <div class="glow-orb-bottom"></div>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div id="vignette"></div>
+<div id="grain"></div>
+<div class="cur-dot" id="cursor"></div>
+
+<!-- ============================================================ preloader -->
+<div id="pre">
+  <div class="pre-in">
+    <div class="pre-mark">
+      <svg viewBox="0 0 44 44" fill="none" aria-hidden="true">
+        <circle cx="22" cy="24" r="9.5" stroke="#c5a568" stroke-width="1.2"/>
+        <path d="M6 12h32M9.5 17h25M22 8v28" stroke="#dfe7e0" stroke-width="1.2"/>
+      </svg>
+    </div>
+    <div class="pre-jp jp">BIBLIOTHECA</div>
+    <div class="pre-bar"><i id="pre-fill"></i></div>
+    <div class="pre-meta">
+      <span>Preparing the Archival Sanctuary</span><b><span id="pre-pct">0</span>%</b>
+    </div>
+  </div>
 </div>
 
-<!-- Shared Editorial Navigation Bar (Always displays user profile when authenticated) -->
+<!-- Shared Editorial Navigation Bar -->
 <div th:replace="~{fragments/navbar :: navigation}"></div>
 
-<!-- Main Cinematic Shell -->
-<main>
+<div class="page" id="top">
 
-    <!-- ====================================================================
-         1. HERO SECTION: CINEMATIC ARCHITECTURE & EDITORIAL INTRO
-         ==================================================================== -->
-    <section class="cinematic-hero" aria-label="Hero Introduction">
-        <div class="cinematic-hero-content">
+<!-- ============================================================ hero (Chapter 00) -->
+<section class="hero" id="hero" data-cam="0">
+  <div class="hero-top">
+    <div class="eyebrow" data-rv="fade"><span class="dot"></span> Chapter 00 — The Archival Sanctuary</div>
+    <h1 class="display h-hero">
+      <span class="mask-line"><span>Where stillness</span></span>
+      <span class="mask-line"><span>reveals the</span></span>
+      <span class="mask-line"><span>unseen.</span></span>
+    </h1>
+    <p class="hero-sub body" data-rv="up">Enter the sanctuary through its quiet thresholds, where ritual,
+      craft, and memory shape the scholarly path.</p>
 
-            <!-- Architectural Eyebrow Badge -->
-            <div class="cinematic-eyebrow">
-                Sanctuary of Scholarship
-            </div>
+    <!-- Role-Aware Archival Actions -->
+    <div class="hero-actions" data-rv="up">
+      <a class="hero-pill hero-pill--primary" th:href="@{/books}" data-cursor>
+        <span>Browse Catalogue</span>
+        <svg viewBox="0 0 14 14" fill="none" width="12" height="12"><path d="M3 11 11 3M5 3h6v6" stroke="currentColor" stroke-width="1.3"/></svg>
+      </a>
 
-            <!-- Hero Headline -->
-            <h1 class="cinematic-hero-title">
-                Where Knowledge <span class="serif-italic-gold">Transcends</span> Time
-            </h1>
+      <a class="hero-pill"
+         th:if="${user != null and user.role != null and user.role.toString() == 'LIBRARIAN'}"
+         th:href="@{/librarian}" data-cursor>
+        <span>Librarian Workspace</span>
+      </a>
 
-            <!-- Hero Subtitle -->
-            <p class="cinematic-hero-sub">
-                A digital sanctuary of academic excellence and timeless literature. Discover curated academic volumes, track sovereign reading milestones, and circulate wisdom with effortless grace.
-            </p>
+      <a class="hero-pill"
+         th:if="${user != null and user.role != null and user.role.toString() == 'USER'}"
+         th:href="@{/user/borrowings}" data-cursor>
+        <span>My Borrowings</span>
+      </a>
 
-            <!-- Search Catalogue Directly -->
-            <form class="cinematic-search-bar" th:action="@{/books}" method="get" role="search">
-                <span class="cinematic-search-icon" aria-hidden="true">🔍</span>
-                <input class="cinematic-search-input"
-                       type="search"
-                       name="keyword"
-                       placeholder="Search by title, author, category or ISBN..."
-                       aria-label="Search books catalogue">
-                <button type="submit" class="cinematic-search-btn">
-                    <span>Search Catalogue</span>
-                    <span aria-hidden="true">→</span>
-                </button>
-            </form>
-
-            <!-- Quick Navigation Pills (Strictly Role-Aware) -->
-            <div class="cinematic-hero-pills">
-                <a class="cinematic-pill" th:href="@{/books}">
-                    <span>📚 Browse Catalogue</span>
-                </a>
-
-                <a class="cinematic-pill"
-                   th:if="${user != null and user.role != null and user.role.toString() == 'LIBRARIAN'}"
-                   th:href="@{/librarian}">
-                    <span>▦ Librarian Workspace</span>
-                </a>
-
-                <a class="cinematic-pill"
-                   th:if="${user != null and user.role != null and user.role.toString() == 'USER'}"
-                   th:href="@{/user/borrowings}">
-                    <span>📋 My Borrowings</span>
-                </a>
-
-                <a class="cinematic-pill"
-                   th:if="${user != null and user.role != null and user.role.toString() == 'USER'}"
-                   th:href="@{/user/dashboard}">
-                    <span>🏠 Personal Dashboard</span>
-                </a>
-            </div>
-
-            <!-- Telemetry Metrics Strip -->
-            <div class="cinematic-telemetry" aria-label="Library Overview Metrics">
-                <div class="telemetry-item">
-                    <div class="telemetry-val" th:text="${totalBooks != null and totalBooks > 0 ? totalBooks : '1,240'}">1,240</div>
-                    <div class="telemetry-label">Curated Titles</div>
-                </div>
-
-                <div class="telemetry-item">
-                    <div class="telemetry-val" th:text="${totalCopies != null and totalCopies > 0 ? totalCopies : '4,850'}">4,850</div>
-                    <div class="telemetry-label">Physical Volumes</div>
-                </div>
-
-                <div class="telemetry-item">
-                    <div class="telemetry-val">14 Days</div>
-                    <div class="telemetry-label">Lending Window</div>
-                </div>
-
-                <div class="telemetry-item">
-                    <div class="telemetry-val">Verified</div>
-                    <div class="telemetry-label">Identity Security</div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <div class="cinematic-container">
-
-        <!-- ================================================================
-             2. EDITORIAL INTRODUCTION: SANCTUARY OF INTELLECT
-             ================================================================ -->
-        <section class="editorial-intro-section" aria-label="Editorial Introduction">
-            <div class="editorial-intro-grid">
-
-                <div class="editorial-quote-box">
-                    <span class="editorial-quote-mark" aria-hidden="true">&ldquo;</span>
-                    <blockquote class="editorial-quote-text">
-                        I have always imagined that Paradise will be a kind of a Library.
-                    </blockquote>
-                    <cite class="editorial-quote-author">— Jorge Luis Borges, Inquisiciones</cite>
-                </div>
-
-                <div class="editorial-manifesto">
-                    <h3>The Architecture of Thought</h3>
-                    <p>
-                        True scholarship demands contemplation, craft, and permanence. LIBRA brings the solemn reverence of classical archival reading rooms into an elegant, high-performance digital environment.
-                    </p>
-                    <div class="seal-badge">
-                        ✦ Scholastic Excellence ✦
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- ================================================================
-             3. CURATED READING EXHIBITION (3D BOOK SHOWCASE)
-             ================================================================ -->
-        <section class="exhibition-section" aria-label="Featured Collection">
-            <div class="section-head">
-                <div>
-                    <div class="section-tag">Curated Volumes</div>
-                    <h2 class="section-title">The Master Archive Collection</h2>
-                </div>
-
-                <a class="section-link" th:href="@{/books}">
-                    <span>Explore Complete Catalogue</span>
-                    <span aria-hidden="true">→</span>
-                </a>
-            </div>
-
-            <!-- Real Database-Backed Featured Books Grid -->
-            <div class="exhibition-grid" th:if="${featuredBooks != null and !featuredBooks.isEmpty()}">
-                <article class="book-showcase-card" th:each="book : ${featuredBooks}">
-                    <div>
-                        <div class="book-cover-3d" aria-hidden="true">
-                            <span class="book-icon-center">📖</span>
-                        </div>
-
-                        <div class="book-meta-top">
-                            <span class="book-category-tag" th:text="${book.category != null ? book.category : 'Treatise'}">General</span>
-                        </div>
-
-                        <h3 class="book-title-heading" th:text="${book.title}">Book Title</h3>
-                        <p class="book-author-line">
-                            By <strong th:text="${book.author}">Author Name</strong>
-                        </p>
-                    </div>
-
-                    <div class="book-footer-actions">
-                        <span class="availability-pill" th:text="${book.availableCopies} + ' copies ready'">
-                            Available
-                        </span>
-
-                        <a class="btn-borrow-link" th:href="@{/books}">
-                            <span>Borrow</span>
-                            <span aria-hidden="true">→</span>
-                        </a>
-                    </div>
-                </article>
-            </div>
-
-            <!-- Fallback Curated Exhibition if Database Is Fresh -->
-            <div class="exhibition-grid" th:if="${featuredBooks == null or featuredBooks.isEmpty()}">
-                <article class="book-showcase-card">
-                    <div>
-                        <div class="book-cover-3d" aria-hidden="true"><span class="book-icon-center">💻</span></div>
-                        <div class="book-meta-top"><span class="book-category-tag">Engineering</span></div>
-                        <h3 class="book-title-heading">Clean Code</h3>
-                        <p class="book-author-line">By <strong>Robert C. Martin</strong></p>
-                    </div>
-                    <div class="book-footer-actions">
-                        <span class="availability-pill">Available</span>
-                        <a class="btn-borrow-link" th:href="@{/books}">Borrow →</a>
-                    </div>
-                </article>
-
-                <article class="book-showcase-card">
-                    <div>
-                        <div class="book-cover-3d" aria-hidden="true"><span class="book-icon-center">🎯</span></div>
-                        <div class="book-meta-top"><span class="book-category-tag">Psychology</span></div>
-                        <h3 class="book-title-heading">Atomic Habits</h3>
-                        <p class="book-author-line">By <strong>James Clear</strong></p>
-                    </div>
-                    <div class="book-footer-actions">
-                        <span class="availability-pill">Available</span>
-                        <a class="btn-borrow-link" th:href="@{/books}">Borrow →</a>
-                    </div>
-                </article>
-
-                <article class="book-showcase-card">
-                    <div>
-                        <div class="book-cover-3d" aria-hidden="true"><span class="book-icon-center">⚙️</span></div>
-                        <div class="book-meta-top"><span class="book-category-tag">Architecture</span></div>
-                        <h3 class="book-title-heading">The Pragmatic Programmer</h3>
-                        <p class="book-author-line">By <strong>Andrew Hunt &amp; David Thomas</strong></p>
-                    </div>
-                    <div class="book-footer-actions">
-                        <span class="availability-pill">Available</span>
-                        <a class="btn-borrow-link" th:href="@{/books}">Borrow →</a>
-                    </div>
-                </article>
-
-                <article class="book-showcase-card">
-                    <div>
-                        <div class="book-cover-3d" aria-hidden="true"><span class="book-icon-center">🧠</span></div>
-                        <div class="book-meta-top"><span class="book-category-tag">Computation</span></div>
-                        <h3 class="book-title-heading">Introduction to Algorithms</h3>
-                        <p class="book-author-line">By <strong>Thomas H. Cormen</strong></p>
-                    </div>
-                    <div class="book-footer-actions">
-                        <span class="availability-pill">Available</span>
-                        <a class="btn-borrow-link" th:href="@{/books}">Borrow →</a>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <!-- ================================================================
-             4. INTERACTIVE DISCOVERY SECTION (DISCIPLINE CURATIONS)
-             ================================================================ -->
-        <section class="discovery-section" aria-label="Academic Disciplines">
-            <div class="section-head">
-                <div>
-                    <div class="section-tag">Academic Pathways</div>
-                    <h2 class="section-title">Explore by Field of Study</h2>
-                </div>
-            </div>
-
-            <div class="discovery-grid">
-                <a class="discipline-card" th:href="@{/books(keyword='Computer')}">
-                    <div>
-                        <div class="discipline-icon-box" aria-hidden="true">💻</div>
-                        <h3 class="discipline-title">Computer Science &amp; Systems</h3>
-                        <p class="discipline-desc">
-                            Core treatises on software architecture, compiler design, algorithms, distributed networks, and artificial intelligence.
-                        </p>
-                    </div>
-                    <span class="discipline-explore-label">Browse Field →</span>
-                </a>
-
-                <a class="discipline-card" th:href="@{/books(keyword='Mathematics')}">
-                    <div>
-                        <div class="discipline-icon-box" aria-hidden="true">📐</div>
-                        <h3 class="discipline-title">Mathematical Sciences &amp; Logic</h3>
-                        <p class="discipline-desc">
-                            Rigorous volumes covering linear algebra, calculus, discrete mathematics, cryptography, and probability theory.
-                        </p>
-                    </div>
-                    <span class="discipline-explore-label">Browse Field →</span>
-                </a>
-
-                <a class="discipline-card" th:href="@{/books(keyword='Literature')}">
-                    <div>
-                        <div class="discipline-icon-box" aria-hidden="true">📜</div>
-                        <h3 class="discipline-title">Literary Humanities &amp; Philosophy</h3>
-                        <p class="discipline-desc">
-                            Classical dialectics, ethics, epistemology, world literature, and foundational philosophical canons.
-                        </p>
-                    </div>
-                    <span class="discipline-explore-label">Browse Field →</span>
-                </a>
-            </div>
-        </section>
-
-        <!-- ================================================================
-             5. IMMERSIVE STORYTELLING SECTION (THE THREE PILLARS)
-             ================================================================ -->
-        <section class="storytelling-section" aria-label="Core Architectural Pillars">
-            <div class="section-head">
-                <div>
-                    <div class="section-tag">The Philosophy</div>
-                    <h2 class="section-title">Crafted for the Discerning Scholar</h2>
-                </div>
-            </div>
-
-            <div class="storytelling-pillars">
-                <article class="story-pillar-card">
-                    <div class="pillar-number">01</div>
-                    <h3>Physical Archival Dignity</h3>
-                    <p>
-                        We preserve the tangible gravity of real book inventory. Every volume is tracked with atomic precision, pessimistic write locking, and immutable stock count consistency.
-                    </p>
-                </article>
-
-                <article class="story-pillar-card">
-                    <div class="pillar-number">02</div>
-                    <h3>Sovereign Digital Privacy</h3>
-                    <p>
-                        Your reading habits belong solely to your intellect. Protected by modern Spring Security filter chains, enterprise OAuth 2.0 federation, and role-based access isolation.
-                    </p>
-                </article>
-
-                <article class="story-pillar-card">
-                    <div class="pillar-number">03</div>
-                    <h3>Circulation Without Friction</h3>
-                    <p>
-                        Effortless one-click checkout, instant loan due tracking, automated audit logging, and seamless librarian returns keep academic study moving without administrative delay.
-                    </p>
-                </article>
-            </div>
-        </section>
-
-        <!-- ================================================================
-             6. PRIVILEGES OF MEMBERSHIP (FEATURES PRESENTATION)
-             ================================================================ -->
-        <section class="features-section" aria-label="Library Privileges">
-            <div class="section-head">
-                <div>
-                    <div class="section-tag">Excellence in Design</div>
-                    <h2 class="section-title">A Higher Standard for Campus Libraries</h2>
-                </div>
-            </div>
-
-            <div class="features-grid">
-                <article class="feature-arch-card">
-                    <span class="f-icon" aria-hidden="true">⚡</span>
-                    <h3>Instant Digital Checkout</h3>
-                    <p>
-                        Select your preferred title and complete checkout in seconds. All active borrowings appear immediately inside your sovereign dashboard with exact due dates.
-                    </p>
-                </article>
-
-                <article class="feature-arch-card">
-                    <span class="f-icon" aria-hidden="true">🏛️</span>
-                    <h3>Curated Academic Volumes</h3>
-                    <p>
-                        Every entry indexed with official ISBN identifiers, categorized academic departments, and real-time physical availability tracking across campus shelves.
-                    </p>
-                </article>
-
-                <article class="feature-arch-card">
-                    <span class="f-icon" aria-hidden="true">🛡️</span>
-                    <h3>Cryptographic Audit Logging</h3>
-                    <p>
-                        Full audit accountability with IP and actor logging for administrative transparency, preserving integrity across every borrowing transaction.
-                    </p>
-                </article>
-            </div>
-        </section>
-
-        <!-- ================================================================
-             7. FINAL CALL TO ACTION (THE SCHOLAR'S INVITATION)
-             ================================================================ -->
-        <section class="invitation-section" aria-label="Join Call to Action">
-            <div class="invitation-banner">
-                <div class="invitation-text-block">
-                    <h2>Step into the Sanctuary. Begin your study.</h2>
-                    <p>
-                        Explore the complete digital archive, borrow texts for your upcoming research, or access your scholar workspace.
-                    </p>
-                </div>
-
-                <div class="invitation-actions">
-                    <a class="btn-cinematic-primary" th:href="@{/books}">
-                        <span>Explore Catalogue Now</span>
-                        <span aria-hidden="true">→</span>
-                    </a>
-
-                    <a class="btn-cinematic-secondary"
-                       th:if="${user == null}"
-                       th:href="@{/register}">
-                        Create Scholar Account
-                    </a>
-
-                    <a class="btn-cinematic-secondary"
-                       th:if="${user != null and user.role != null and user.role.toString() == 'USER'}"
-                       th:href="@{/user/dashboard}">
-                        Go to Dashboard
-                    </a>
-
-                    <a class="btn-cinematic-secondary"
-                       th:if="${user != null and user.role != null and user.role.toString() == 'LIBRARIAN'}"
-                       th:href="@{/librarian}">
-                        Librarian Workspace
-                    </a>
-                </div>
-            </div>
-        </section>
-
+      <a class="hero-pill"
+         th:if="${user != null and user.role != null and user.role.toString() == 'USER'}"
+         th:href="@{/user/dashboard}" data-cursor>
+        <span>Personal Dashboard</span>
+      </a>
     </div>
-</main>
+  </div>
 
-<!-- ========================================================================
-     8. REFINED EDITORIAL FOOTER
-     ======================================================================== -->
-<footer class="cinematic-footer" role="contentinfo">
-    <div class="cinematic-container">
+  <div class="hero-spacer"></div>
 
-        <div class="footer-main-grid">
-            <div>
-                <a th:href="@{/}" class="footer-brand-title">
-                    <span class="footer-brand-badge">L</span>
-                    <span>Libra LMS</span>
-                </a>
-                <p class="footer-desc">
-                    A cinematic collegiate library management ecosystem designed for effortless scholarship, sovereign reader privacy, and meticulous book circulation.
-                </p>
-            </div>
-
-            <div>
-                <div class="footer-col-head">Collections</div>
-                <ul class="footer-link-list">
-                    <li><a th:href="@{/books}">Complete Catalogue</a></li>
-                    <li><a th:href="@{/books(keyword='Computer')}">Computer Science</a></li>
-                    <li><a th:href="@{/books(keyword='Mathematics')}">Mathematics</a></li>
-                    <li><a th:href="@{/books(keyword='Literature')}">Humanities</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <div class="footer-col-head">Scholar Services</div>
-                <ul class="footer-link-list">
-                    <li th:if="${user != null and user.role != null and user.role.toString() == 'USER'}">
-                        <a th:href="@{/user/dashboard}">Scholar Dashboard</a>
-                    </li>
-                    <li th:if="${user != null and user.role != null and user.role.toString() == 'USER'}">
-                        <a th:href="@{/user/borrowings}">My Active Loans</a>
-                    </li>
-                    <li th:if="${user != null and user.role != null and user.role.toString() == 'LIBRARIAN'}">
-                        <a th:href="@{/librarian}">Librarian Workspace</a>
-                    </li>
-                    <li th:if="${user == null}">
-                        <a th:href="@{/login}">Scholar Sign In</a>
-                    </li>
-                    <li th:if="${user == null}">
-                        <a th:href="@{/register}">Register Account</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div>
-                <div class="footer-col-head">System &amp; Campus</div>
-                <ul class="footer-link-list">
-                    <li><span style="color: var(--cinematic-text-dim);">Spring Boot 4.0.8</span></li>
-                    <li><span style="color: var(--cinematic-text-dim);">Java 25 LTS</span></li>
-                    <li><span style="color: var(--cinematic-text-dim);">PostgreSQL Archival</span></li>
-                    <li><span style="color: var(--cinematic-text-dim);">OAuth 2.0 / OIDC</span></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-bottom-row">
-            <div>
-                &copy; 2026 Libra LMS. Built for scholarly excellence.
-            </div>
-
-            <div class="system-status-indicator">
-                All circulation systems operational
-            </div>
-        </div>
-
+  <div class="hero-foot">
+    <div class="hero-cue" id="hero-cue" data-rv="fade" data-cursor tabindex="0" role="button" aria-label="Scroll to enter archive">
+      <span>Scroll to enter</span>
+      <span class="track"><i></i></span>
     </div>
+    <div class="chapters" id="chips">
+      <div class="chip" data-chip="0" data-rv="up" data-cursor tabindex="0" role="button" aria-label="Chapter 01 - Thresholds"><span class="num">01</span>
+        <span class="tx"><b>Thresholds</b><p>Discover the quiet halls that open onto archival stacks.</p></span></div>
+      <div class="chip" data-chip="1" data-rv="up" data-cursor tabindex="0" role="button" aria-label="Chapter 02 - Curated Vaults"><span class="num">02</span>
+        <span class="tx"><b>Curated Vaults</b><p>Witness the master collection where wisdom unfolds.</p></span></div>
+      <div class="chip" data-chip="2" data-rv="up" data-cursor tabindex="0" role="button" aria-label="Chapter 03 - Archival Foundations"><span class="num">03</span>
+        <span class="tx"><b>Archival Foundations</b><p>Explore the enduring pillars of scholarly integrity.</p></span></div>
+      <div class="chip" data-chip="3" data-rv="up" data-cursor tabindex="0" role="button" aria-label="Chapter 04 - Afterlight"><span class="num">04</span>
+        <span class="tx"><b>Afterlight</b><p>Begin your research in the quiet reading sanctuary.</p></span></div>
+    </div>
+  </div>
+
+  <div class="word-fb" aria-hidden="true">LIBRA</div>
+
+  <div class="hero-side" data-rv="up">
+    <span class="v arch-tag">EX LIBRIS</span>
+  </div>
+</section>
+
+<!-- ============================================================ chapter I (#gate) -->
+<section class="sec" id="gate" data-cam="1">
+  <div class="fg" data-fg="gate" aria-hidden="true">
+    <span class="fg-el fg-pine" data-fg-in="right">
+      <img th:src="@{/images/kage/foreground/pine-tree.webp}" alt="" width="1024" height="1438" loading="lazy" decoding="async">
+    </span>
+    <span class="fg-el fg-grass" data-fg-in="up">
+      <img th:src="@{/images/kage/foreground/tall-grass.webp}" alt="" width="1717" height="916" loading="lazy" decoding="async">
+    </span>
+  </div>
+  <div class="sec-head" data-rv="fade">
+    <span class="k"><b>01</b> — The Threshold</span><span class="rule"></span><span class="k arch-tag">PORTAL</span>
+  </div>
+  <div class="gate-grid">
+    <h2 class="display h-sec" data-rv="up">Towering stacks, quiet alcoves, the archive open.</h2>
+    <div class="gate-copy">
+      <p class="lead" data-rv="up">LIBRA begins where the campus noise subsides: an archival gateway of carved timber
+        and weathered granite, standing in its own solemn weather. The silence is not an absence — it is the gravity
+        of centuries of human thought preserved under one roof.</p>
+      <p class="body" data-rv="up">Ascend the worn steps and the grand archival library lifts out of the night mist, its arched windows
+        illuminated with warm lamplight radiance. High above the classical portico and dome, the celestial moon holds its place, patient,
+        everlasting. True scholarship is never in haste. Neither, as you explore these stacks, are you.</p>
+      <a class="arrowlink" th:href="@{/books}" data-rv="fade" data-cursor>
+        <span>Cross the threshold into catalogue</span>
+        <span class="ar"><svg viewBox="0 0 14 14" fill="none"><path d="M3 11 11 3M5 3h6v6" stroke="#dfe7e0" stroke-width="1.3"/></svg></span>
+      </a>
+    </div>
+  </div>
+  <div class="gate-stats" data-rv="up">
+    <div><b>05</b><span>Chapters</span></div>
+    <div><b>92</b><span>Minutes</span></div>
+    <div><b>1611</b><span>Volumes indexed</span></div>
+    <div><b>&infin;</b><span>Stillness</span></div>
+  </div>
+</section>
+
+<!-- ============================================================ chapter II (#pathways) -->
+<section class="sec" id="pathways" data-cam="2">
+  <div class="fg" data-fg="pathways" aria-hidden="true">
+    <span class="fg-el fg-bush" data-fg-in="up">
+      <img th:src="@{/images/kage/foreground/garden-bush.webp}" alt="" width="1717" height="876" loading="lazy" decoding="async">
+    </span>
+  </div>
+  <div class="sec-head" data-rv="fade">
+    <span class="k"><b>02</b> — Featured Catalogue Stacks</span><span class="rule"></span><span class="k arch-tag">COLLECTIONS</span>
+  </div>
+  <div class="cards" id="cards">
+    <!-- Live Available Books from Catalogue -->
+    <article class="card card--book-vault" th:each="book, iter : ${featuredBooks}" data-rv="up" data-cursor th:onclick="'location.href=\'/books\''">
+      <div class="card-fr">
+        <span class="card-ar"><svg viewBox="0 0 14 14" fill="none"><path d="M3 11 11 3M5 3h6v6" stroke="#dfe7e0" stroke-width="1.3"/></svg></span>
+        <div class="card-book-top">
+          <span class="arch-badge-live">
+            <span class="live-dot"></span>
+            <span th:text="${book.availableCopies + ' AVAILABLE'}">4 AVAILABLE</span>
+          </span>
+          <span class="card-cat-badge" th:text="${book.category}">PROGRAMMING</span>
+        </div>
+        <div class="card-book-center">
+          <div class="card-book-cover-mock" aria-hidden="true">
+            <div class="book-cover-mini">
+              <span class="book-spine-groove"></span>
+              <svg class="book-mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span class="book-ribbon"></span>
+            </div>
+            <span class="book-isbn-tag" th:text="${book.isbn != null and !book.isbn.isEmpty() ? 'ISBN ' + book.isbn : 'SHELF CS-' + (100 + iter.index * 10)}">ISBN 978-0262033848</span>
+          </div>
+          <h3 class="card-book-heading" th:text="${book.title}">The C Programming Language</h3>
+          <p class="card-book-byline" th:text="${'By ' + book.author}">By Brian W. Kernighan</p>
+        </div>
+        <div class="card-book-foot">
+          <span class="card-status-badge">Available in Stacks</span>
+          <span class="card-borrow-cta">Borrow Volume &rarr;</span>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span th:text="${book.category + ' Collection'}">Programming Collection</span>
+        <span th:text="${'0' + (iter.index + 1) + ' / 0' + (featuredBooks != null ? featuredBooks.size() : 6)}">01 / 06</span>
+      </div>
+    </article>
+    <!-- Fallback if database empty: 6 books in 2 rows x 3 columns -->
+    <article class="card card--book-vault" th:if="${featuredBooks == null or featuredBooks.isEmpty()}" data-rv="up" data-cursor onclick="location.href='/books'">
+      <div class="card-fr">
+        <span class="card-ar"><svg viewBox="0 0 14 14" fill="none"><path d="M3 11 11 3M5 3h6v6" stroke="#dfe7e0" stroke-width="1.3"/></svg></span>
+        <div class="card-book-top">
+          <span class="arch-badge-live"><span class="live-dot"></span><span>5 AVAILABLE</span></span>
+          <span class="card-cat-badge">ALGORITHMS</span>
+        </div>
+        <div class="card-book-center">
+          <div class="card-book-cover-mock" aria-hidden="true">
+            <div class="book-cover-mini">
+              <span class="book-spine-groove"></span>
+              <svg class="book-mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span class="book-ribbon"></span>
+            </div>
+            <span class="book-isbn-tag">ISBN 978-0262033848</span>
+          </div>
+          <h3 class="card-book-heading">Introduction to Algorithms</h3>
+          <p class="card-book-byline">By Thomas H. Cormen</p>
+        </div>
+        <div class="card-book-foot">
+          <span class="card-status-badge">Available in Stacks</span>
+          <span class="card-borrow-cta">Borrow Volume &rarr;</span>
+        </div>
+      </div>
+      <div class="card-meta"><span>Algorithms Collection</span><span>01 / 06</span></div>
+    </article>
+    <article class="card card--book-vault" th:if="${featuredBooks == null or featuredBooks.isEmpty()}" data-rv="up" data-cursor onclick="location.href='/books'">
+      <div class="card-fr">
+        <span class="card-ar"><svg viewBox="0 0 14 14" fill="none"><path d="M3 11 11 3M5 3h6v6" stroke="#dfe7e0" stroke-width="1.3"/></svg></span>
+        <div class="card-book-top">
+          <span class="arch-badge-live"><span class="live-dot"></span><span>4 AVAILABLE</span></span>
+          <span class="card-cat-badge">PROGRAMMING</span>
+        </div>
+        <div class="card-book-center">
+          <div class="card-book-cover-mock" aria-hidden="true">
+            <div class="book-cover-mini">
+              <span class="book-spine-groove"></span>
+              <svg class="book-mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span class="book-ribbon"></span>
+            </div>
+            <span class="book-isbn-tag">ISBN 978-0131103627</span>
+          </div>
+          <h3 class="card-book-heading">The C Programming Language</h3>
+          <p class="card-book-byline">By Brian W. Kernighan</p>
+        </div>
+        <div class="card-book-foot">
+          <span class="card-status-badge">Available in Stacks</span>
+          <span class="card-borrow-cta">Borrow Volume &rarr;</span>
+        </div>
+      </div>
+      <div class="card-meta"><span>Programming Collection</span><span>02 / 06</span></div>
+    </article>
+    <article class="card card--book-vault" th:if="${featuredBooks == null or featuredBooks.isEmpty()}" data-rv="up" data-cursor onclick="location.href='/books'">
+      <div class="card-fr">
+        <span class="card-ar"><svg viewBox="0 0 14 14" fill="none"><path d="M3 11 11 3M5 3h6v6" stroke="#dfe7e0" stroke-width="1.3"/></svg></span>
+        <div class="card-book-top">
+          <span class="arch-badge-live"><span class="live-dot"></span><span>3 AVAILABLE</span></span>
+          <span class="card-cat-badge">SECURITY</span>
+        </div>
+        <div class="card-book-center">
+          <div class="card-book-cover-mock" aria-hidden="true">
+            <div class="book-cover-mini">
+              <span class="book-spine-groove"></span>
+              <svg class="book-mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span class="book-ribbon"></span>
+            </div>
+            <span class="book-isbn-tag">ISBN 978-1118026471</span>
+          </div>
+          <h3 class="card-book-heading">The Web Application Hacker's Handbook</h3>
+          <p class="card-book-byline">By Dafydd Stuttard</p>
+        </div>
+        <div class="card-book-foot">
+          <span class="card-status-badge">Available in Stacks</span>
+          <span class="card-borrow-cta">Borrow Volume &rarr;</span>
+        </div>
+      </div>
+      <div class="card-meta"><span>Security Collection</span><span>03 / 06</span></div>
+    </article>
+    <article class="card card--book-vault" th:if="${featuredBooks == null or featuredBooks.isEmpty()}" data-rv="up" data-cursor onclick="location.href='/books'">
+      <div class="card-fr">
+        <span class="card-ar"><svg viewBox="0 0 14 14" fill="none"><path d="M3 11 11 3M5 3h6v6" stroke="#dfe7e0" stroke-width="1.3"/></svg></span>
+        <div class="card-book-top">
+          <span class="arch-badge-live"><span class="live-dot"></span><span>6 AVAILABLE</span></span>
+          <span class="card-cat-badge">ENGINEERING</span>
+        </div>
+        <div class="card-book-center">
+          <div class="card-book-cover-mock" aria-hidden="true">
+            <div class="book-cover-mini">
+              <span class="book-spine-groove"></span>
+              <svg class="book-mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span class="book-ribbon"></span>
+            </div>
+            <span class="book-isbn-tag">ISBN 978-0132350884</span>
+          </div>
+          <h3 class="card-book-heading">Clean Code: A Handbook of Agile Craftsmanship</h3>
+          <p class="card-book-byline">By Robert C. Martin</p>
+        </div>
+        <div class="card-book-foot">
+          <span class="card-status-badge">Available in Stacks</span>
+          <span class="card-borrow-cta">Borrow Volume &rarr;</span>
+        </div>
+      </div>
+      <div class="card-meta"><span>Engineering Collection</span><span>04 / 06</span></div>
+    </article>
+    <article class="card card--book-vault" th:if="${featuredBooks == null or featuredBooks.isEmpty()}" data-rv="up" data-cursor onclick="location.href='/books'">
+      <div class="card-fr">
+        <span class="card-ar"><svg viewBox="0 0 14 14" fill="none"><path d="M3 11 11 3M5 3h6v6" stroke="#dfe7e0" stroke-width="1.3"/></svg></span>
+        <div class="card-book-top">
+          <span class="arch-badge-live"><span class="live-dot"></span><span>4 AVAILABLE</span></span>
+          <span class="card-cat-badge">ARCHITECTURE</span>
+        </div>
+        <div class="card-book-center">
+          <div class="card-book-cover-mock" aria-hidden="true">
+            <div class="book-cover-mini">
+              <span class="book-spine-groove"></span>
+              <svg class="book-mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span class="book-ribbon"></span>
+            </div>
+            <span class="book-isbn-tag">ISBN 978-0201633610</span>
+          </div>
+          <h3 class="card-book-heading">Design Patterns: Elements of Reusable Software</h3>
+          <p class="card-book-byline">By Erich Gamma</p>
+        </div>
+        <div class="card-book-foot">
+          <span class="card-status-badge">Available in Stacks</span>
+          <span class="card-borrow-cta">Borrow Volume &rarr;</span>
+        </div>
+      </div>
+      <div class="card-meta"><span>Architecture Collection</span><span>05 / 06</span></div>
+    </article>
+    <article class="card card--book-vault" th:if="${featuredBooks == null or featuredBooks.isEmpty()}" data-rv="up" data-cursor onclick="location.href='/books'">
+      <div class="card-fr">
+        <span class="card-ar"><svg viewBox="0 0 14 14" fill="none"><path d="M3 11 11 3M5 3h6v6" stroke="#dfe7e0" stroke-width="1.3"/></svg></span>
+        <div class="card-book-top">
+          <span class="arch-badge-live"><span class="live-dot"></span><span>2 AVAILABLE</span></span>
+          <span class="card-cat-badge">DATA SCIENCE</span>
+        </div>
+        <div class="card-book-center">
+          <div class="card-book-cover-mock" aria-hidden="true">
+            <div class="book-cover-mini">
+              <span class="book-spine-groove"></span>
+              <svg class="book-mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span class="book-ribbon"></span>
+            </div>
+            <span class="book-isbn-tag">ISBN 978-0136042594</span>
+          </div>
+          <h3 class="card-book-heading">Artificial Intelligence: A Modern Approach</h3>
+          <p class="card-book-byline">By Stuart Russell</p>
+        </div>
+        <div class="card-book-foot">
+          <span class="card-status-badge">Available in Stacks</span>
+          <span class="card-borrow-cta">Borrow Volume &rarr;</span>
+        </div>
+      </div>
+      <div class="card-meta"><span>Data Science Collection</span><span>06 / 06</span></div>
+    </article>
+  </div>
+</section>
+
+<!-- ============================================================ chapter III (#lessons) -->
+<section class="sec" id="lessons" data-cam="3">
+  <div class="fg" data-fg="lessons" aria-hidden="true">
+    <span class="fg-el fg-stones" data-fg-in="up">
+      <img th:src="@{/images/kage/foreground/basalt-stones.webp}" alt="" width="1536" height="996" loading="lazy" decoding="async">
+    </span>
+    <span class="fg-el fg-grass" data-fg-in="up">
+      <img th:src="@{/images/kage/foreground/tall-grass.webp}" alt="" width="1717" height="916" loading="lazy" decoding="async">
+    </span>
+  </div>
+  <div class="sec-head" data-rv="fade">
+    <span class="k"><b>03</b> — College Library Management</span><span class="rule"></span><span class="k arch-tag">OPERATIONS</span>
+  </div>
+  <div class="cur-head">
+    <h2 class="display h-sec" data-rv="up">Explore Books. Borrow Instantly. Manage Campus Circulation.</h2>
+    <p class="body-lg" data-rv="up">Engineered specifically for university students, faculty, and campus librarians — discover academic textbooks across departments, borrow and return with automated tracking, manage loans online, and streamline library operations.</p>
+  </div>
+  <div class="cur" id="cur">
+    <div class="les" data-les="0" data-cursor onclick="location.href='/books'">
+      <span class="k">01</span>
+      <h3>Smart Book Circulation<em class="arch-tag">CIRCULATION</em></h3>
+      <p>Instant student book borrowing and returns with automated loan tracking, due-date reminders, and conflict-free copy inventory.</p>
+      <span class="t">Borrow & Return</span><i class="bar"></i>
+    </div>
+    <div class="les" data-les="1" data-cursor onclick="location.href='/books'">
+      <span class="k">02</span>
+      <h3>Comprehensive Book Catalogue<em class="arch-tag">CATALOGUE</em></h3>
+      <p>Fast search across all college departments by title, author, category, ISBN, and real-time shelf copy availability.</p>
+      <span class="t">Explore Catalogue</span><i class="bar"></i>
+    </div>
+    <div class="les" data-les="2" data-cursor onclick="location.href='/books'">
+      <span class="k">03</span>
+      <h3>Student &amp; Member Portal<em class="arch-tag">STUDENT PORTAL</em></h3>
+      <p>Personalized member dashboard to view issued books, renewal requests, overdue statuses, and reading history.</p>
+      <span class="t">My Borrowings</span><i class="bar"></i>
+    </div>
+    <div class="les" data-les="3" data-cursor onclick="location.href='/books'">
+      <span class="k">04</span>
+      <h3>Departmental Collections<em class="arch-tag">ACADEMIC STACKS</em></h3>
+      <p>Curated course textbooks and reference resources for Computer Science, Engineering, Mathematics, Science, and Business.</p>
+      <span class="t">Course Reserves</span><i class="bar"></i>
+    </div>
+    <div class="les" data-les="4" data-cursor onclick="location.href='/books'">
+      <span class="k">05</span>
+      <h3>Librarian Desk &amp; Fine Control<em class="arch-tag">ADMINISTRATION</em></h3>
+      <p>Centralized librarian console to add new volumes, issue & return books, manage student accounts, and calculate overdue fines.</p>
+      <span class="t">Librarian Console</span><i class="bar"></i>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ chapter IV (#eternity) -->
+<section class="sec fin" id="eternity" data-cam="4">
+  <div class="fg" data-fg="eternity" aria-hidden="true">
+    <span class="fg-el fg-hill" data-fg-in="up">
+      <img th:src="@{/images/kage/foreground/hill.webp}" alt="" width="1774" height="887" loading="lazy" decoding="async">
+    </span>
+    <span class="fg-el fg-grass" data-fg-in="up">
+      <img th:src="@{/images/kage/foreground/tall-grass.webp}" alt="" width="1717" height="916" loading="lazy" decoding="async">
+    </span>
+  </div>
+  <div class="eyebrow" data-rv="fade">Chapter 04 — College Library Legacy</div>
+  <p class="body-lg quote-copy" data-rv="up">“A library is a place where history comes alive, where the past speaks to the present, and where the future is shaped.”</p>
+  <a class="cta" th:href="@{/books}" data-rv="fade" data-cursor>
+    <i></i><span>Begin the walk</span>
+    <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><path d="M3 11 11 3M5 3h6v6" stroke="#dfe7e0" stroke-width="1.3"/></svg>
+  </a>
+</section>
+
+<!-- ============================================================ footer -->
+<footer class="foot" data-cam="5">
+  <div class="fg" data-fg="foot" aria-hidden="true">
+    <span class="fg-el fg-bush" data-fg-in="up">
+      <img th:src="@{/images/kage/foreground/garden-bush.webp}" alt="" width="1717" height="876" loading="lazy" decoding="async">
+    </span>
+    <span class="fg-el fg-grass" data-fg-in="up">
+      <img th:src="@{/images/kage/foreground/tall-grass.webp}" alt="" width="1717" height="916" loading="lazy" decoding="async">
+    </span>
+    <span class="fg-el fg-stones" data-fg-in="up">
+      <img th:src="@{/images/kage/foreground/basalt-stones.webp}" alt="" width="1536" height="996" loading="lazy" decoding="async">
+    </span>
+  </div>
+  <div class="foot-grid">
+    <div class="foot-brand">
+      <svg viewBox="0 0 44 44" fill="none" width="34" height="34" aria-hidden="true">
+        <circle cx="22" cy="25" r="8.6" fill="#c5a568" fill-opacity=".9"/>
+        <path d="M5 13h34M9 18.4h26M22 8.5v27" stroke="#dfe7e0" stroke-width="1.5"/>
+      </svg>
+      <p>A collegiate digital sanctuary for contemplation, classical scholarship, and sovereign archival preservation.</p>
+    </div>
+    <div><h4>Collections</h4><ul>
+      <li><a th:href="@{/books}" data-cursor>Master Catalogue</a></li>
+      <li><a th:href="@{/books?keyword=Computer}" data-cursor>Computer Systems</a></li>
+      <li><a th:href="@{/books?keyword=Mathematics}" data-cursor>Mathematical Logic</a></li>
+      <li><a th:href="@{/books?keyword=Philosophy}" data-cursor>Classical Philosophy</a></li>
+    </ul></div>
+    <div><h4>Architecture</h4><ul>
+      <li><span class="footer-system-tag">Spring Boot 4.0.8</span></li>
+      <li><span class="footer-system-tag">Java 25 LTS</span></li>
+      <li><span class="footer-system-tag">PostgreSQL Archival</span></li>
+      <li><span class="footer-system-tag">OAuth 2.0 / OIDC</span></li>
+    </ul></div>
+    <div><h4>Status</h4><ul>
+      <li th:if="${user != null and user.role != null and user.role.toString() == 'LIBRARIAN'}"><a th:href="@{/librarian}" data-cursor>Librarian Workspace</a></li>
+      <li th:if="${user != null and user.role != null and user.role.toString() == 'USER'}"><a th:href="@{/user/dashboard}" data-cursor>Personal Dashboard</a></li>
+      <li><span style="color:#4ade80;">● All circulation active</span></li>
+    </ul></div>
+  </div>
+  <div class="foot-base">
+    <span>&copy; 2026 Libra LMS — Archival Sanctuary</span>
+    <span class="arch-tag">LIBRA LMS &middot; Archival Sanctuary</span>
+    <span>Spring Boot &middot; Three.js &middot; PostgreSQL</span>
+  </div>
 </footer>
 
-<!-- Motion & Animation Scripts (Deferred with Graceful Offline Fallback) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
-<script th:src="@{/js/cinematic-motion.js}" defer></script>
+</div><!-- /.page -->
+
+<div id="fg-sky" aria-hidden="true"></div>
+<div class="rail" id="rail"></div>
+
+<!-- Three.js r149 engine and Kage scroll choreography -->
+<script th:src="@{/js/three.min.js}"></script>
+<script th:src="@{/js/kage-engine.js}"></script>
 
 </body>
 </html>

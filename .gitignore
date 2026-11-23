@@ -44,6 +44,9 @@ application-local.properties
 .DS_Store
 Thumbs.db
 
+# Node dependencies
+node_modules/
+
 # Local backup files
 *.bak
 *.before-fix

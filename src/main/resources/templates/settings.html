@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:data-theme="${user != null and user.themePreference != null ? user.themePreference : 'dark'}"
+      th:data-accent="${user != null and user.accentColor != null ? user.accentColor : 'purple'}"
+      th:data-density="${user != null and user.interfaceDensity != null ? user.interfaceDensity : 'comfortable'}"
+      th:data-font-size="${user != null and user.fontSizePreference != null ? user.fontSizePreference : 'normal'}"
+      th:data-content-width="${user != null and user.contentWidth != null ? user.contentWidth : 'standard'}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <title>Libra LMS | Settings &amp; Preferences</title>
+
+    <!-- Editorial Typography Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+          rel="stylesheet">
+
+    <!-- Foundation Stylesheets -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/librarian-nav.css}">
+
+    <style>
+        .settings-container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 36px 20px 80px;
+        }
+
+        .settings-header {
+            margin-bottom: 32px;
+        }
+
+        .settings-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--color-muted-lavender);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .settings-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 3.2vw, 2.6rem);
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            color: var(--color-text-primary);
+            margin: 0 0 10px;
+        }
+
+        .settings-subtitle {
+            font-size: 0.96rem;
+            color: var(--color-text-secondary);
+            max-width: 680px;
+            line-height: 1.6;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 28px;
+        }
+
+        @media (min-width: 900px) {
+            .settings-grid-split {
+                display: grid;
+                grid-template-columns: 1.4fr 1fr;
+                gap: 28px;
+            }
+        }
+
+        .settings-section-card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            box-shadow: var(--shadow-card);
+            transition: background-color var(--transition-base), border-color var(--transition-base);
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .section-heading h2 {
+            font-family: var(--font-serif);
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .section-heading p {
+            font-size: 0.88rem;
+            color: var(--color-text-muted);
+            margin: 4px 0 0;
+        }
+
+        .form-row {
+            margin-bottom: 22px;
+        }
+
+        .form-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 8px;
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+
+        .form-select,
+        .form-input {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--color-bg-surface);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-sm);
+            color: var(--color-text-primary);
+            font-family: var(--font-sans);
+            font-size: 0.92rem;
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .form-select:focus,
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-dusty-purple);
+            box-shadow: 0 0 0 3px var(--color-dusty-purple-subtle);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-top: 3px;
+            width: 17px;
+            height: 17px;
+            accent-color: var(--color-dusty-purple);
+            cursor: pointer;
+        }
+
+        .checkbox-text strong {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--color-text-primary);
+        }
+
+        .checkbox-text small {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+
+        .radio-options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+        }
+
+        .radio-card-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px 14px;
+            background: var(--color-bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-align: center;
+            font-size: 0.86rem;
+            color: var(--color-text-secondary);
+        }
+
+        .radio-card-label input[type="radio"] {
+            display: none;
+        }
+
+        .radio-card-label:has(input[type="radio"]:checked) {
+            border-color: var(--color-dusty-purple);
+            background: var(--color-dusty-purple-subtle);
+            color: var(--color-off-white);
+            font-weight: 600;
+        }
+
+        .alert-banner {
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-success {
+            background: var(--color-success-bg);
+            border: 1px solid var(--color-success-border);
+            color: var(--color-success);
+        }
+
+        .alert-error {
+            background: var(--color-danger-bg);
+            border: 1px solid var(--color-danger-border);
+            color: var(--color-danger);
+        }
+
+        .btn-gold,
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            background: var(--color-primary-accent);
+            color: var(--color-text-inverse);
+            font-family: var(--font-sans);
+            font-weight: 600;
+            font-size: 0.92rem;
+            border: 1px solid var(--color-primary-accent-border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background-color var(--transition-fast), transform var(--transition-fast);
+        }
+
+        body.light .btn-primary,
+        [data-theme="light"] .btn-primary {
+            color: #FFFFFF;
+        }
+
+        .btn-gold:hover,
+        .btn-primary:hover {
+            background: var(--color-primary-accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .account-avatar-strip {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .account-avatar-img {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--color-dusty-purple);
+        }
+
+        .badge-verified {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: var(--radius-pill);
+            font-size: 0.76rem;
+            background: var(--color-success-bg);
+            color: var(--color-success);
+            border: 1px solid var(--color-success-border);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body th:classappend="${user != null and user.themePreference == 'light'} ? 'light' : ''">
+
+<!-- Render role-appropriate navigation fragment -->
+<th:block th:if="${isLibrarian}">
+    <header th:replace="~{fragments/librarian-nav :: librarian-navbar('settings')}"></header>
+</th:block>
+<th:block th:unless="${isLibrarian}">
+    <div th:replace="~{fragments/navbar :: navigation}"></div>
+</th:block>
+
+<main class="settings-container">
+
+    <!-- Header Section -->
+    <header class="settings-header">
+        <div class="settings-eyebrow">
+            <span>⚙</span> Configuration &amp; Personalization
+        </div>
+        <h1 class="settings-title">Sanctuary Settings</h1>
+        <p class="settings-subtitle">
+            Tailor your academic environment, reading typography, notifications, and security preferences. All adjustments persist seamlessly across your sessions.
+        </p>
+    </header>
+
+    <!-- Feedback Alerts -->
+    <div th:if="${settingsSuccess}" class="alert-banner alert-success" role="alert">
+        <span aria-hidden="true">✓</span>
+        <span th:text="${settingsSuccess}">Preferences updated successfully.</span>
+    </div>
+    <div th:if="${accountSuccess}" class="alert-banner alert-success" role="alert">
+        <span aria-hidden="true">✓</span>
+        <span th:text="${accountSuccess}">Account updated successfully.</span>
+    </div>
+    <div th:if="${accountError}" class="alert-banner alert-error" role="alert">
+        <span aria-hidden="true">⚠</span>
+        <span th:text="${accountError}">An error occurred.</span>
+    </div>
+
+    <!-- Main Split Grid: Interactive Lamp + Appearance Form -->
+    <div class="settings-grid settings-grid-split">
+
+        <!-- LEFT: Comprehensive Preferences Form -->
+        <form th:action="@{/settings/preferences}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <div class="settings-grid">
+
+                <!-- 1. APPEARANCE PREFERENCES -->
+                <section class="settings-section-card" aria-labelledby="appearance-head">
+                    <div class="section-heading">
+                        <div>
+                            <h2 id="appearance-head">Appearance &amp; Palette</h2>
+                            <p>Control visual themes, accent coloration, and interface density.</p>
+                        </div>
+                    </div>
+
+                    <!-- Theme Mode Selection -->
+                    <div class="form-row">
+                        <label class="form-label">Theme Mode</label>
+                        <div class="radio-options-grid">
+                            <label class="radio-card-label">
+                                <input type="radio" name="themePreference" value="dark"
+                                       th:checked="${user.themePreference == 'dark' or user.themePreference == null}">
+                                <span>🌙 Dark Archive</span>
+                            </label>
+                            <label class="radio-card-label">
+                                <input type="radio" name="themePreference" value="light"
+                                       th:checked="${user.themePreference == 'light'}">
+                                <span>☀️ Parchment</span>
+                            </label>
+                            <label class="radio-card-label">
+                                <input type="radio" name="themePreference" value="system"
+                                       th:checked="${user.themePreference == 'system'}">
+                                <span>💻 Follow OS</span>
+                            </label>
+                        </div>
+                        <p class="form-hint">Tip: You can also pull the reading lamp cord on the right to flip instantly between Dark and Light.</p>
+                    </div>
+
+                    <!-- Accent Colour -->
+                    <div class="form-row">
+                        <label class="form-label" for="accentColor">Accent Colorway</label>
+                        <select class="form-select" id="accentColor" name="accentColor">
+                            <option value="purple" th:selected="${user.accentColor == 'purple' or user.accentColor == 'gold' or user.accentColor == null}">Dusty Purple (Dark Academia)</option>
+                            <option value="plum" th:selected="${user.accentColor == 'plum' or user.accentColor == 'bronze'}">Deep Plum (Archive Leather)</option>
+                            <option value="lavender" th:selected="${user.accentColor == 'lavender'}">Muted Lavender (Classical Manuscript)</option>
+                            <option value="charcoal" th:selected="${user.accentColor == 'charcoal'}">Charcoal Study (Midnight Slate)</option>
+                        </select>
+                    </div>
+
+                    <!-- Interface Density -->
+                    <div class="form-row">
+                        <label class="form-label">Interface Density</label>
+                        <div class="radio-options-grid">
+                            <label class="radio-card-label">
+                                <input type="radio" name="interfaceDensity" value="comfortable"
+                                       th:checked="${user.interfaceDensity == 'comfortable' or user.interfaceDensity == null}">
+                                <span>Comfortable</span>
+                            </label>
+                            <label class="radio-card-label">
+                                <input type="radio" name="interfaceDensity" value="compact"
+                                       th:checked="${user.interfaceDensity == 'compact'}">
+                                <span>Compact Data</span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. READING & CONTENT PREFERENCES -->
+                <section class="settings-section-card" aria-labelledby="reading-head">
+                    <div class="section-heading">
+                        <div>
+                            <h2 id="reading-head">Reading &amp; Layout</h2>
+                            <p>Configure typography scaling, catalogue views, and reading width.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label" for="fontSizePreference">Reading Font Scale</label>
+                        <select class="form-select" id="fontSizePreference" name="fontSizePreference">
+                            <option value="normal" th:selected="${user.fontSizePreference == 'normal' or user.fontSizePreference == null}">Normal (15px Standard)</option>
+                            <option value="large" th:selected="${user.fontSizePreference == 'large'}">Large (16.5px Enhanced Legibility)</option>
+                            <option value="x-large" th:selected="${user.fontSizePreference == 'x-large'}">Extra Large (18px High Readability)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label" for="contentWidth">Catalogue Reading Width</label>
+                        <select class="form-select" id="contentWidth" name="contentWidth">
+                            <option value="standard" th:selected="${user.contentWidth == 'standard' or user.contentWidth == null}">Standard Editorial (1200px)</option>
+                            <option value="wide" th:selected="${user.contentWidth == 'wide'}">Wide Archival (1440px)</option>
+                            <option value="full" th:selected="${user.contentWidth == 'full'}">Full Viewport Span (96%)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label">Default Catalogue Layout</label>
+                        <div class="radio-options-grid">
+                            <label class="radio-card-label">
+                                <input type="radio" name="readingLayout" value="grid"
+                                       th:checked="${user.readingLayout == 'grid' or user.readingLayout == null}">
+                                <span>▦ Card Grid</span>
+                            </label>
+                            <label class="radio-card-label">
+                                <input type="radio" name="readingLayout" value="list"
+                                       th:checked="${user.readingLayout == 'list'}">
+                                <span>☰ Compact List</span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. CIRCULATION NOTIFICATIONS (Role-Aware) -->
+                <section class="settings-section-card" aria-labelledby="notifications-head">
+                    <div class="section-heading">
+                        <div>
+                            <h2 id="notifications-head">Circulation Notifications</h2>
+                            <p>Manage email dispatch triggers and loan milestone advisories.</p>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="emailBorrowReminders" value="true"
+                                   th:checked="${user.emailBorrowReminders}">
+                            <div class="checkbox-text">
+                                <strong>Loan Receipt Dispatches</strong>
+                                <small>Receive electronic borrowing acknowledgments and checkout manifests.</small>
+                            </div>
+                        </label>
+
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="emailDueReminders" value="true"
+                                   th:checked="${user.emailDueReminders}">
+                            <div class="checkbox-text">
+                                <strong>Due Date Advisory Reminders</strong>
+                                <small>Receive advance warning 3 days prior to due dates to avoid archival holds.</small>
+                            </div>
+                        </label>
+
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="emailReturnConfirmations" value="true"
+                                   th:checked="${user.emailReturnConfirmations}">
+                            <div class="checkbox-text">
+                                <strong>Return Finality Receipts</strong>
+                                <small>Receive real-time confirmation immediately after books are checked in.</small>
+                            </div>
+                        </label>
+                    </div>
+                </section>
+
+                <!-- 4. ACCESSIBILITY, DASHBOARD & REGIONAL -->
+                <section class="settings-section-card" aria-labelledby="access-head">
+                    <div class="section-heading">
+                        <div>
+                            <h2 id="access-head">Accessibility &amp; Regional</h2>
+                            <p>Tailor motion damping, date presentation, and landing destinations.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="reducedMotionPreference" value="true"
+                                       th:checked="${user.reducedMotionPreference}">
+                                <div class="checkbox-text">
+                                    <strong>Enforce Reduced Motion</strong>
+                                    <small>Disable decorative card parallax, lamp spring recoil, and GSAP scroll choreography.</small>
+                                </div>
+                            </label>
+
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="highContrastPreference" value="true"
+                                       th:checked="${user.highContrastPreference}">
+                                <div class="checkbox-text">
+                                    <strong>High-Contrast Borders &amp; Hairlines</strong>
+                                    <small>Increase border opacity and text contrast ratios for enhanced readability.</small>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label" for="defaultLandingPage">Default Login Landing Page</label>
+                        <select class="form-select" id="defaultLandingPage" name="defaultLandingPage">
+                            <option th:if="${isLibrarian}" value="librarian" th:selected="${user.defaultLandingPage == 'librarian'}">Librarian Workspace (/librarian)</option>
+                            <option th:unless="${isLibrarian}" value="dashboard" th:selected="${user.defaultLandingPage == 'dashboard'}">Scholar Dashboard (/user/dashboard)</option>
+                            <option value="catalog" th:selected="${user.defaultLandingPage == 'catalog'}">Book Catalogue (/books)</option>
+                            <option th:unless="${isLibrarian}" value="borrowings" th:selected="${user.defaultLandingPage == 'borrowings'}">My Loans (/user/borrowings)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label" for="dateFormatPreference">Date Format</label>
+                        <select class="form-select" id="dateFormatPreference" name="dateFormatPreference">
+                            <option value="YYYY-MM-DD" th:selected="${user.dateFormatPreference == 'YYYY-MM-DD'}">YYYY-MM-DD (ISO Archival)</option>
+                            <option value="DD/MM/YYYY" th:selected="${user.dateFormatPreference == 'DD/MM/YYYY'}">DD/MM/YYYY (European Academic)</option>
+                            <option value="MM/DD/YYYY" th:selected="${user.dateFormatPreference == 'MM/DD/YYYY'}">MM/DD/YYYY (US Scholastic)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label" for="timezonePreference">Archival Timezone</label>
+                        <select class="form-select" id="timezonePreference" name="timezonePreference">
+                            <option value="UTC" th:selected="${user.timezonePreference == 'UTC'}">UTC (Universal Time Coordinated)</option>
+                            <option value="America/New_York" th:selected="${user.timezonePreference == 'America/New_York'}">America/New_York (Eastern)</option>
+                            <option value="Europe/London" th:selected="${user.timezonePreference == 'Europe/London'}">Europe/London (GMT/BST)</option>
+                            <option value="Asia/Kolkata" th:selected="${user.timezonePreference == 'Asia/Kolkata'}">Asia/Kolkata (IST)</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-top: 28px;">
+                        <button type="submit" class="btn btn-primary">
+                            <span>Save Preferences</span>
+                            <span aria-hidden="true">→</span>
+                        </button>
+                    </div>
+                </section>
+
+            </div>
+        </form>
+
+        <!-- RIGHT SIDEBAR: Pull-Cord Reading Lamp & Security / Account Management -->
+        <aside class="settings-grid">
+
+            <!-- 5. THEME SELECTION -->
+            <div class="pull-cord-lamp-card" aria-label="Theme Selection">
+                <div class="theme-identity-badge" style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--color-primary-accent);">
+                    <span class="theme-badge-icon" aria-hidden="true">✧</span>
+                    <span class="theme-badge-title">Theme Palette</span>
+                </div>
+                <div class="lamp-hint" style="margin-top: 10px; margin-bottom: 18px; text-align: center; color: var(--color-text-secondary); font-size: 0.88rem; line-height: 1.5;">
+                    Select your preferred reading mode and interface palette:
+                </div>
+
+                <!-- Theme Selection Switch -->
+                <div class="accessible-theme-row">
+                    <div class="theme-pill-group" role="group" aria-label="Theme mode switcher">
+                        <button type="button" class="theme-pill-btn" data-theme-val="dark" aria-pressed="false">
+                            <span>🌙 Midnight Archive</span>
+                        </button>
+                        <button type="button" class="theme-pill-btn" data-theme-val="light" aria-pressed="false">
+                            <span>☀️ Lavender Parchment</span>
+                        </button>
+                        <button type="button" class="theme-pill-btn" data-theme-val="system" aria-pressed="false">
+                            <span>💻 System Default</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. ACCOUNT & IDENTITY CARD -->
+            <section class="settings-section-card" aria-labelledby="account-head">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="account-head">Identity &amp; Profile</h2>
+                        <p>Manage your name, avatar and credentials.</p>
+                    </div>
+                </div>
+
+                <!-- Avatar Preview & Upload -->
+                <div class="account-avatar-strip">
+                    <img class="account-avatar-img" th:src="@{/profile/photo}" alt="Profile avatar"
+                         onerror="this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent('[[${user.fullName}]]') + '&background=292832&color=B7A9BD'">
+                    <div>
+                        <div style="font-weight: 600; color: var(--color-text-primary);" th:text="${user.fullName}">Scholar Name</div>
+                        <small style="color: var(--color-text-muted);" th:text="${user.email}">user@example.com</small>
+                        <div style="margin-top: 6px;">
+                            <span class="badge-verified">Verified Scholar</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form th:action="@{/settings/account}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                    <div class="form-row">
+                        <label class="form-label" for="fullName">Full Name</label>
+                        <input class="form-input" id="fullName" name="fullName" type="text"
+                               th:value="${user.fullName}" required maxlength="100">
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label">Email Address</label>
+                        <input class="form-input" type="email" th:value="${user.email}" readonly disabled
+                               style="opacity: 0.7; cursor: not-allowed;">
+                        <p class="form-hint">Email is linked to your institutional identity and cannot be altered.</p>
+                    </div>
+
+                    <!-- Password Section (Role-Aware & OAuth-Aware) -->
+                    <div th:if="${isGoogleUser}" class="form-row">
+                        <div style="padding: 12px 14px; background: var(--color-bg-surface); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.85rem; color: var(--color-text-secondary);">
+                            <span aria-hidden="true">🔒</span>
+                            Authenticated via <strong>Google Workspace OIDC</strong>. Password security is managed directly through Google.
+                        </div>
+                    </div>
+
+                    <div th:unless="${isGoogleUser}">
+                        <div class="form-row">
+                            <label class="form-label" for="currentPassword">Current Password</label>
+                            <input class="form-input" id="currentPassword" name="currentPassword" type="password"
+                                   placeholder="Required only to change password">
+                        </div>
+
+                        <div class="form-row">
+                            <label class="form-label" for="newPassword">New Password</label>
+                            <input class="form-input" id="newPassword" name="newPassword" type="password"
+                                   placeholder="Leave blank to keep current">
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                            Update Account Details
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Profile Photo Form -->
+                <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-subtle);">
+                    <form th:action="@{/profile/photo}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <label class="form-label" for="photo">Update Profile Picture</label>
+                        <input class="form-input" id="photo" name="photo" type="file" accept="image/png,image/jpeg" required>
+                        <p class="form-hint">PNG or JPEG up to 3MB. Images are automatically cropped and centered.</p>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 10px; width: 100%; justify-content: center; background: var(--color-bg-surface); color: var(--color-off-white); border: 1px solid var(--border-medium);">
+                            Upload Photo
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+        </aside>
+
+    </div>
+
+</main>
+
+<!-- Scripts -->
+<script th:src="@{/js/navbar.js}" defer></script>
+<script th:src="@{/js/librarian-nav.js}" defer></script>
+
+<!-- Motion & Animation Scripts (Deferred with Graceful Offline Fallback) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
+<script th:src="@{/js/cinematic-motion.js}" defer></script>
+
+</body>
+</html>

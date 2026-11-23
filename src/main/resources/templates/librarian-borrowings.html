@@ -7,23 +7,51 @@
 
     <title>Borrowing Management | Libra LMS</title>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- Shared Foundation Stylesheets -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/librarian-nav.css}">
+
     <style>
         * {
             box-sizing: border-box;
         }
 
         :root {
-            --background: #0b1120;
-            --surface: #111b2e;
-            --surface-light: #152238;
-            --border: #263449;
-            --primary: #d4af37;
-            --primary-strong: #e2c974;
-            --text: #e5e7eb;
-            --muted: #9caec2;
-            --danger: #fca5a5;
-            --success-bg: #123b32;
-            --danger-bg: #4c2029;
+            --background: #17151D;
+            --surface: #24212C;
+            --surface-light: #302A39;
+            --border: rgba(194, 178, 206, 0.2);
+            --primary: #A58AB5;
+            --primary-strong: #C2B2CE;
+            --dusty-purple: #A58AB5;
+            --text: #F0ECF3;
+            --muted: #B8AFBF;
+            --danger: #C57D87;
+            --success-bg: rgba(136, 166, 143, 0.2);
+            --danger-bg: rgba(197, 125, 135, 0.2);
+        }
+
+        body.light,
+        [data-theme="light"],
+        [data-theme="light"] body {
+            --background: #F3EFF5;
+            --surface: #FFFFFF;
+            --surface-light: #E8E0ED;
+            --border: rgba(115, 86, 129, 0.2);
+            --primary: #735681;
+            --primary-strong: #927BA0;
+            --dusty-purple: #735681;
+            --text: #292330;
+            --muted: #655C6C;
+            --danger: #C57D87;
+            --success-bg: rgba(136, 166, 143, 0.15);
+            --danger-bg: rgba(197, 125, 135, 0.15);
         }
 
         html {
@@ -249,7 +277,7 @@
         }
 
         tbody tr:hover {
-            background: #17253a;
+            background: #35323a;
         }
 
         tbody tr:last-child td {
@@ -262,12 +290,12 @@
         }
 
         .book-title {
-            color: #f1f5f9;
+            color: #EAE6ED;
             font-weight: 700;
         }
 
         .borrower-name {
-            color: #dbeafe;
+            color: var(--primary);
             font-weight: 600;
         }
 
@@ -308,17 +336,20 @@
 
         .borrowed {
             background: var(--success-bg);
-            color: #99f6e4;
+            color: #88758F;
+            border: 1px solid rgba(183, 169, 189, 0.3);
         }
 
         .returned {
-            background: #253449;
-            color: #cbd5e1;
+            background: rgba(185, 170, 189, 0.15);
+            color: #B9AABD;
+            border: 1px solid rgba(185, 170, 189, 0.25);
         }
 
         .overdue-label {
             background: var(--danger-bg);
-            color: #fecaca;
+            color: #fca5a5;
+            border: 1px solid rgba(220, 80, 80, 0.35);
         }
 
         /* FLASH ALERTS */
@@ -333,21 +364,21 @@
 
         .alert-success {
             background: var(--success-bg);
-            color: #86efac;
-            border: 1px solid #166534;
+            color: #88758F;
+            border: 1px solid rgba(183, 169, 189, 0.35);
         }
 
         .alert-danger {
             background: var(--danger-bg);
             color: var(--danger);
-            border: 1px solid #991b1b;
+            border: 1px solid rgba(220, 80, 80, 0.35);
         }
 
         /* ACTION CONTROLS */
 
         .return-btn {
             background: var(--primary);
-            color: #0b1120;
+            color: #202027;
             border: none;
             padding: 7px 14px;
             border-radius: 6px;
@@ -673,6 +704,12 @@
 <footer>
     Libra LMS · Library Administration
 </footer>
+
+<!-- Motion & Animation Scripts (Deferred with Graceful Offline Fallback) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
+<script th:src="@{/js/cinematic-motion.js}" defer></script>
 
 </body>
 </html>

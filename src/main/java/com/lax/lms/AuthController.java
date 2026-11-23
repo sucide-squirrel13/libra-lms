@@ -20,7 +20,7 @@ public class AuthController {
 
     @GetMapping("/register")
     public String showRegistrationPage() {
-        return "register";
+        return "redirect:/login";
     }
 
     @PostMapping("/register")
@@ -43,7 +43,7 @@ public class AuthController {
             redirectAttributes.addFlashAttribute(
                     "errorMessage", exception.getMessage());
 
-            return "redirect:/register";
+            return "redirect:/login";
         }
     }
 

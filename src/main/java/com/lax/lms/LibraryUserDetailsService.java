@@ -14,9 +14,13 @@ import java.util.List;
 public class LibraryUserDetailsService implements UserDetailsService {
 
     private final LibraryUserRepository userRepository;
+    private final LibrarianAccessPolicy librarianAccessPolicy;
 
-    public LibraryUserDetailsService(LibraryUserRepository userRepository) {
+    public LibraryUserDetailsService(
+            LibraryUserRepository userRepository,
+            LibrarianAccessPolicy librarianAccessPolicy) {
         this.userRepository = userRepository;
+        this.librarianAccessPolicy = librarianAccessPolicy;
     }
 
     @Override
@@ -34,14 +38,24 @@ public class LibraryUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Account has no assigned role");
         }
 
-        if (!role.startsWith("ROLE_")) {
-            role = "ROLE_" + role;
+        // If an unauthorized user somehow holds the LIBRARIAN role in the database,
+        // sanitize the database record by demoting it back to USER.
+        if ("LIBRARIAN".equalsIgnoreCase(role) || "ROLE_LIBRARIAN".equalsIgnoreCase(role)) {
+            if (!librarianAccessPolicy.isAuthorizedLibrarian(libraryUser.getEmail())) {
+                libraryUser.setRole("USER");
+                userRepository.save(libraryUser);
+            }
         }
 
+        // CRITICAL SECURITY ENFORCEMENT:
+        // Password-based authentication MUST NEVER grant ROLE_LIBRARIAN.
+        // Librarian privileges are strictly granted ONLY via verified Google OAuth authentication
+        // (with email_verified=true and matching the configured allowlist).
+        // Therefore, ALL password-authenticated sessions receive ROLE_USER.
         return new User(
                 libraryUser.getEmail(),
                 libraryUser.getPassword(),
-                List.of(new SimpleGrantedAuthority(role))
+                List.of(new SimpleGrantedAuthority("ROLE_USER"))
         );
     }
 }

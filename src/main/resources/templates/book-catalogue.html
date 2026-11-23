@@ -30,11 +30,18 @@
             padding: 44px 48px;
             margin-bottom: 34px;
             border-radius: var(--radius-xl);
-            background: linear-gradient(135deg, rgba(22, 27, 37, 0.92), rgba(15, 18, 25, 0.96));
+            background: linear-gradient(135deg, rgba(36, 33, 44, 0.92), rgba(23, 21, 29, 0.96));
             border: 1px solid var(--border-medium);
             box-shadow: var(--shadow-card);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
+        }
+
+        body.light .catalogue-hero,
+        [data-theme="light"] .catalogue-hero {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(232, 224, 237, 0.9));
+            border: 1px solid rgba(115, 86, 129, 0.22);
+            box-shadow: 0 8px 30px rgba(70, 50, 80, 0.08);
         }
 
         .catalogue-hero::after {
@@ -44,7 +51,7 @@
             left: 32px;
             right: 32px;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.35), rgba(197, 155, 109, 0.25), transparent);
+            background: linear-gradient(90deg, transparent, var(--color-primary-accent-border), var(--color-secondary-accent-border), transparent);
         }
 
         .catalogue-hero-title {
@@ -56,10 +63,10 @@
             margin: 12px 0 8px;
         }
 
-        .catalogue-hero-title .gold-accent {
+        .catalogue-hero-title .accent-lavender {
             font-style: italic;
             font-weight: 600;
-            color: var(--color-gold);
+            color: var(--color-muted-lavender);
         }
 
         .catalogue-hero-subtitle {
@@ -164,7 +171,7 @@
         }
 
         .results-count-badge strong {
-            color: var(--color-gold);
+            color: var(--color-muted-lavender);
         }
 
         /* Books Grid */
@@ -188,8 +195,8 @@
 
         .catalogue-card:hover {
             transform: translateY(-3px);
-            border-color: var(--color-gold-border);
-            box-shadow: var(--shadow-elevated), var(--shadow-gold);
+            border-color: var(--color-dusty-purple-border);
+            box-shadow: var(--shadow-elevated), var(--shadow-purple);
         }
 
         .book-identity-row {
@@ -249,7 +256,7 @@
         }
 
         .spec-item .copies-highlight {
-            color: var(--color-gold);
+            color: var(--color-muted-lavender);
             font-weight: 700;
         }
 
@@ -331,8 +338,8 @@
 
 <!-- Ambient Warmth Layer -->
 <div class="ambient-glow-layer" aria-hidden="true">
-    <div class="ambient-light-orb orb-gold"></div>
-    <div class="ambient-light-orb orb-bronze"></div>
+    <div class="ambient-light-orb orb-purple"></div>
+    <div class="ambient-light-orb orb-plum"></div>
 </div>
 
 <!-- Shared Editorial Navigation Bar (Always shows profile when authenticated) -->
@@ -347,7 +354,7 @@
             <div class="eyebrow">Digital Repository</div>
 
             <h1 class="catalogue-hero-title">
-                Explore the <span class="gold-accent">Library Catalogue</span>
+                Explore the <span class="accent-lavender">Library Catalogue</span>
             </h1>
 
             <p class="catalogue-hero-subtitle">
@@ -432,7 +439,7 @@
 
                         <div class="card-book-meta">
                             <div class="card-book-category">
-                                <span class="badge badge-gold"
+                                <span class="badge badge-purple"
                                       style="font-size: 0.68rem; padding: 2px 8px;"
                                       th:text="${book.category != null and !#strings.isEmpty(book.category) ? book.category : 'General'}">
                                     Category
@@ -534,6 +541,12 @@
 
     </div>
 </main>
+
+<!-- Motion & Animation Scripts (Deferred with Graceful Offline Fallback) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
+<script th:src="@{/js/cinematic-motion.js}" defer></script>
 
 </body>
 </html>

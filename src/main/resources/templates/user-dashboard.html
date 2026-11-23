@@ -35,11 +35,18 @@
             padding: 40px 48px;
             margin-bottom: 32px;
             border-radius: var(--radius-xl);
-            background: linear-gradient(135deg, rgba(22, 27, 37, 0.88), rgba(15, 18, 25, 0.94));
+            background: linear-gradient(135deg, rgba(36, 33, 44, 0.92), rgba(23, 21, 29, 0.96));
             border: 1px solid var(--border-medium);
             box-shadow: var(--shadow-card);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
+        }
+
+        body.light .editorial-hero,
+        [data-theme="light"] .editorial-hero {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(232, 224, 237, 0.9));
+            border: 1px solid rgba(115, 86, 129, 0.22);
+            box-shadow: 0 8px 30px rgba(70, 50, 80, 0.08);
         }
 
         .editorial-hero::after {
@@ -49,7 +56,7 @@
             left: 32px;
             right: 32px;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.35), rgba(197, 155, 109, 0.25), transparent);
+            background: linear-gradient(90deg, transparent, var(--color-primary-accent-border), var(--color-secondary-accent-border), transparent);
         }
 
         .hero-left {
@@ -69,7 +76,7 @@
         .hero-title .user-name {
             font-style: italic;
             font-weight: 600;
-            color: var(--color-gold);
+            color: var(--color-dusty-purple);
         }
 
         .hero-subtitle {
@@ -104,7 +111,7 @@
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: var(--color-gold);
+            background: var(--color-dusty-purple);
         }
 
         .hero-button-group {
@@ -137,9 +144,9 @@
             height: 44px;
             border-radius: var(--radius-md);
             font-size: 1.25rem;
-            background: var(--color-gold-subtle);
-            color: var(--color-gold);
-            border: 1px solid var(--color-gold-border);
+            background: var(--color-dusty-purple-subtle);
+            color: var(--color-dusty-purple);
+            border: 1px solid var(--color-dusty-purple-border);
         }
 
         .kpi-symbol-emerald {
@@ -148,7 +155,7 @@
             border-color: var(--color-success-border);
         }
 
-        .kpi-symbol-amber {
+        .kpi-symbol-plum {
             background: var(--color-warning-bg);
             color: var(--color-warning);
             border-color: var(--color-warning-border);
@@ -205,7 +212,7 @@
 
         .loan-row:hover {
             background: rgba(255, 255, 255, 0.04);
-            border-color: var(--color-gold-border);
+            border-color: var(--color-dusty-purple-border);
             transform: translateX(3px);
         }
 
@@ -271,10 +278,10 @@
             width: 64px;
             height: 64px;
             border-radius: var(--radius-lg);
-            background: var(--color-gold-subtle);
-            border: 1px solid var(--color-gold-border);
+            background: var(--color-dusty-purple-subtle);
+            border: 1px solid var(--color-dusty-purple-border);
             font-size: 1.8rem;
-            color: var(--color-gold);
+            color: var(--color-dusty-purple);
             margin-bottom: 16px;
         }
 
@@ -314,7 +321,7 @@
 
         .featured-card:hover {
             background: rgba(255, 255, 255, 0.04);
-            border-color: var(--color-gold-border);
+            border-color: var(--color-dusty-purple-border);
             transform: translateY(-2px);
         }
 
@@ -350,11 +357,11 @@
         .view-link {
             font-size: 0.8rem;
             font-weight: 700;
-            color: var(--color-gold);
+            color: var(--color-dusty-purple);
         }
 
         .view-link:hover {
-            color: var(--color-gold-hover);
+            color: var(--color-dusty-purple-hover);
         }
 
         /* Catalogue Search Bar inside dashboard */
@@ -365,14 +372,14 @@
             padding: 5px 6px 5px 16px;
             margin-bottom: 18px;
             border-radius: var(--radius-md);
-            background: #11151e;
+            background: var(--color-bg-base);
             border: 1px solid var(--border-medium);
             transition: border-color var(--transition-fast);
         }
 
         .dashboard-search-bar:focus-within {
-            border-color: var(--color-gold);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+            border-color: var(--color-primary-accent);
+            box-shadow: 0 0 0 3px var(--color-primary-accent-subtle);
         }
 
         .dashboard-search-bar input {
@@ -427,8 +434,8 @@
         }
 
         .action-item:hover {
-            background: var(--color-gold-subtle);
-            border-color: var(--color-gold-border);
+            background: var(--color-dusty-purple-subtle);
+            border-color: var(--color-dusty-purple-border);
             transform: translateX(3px);
         }
 
@@ -463,7 +470,7 @@
         }
 
         .action-arrow {
-            color: var(--color-gold);
+            color: var(--color-dusty-purple);
             font-size: 0.9rem;
             transition: transform var(--transition-fast);
         }
@@ -486,7 +493,7 @@
         }
 
         .policy-bullet {
-            color: var(--color-gold);
+            color: var(--color-dusty-purple);
             font-size: 0.8rem;
             margin-top: 3px;
         }
@@ -504,15 +511,15 @@
         /* Quotation Spotlight */
         .quotation-card {
             border-radius: var(--radius-lg);
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(197, 155, 109, 0.04));
-            border: 1px solid var(--color-gold-border);
+            background: linear-gradient(135deg, var(--color-primary-accent-subtle), var(--color-secondary-accent-subtle));
+            border: 1px solid var(--color-primary-accent-border);
             padding: 24px;
             text-align: center;
         }
 
         .quote-ornament {
             font-size: 1.4rem;
-            color: var(--color-gold);
+            color: var(--color-dusty-purple);
             margin-bottom: 8px;
         }
 
@@ -531,7 +538,7 @@
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
-            color: var(--color-gold);
+            color: var(--color-dusty-purple);
         }
 
         /* Responsive Breakpoints */
@@ -586,8 +593,8 @@
 
 <!-- Ambient Warmth Layer -->
 <div class="ambient-glow-layer" aria-hidden="true">
-    <div class="ambient-light-orb orb-gold"></div>
-    <div class="ambient-light-orb orb-bronze"></div>
+    <div class="ambient-light-orb orb-purple"></div>
+    <div class="ambient-light-orb orb-plum"></div>
 </div>
 
 <!-- Shared Editorial Navigation Bar -->
@@ -639,7 +646,7 @@
                 <article class="editorial-card kpi-card">
                     <div class="kpi-header">
                         <div class="kpi-symbol" aria-hidden="true">📖</div>
-                        <span class="badge badge-gold" th:if="${activeBorrowings > 0}">
+                        <span class="badge badge-purple" th:if="${activeBorrowings > 0}">
                             ● Active Loan
                         </span>
                         <span class="badge badge-success" th:if="${activeBorrowings == 0}">
@@ -655,7 +662,7 @@
                 <!-- Overdue Books -->
                 <article class="editorial-card kpi-card">
                     <div class="kpi-header">
-                        <div class="kpi-symbol kpi-symbol-amber" aria-hidden="true">⏰</div>
+                        <div class="kpi-symbol kpi-symbol-plum" aria-hidden="true">⏰</div>
                         <span class="badge badge-danger" th:if="${overdueBorrowings > 0}">
                             ⚠ Action Required
                         </span>
@@ -760,7 +767,7 @@
                                 </div>
 
                                 <span class="badge"
-                                      th:classappend="${borrowing.status != null and borrowing.status.toString() == 'RETURNED'} ? ' badge-success' : (${borrowing.dueDate != null and borrowing.dueDate.isBefore(T(java.time.LocalDate).now()) and borrowing.status != null and borrowing.status.toString() == 'BORROWED'} ? ' badge-danger' : ' badge-gold')">
+                                      th:classappend="${borrowing.status != null and borrowing.status.toString() == 'RETURNED'} ? ' badge-success' : (${borrowing.dueDate != null and borrowing.dueDate.isBefore(T(java.time.LocalDate).now()) and borrowing.status != null and borrowing.status.toString() == 'BORROWED'} ? ' badge-danger' : ' badge-purple')">
                                     <span th:if="${borrowing.status != null and borrowing.status.toString() == 'RETURNED'}">✓ Returned</span>
                                     <span th:if="${borrowing.status != null and borrowing.status.toString() == 'BORROWED' and borrowing.dueDate != null and borrowing.dueDate.isBefore(T(java.time.LocalDate).now())}">⚠ Overdue</span>
                                     <span th:if="${borrowing.status != null and borrowing.status.toString() == 'BORROWED' and (borrowing.dueDate == null or !borrowing.dueDate.isBefore(T(java.time.LocalDate).now()))}">● Active Loan</span>
@@ -824,7 +831,7 @@
                         <div class="featured-grid" th:if="${featuredBooks != null and !featuredBooks.isEmpty()}">
                             <article class="featured-card" th:each="book : ${featuredBooks}">
                                 <div>
-                                    <span class="badge badge-gold"
+                                    <span class="badge badge-purple"
                                           style="font-size: 0.68rem; padding: 2px 8px;"
                                           th:text="${book.category != null ? book.category : 'General'}">
                                         Category
@@ -852,7 +859,7 @@
                 <!-- Navigation Hub -->
                 <div class="editorial-card sidebar-panel">
                     <h3 class="sidebar-heading">
-                        <span aria-hidden="true" style="color: var(--color-gold);">⚡</span>
+                        <span aria-hidden="true" style="color: var(--color-dusty-purple);">⚡</span>
                         <span>Quick Navigation</span>
                     </h3>
 
@@ -895,7 +902,7 @@
                 <!-- Reader Guidelines -->
                 <div class="editorial-card sidebar-panel">
                     <h3 class="sidebar-heading">
-                        <span aria-hidden="true" style="color: var(--color-gold);">📜</span>
+                        <span aria-hidden="true" style="color: var(--color-dusty-purple);">📜</span>
                         <span>Reader Code &amp; Guidelines</span>
                     </h3>
 
@@ -955,6 +962,12 @@
         }
     });
 </script>
+
+<!-- Motion & Animation Scripts (Deferred with Graceful Offline Fallback) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
+<script th:src="@{/js/cinematic-motion.js}" defer></script>
 
 </body>
 </html>

@@ -107,7 +107,7 @@ class LibrarianNavigationWebTests {
     }
 
     @Test
-    @DisplayName("GET /librarian renders modularized librarian navbar with active dashboard link")
+    @DisplayName("GET /librarian renders modularized librarian navbar with active dashboard link and reading lamp")
     void getLibrarian_rendersModularNavbar() throws Exception {
         mockMvc.perform(get("/librarian").with(librarianAuth()))
                 .andExpect(status().isOk())
@@ -118,38 +118,41 @@ class LibrarianNavigationWebTests {
                 .andExpect(content().string(containsString("/librarian/borrowings")))
                 .andExpect(content().string(containsString("/librarian/users")))
                 .andExpect(content().string(containsString("/librarian/audit-logs")))
-                .andExpect(content().string(containsString("/librarian#settings")))
+                .andExpect(content().string(containsString("theme-toggle-btn")))
                 .andExpect(content().string(containsString("Librarian Admin")))
                 .andExpect(content().string(containsString("LIBRARIAN")));
     }
 
     @Test
-    @DisplayName("GET /librarian/borrowings renders modularized navbar with active borrowings link")
+    @DisplayName("GET /librarian/borrowings renders modularized navbar with active borrowings link and theme toggle")
     void getBorrowings_rendersModularNavbarWithActiveBorrowings() throws Exception {
         mockMvc.perform(get("/librarian/borrowings").with(librarianAuth()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("librarian-navbar")))
                 .andExpect(content().string(containsString("href=\"/librarian/borrowings\"")))
+                .andExpect(content().string(containsString("theme-toggle-btn")))
                 .andExpect(content().string(containsString("Borrowing Records")));
     }
 
     @Test
-    @DisplayName("GET /librarian/users renders modularized navbar with active users link")
+    @DisplayName("GET /librarian/users renders modularized navbar with active users link and theme toggle")
     void getUsers_rendersModularNavbarWithActiveUsers() throws Exception {
         mockMvc.perform(get("/librarian/users").with(librarianAuth()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("librarian-navbar")))
                 .andExpect(content().string(containsString("href=\"/librarian/users\"")))
+                .andExpect(content().string(containsString("theme-toggle-btn")))
                 .andExpect(content().string(containsString("User Management")));
     }
 
     @Test
-    @DisplayName("GET /librarian/audit-logs renders modularized navbar with active audit logs link")
+    @DisplayName("GET /librarian/audit-logs renders modularized navbar with active audit logs link and theme toggle")
     void getAuditLogs_rendersModularNavbarWithActiveAuditLogs() throws Exception {
         mockMvc.perform(get("/librarian/audit-logs").with(librarianAuth()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("librarian-navbar")))
                 .andExpect(content().string(containsString("href=\"/librarian/audit-logs\"")))
+                .andExpect(content().string(containsString("theme-toggle-btn")))
                 .andExpect(content().string(containsString("Audit Logs")));
     }
 }

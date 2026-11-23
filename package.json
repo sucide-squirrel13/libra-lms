@@ -1,0 +1,11 @@
+{
+  "name": "lms",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build:winter": "node scripts/build-winter.js"
+  },
+  "dependencies": {
+    "winter": "^1.0.3"
+  }
+}

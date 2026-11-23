@@ -38,7 +38,7 @@ public class HomeController {
         var featuredBooks = bookRepository.findAll()
                 .stream()
                 .filter(b -> b.getAvailableCopies() > 0)
-                .limit(4)
+                .limit(6)
                 .toList();
         model.addAttribute("featuredBooks", featuredBooks);
         model.addAttribute("totalBooks", bookRepository.count());

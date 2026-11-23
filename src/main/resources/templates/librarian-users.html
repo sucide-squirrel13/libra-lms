@@ -7,16 +7,53 @@
 
     <title>User Management | Libra LMS</title>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- Shared Foundation Stylesheets -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/librarian-nav.css}">
+
     <style>
+        :root {
+            --bg: #17151D;
+            --panel: #24212C;
+            --panel-hover: #302A39;
+            --text: #F0ECF3;
+            --muted: #B8AFBF;
+            --accent: #A58AB5;
+            --border: rgba(194, 178, 206, 0.2);
+            --th-bg: #1F1C26;
+            --tr-hover: #302A39;
+        }
+
+        body.light,
+        [data-theme="light"],
+        [data-theme="light"] body {
+            --bg: #F3EFF5;
+            --panel: #FFFFFF;
+            --panel-hover: #E8E0ED;
+            --text: #292330;
+            --muted: #655C6C;
+            --accent: #735681;
+            --border: rgba(115, 86, 129, 0.2);
+            --th-bg: #E8E0ED;
+            --tr-hover: #F8F5FA;
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #0b1120;
-            color: #e5e7eb;
+            font-family: var(--font-sans, "Plus Jakarta Sans", sans-serif);
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.25s, color 0.25s;
         }
 
         header {
@@ -26,12 +63,12 @@
             flex-wrap: wrap;
             gap: 15px;
             padding: 22px 6%;
-            background: #111b2e;
-            border-bottom: 1px solid #263449;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
         }
 
         .brand {
-            color: #d4af37;
+            color: var(--accent);
             font-size: 24px;
             font-weight: bold;
         }
@@ -47,7 +84,7 @@
         }
 
         a {
-            color: #d4af37;
+            color: var(--accent);
             text-decoration: none;
         }
 
@@ -63,10 +100,12 @@
 
         h1 {
             margin-bottom: 8px;
+            font-family: var(--font-serif, "Newsreader", serif);
+            color: var(--text);
         }
 
         .subtitle {
-            color: #9caec2;
+            color: var(--muted);
             margin-bottom: 30px;
         }
 
@@ -79,25 +118,33 @@
 
         .stat-card {
             padding: 24px;
-            background: #111b2e;
-            border: 1px solid #263449;
+            background: var(--panel);
+            border: 1px solid var(--border);
             border-radius: 12px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
         }
 
         .stat-card p {
-            color: #9caec2;
+            color: var(--muted);
             margin: 0 0 12px;
+            font-size: 0.9rem;
         }
 
         .stat-card h2 {
-            color: #d4af37;
+            color: var(--accent);
             font-size: 30px;
             margin: 0;
+            font-family: var(--font-sans);
         }
 
         .table-wrapper {
             overflow-x: auto;
-            border: 1px solid #263449;
+            border: 1px solid var(--border);
             border-radius: 12px;
         }
 
@@ -105,47 +152,52 @@
             width: 100%;
             min-width: 650px;
             border-collapse: collapse;
-            background: #111b2e;
+            background: var(--panel);
         }
 
         th, td {
             padding: 16px;
             text-align: left;
-            border-bottom: 1px solid #263449;
+            border-bottom: 1px solid var(--border);
         }
 
         th {
-            color: #d4af37;
-            background: #152238;
+            color: var(--accent);
+            background: var(--th-bg);
+            font-size: 0.82rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
 
         tbody tr:hover {
-            background: #17253a;
+            background: var(--tr-hover);
         }
 
         .role {
             display: inline-block;
-            padding: 6px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: bold;
         }
 
         .user-role {
-            background: #123b32;
-            color: #99f6e4;
+            background: rgba(165, 138, 181, 0.18);
+            color: var(--accent);
+            border: 1px solid var(--border);
         }
 
         .librarian-role {
-            background: #253449;
-            color: #cbd5e1;
+            background: var(--accent);
+            color: #ffffff;
+            border: 1px solid var(--border);
         }
 
         .empty {
             padding: 35px;
             text-align: center;
-            background: #111b2e;
-            border: 1px solid #263449;
+            background: var(--panel);
+            border: 1px solid var(--border);
             border-radius: 12px;
         }
 
@@ -229,6 +281,12 @@
     </div>
 
 </main>
+
+<!-- Motion & Animation Scripts (Deferred with Graceful Offline Fallback) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
+<script th:src="@{/js/cinematic-motion.js}" defer></script>
 
 </body>
 </html>

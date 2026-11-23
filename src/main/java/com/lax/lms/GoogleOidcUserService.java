@@ -23,23 +23,21 @@ import java.util.ArrayList;
 @Service
 public class GoogleOidcUserService extends OidcUserService {
 
-    private static final Set<String> LIBRARIAN_EMAILS = Set.of(
-            "lakson130208@gmail.com",
-            "lakson.s.2025.csecs@rajalakshmi.edu.in"
-    );
-
     private final LibraryUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuditLogRepository auditLogRepository;
+    private final LibrarianAccessPolicy librarianAccessPolicy;
 
     public GoogleOidcUserService(
             LibraryUserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            AuditLogRepository auditLogRepository) {
+            AuditLogRepository auditLogRepository,
+            LibrarianAccessPolicy librarianAccessPolicy) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.auditLogRepository = auditLogRepository;
+        this.librarianAccessPolicy = librarianAccessPolicy;
     }
 
     @Override
@@ -68,26 +66,20 @@ public class GoogleOidcUserService extends OidcUserService {
 
         String finalEmail = email;
 
+        // Resolve role: only authorized emails with verified Google identity receive LIBRARIAN
+        String assignedRole = librarianAccessPolicy.resolveRole(finalEmail, emailVerified);
+
         java.util.Optional<LibraryUser> existingUser =
                 userRepository.findByEmailIgnoreCase(email);
 
         LibraryUser libraryUser;
-        String assignedRole;
 
         if (existingUser.isPresent()) {
             libraryUser = existingUser.get();
-            // Existing database users retain their database-assigned role
-            if (libraryUser.getRole() != null && !libraryUser.getRole().isBlank()) {
-                assignedRole = libraryUser.getRole();
-            } else {
-                assignedRole = LIBRARIAN_EMAILS.contains(email) ? "LIBRARIAN" : "USER";
-                libraryUser.setRole(assignedRole);
-            }
+            // Assign or retain ROLE_LIBRARIAN for authorized email; force ROLE_USER for all other accounts
+            libraryUser.setRole(assignedRole);
         } else {
-            // New Google users receive the intended default role
-            boolean isLibrarian = LIBRARIAN_EMAILS.contains(email);
-            assignedRole = isLibrarian ? "LIBRARIAN" : "USER";
-
+            // New Google users receive the resolved role (LIBRARIAN if authorized, USER otherwise)
             LibraryUser newUser = new LibraryUser();
 
             String fullName = googleUser.getAttribute("name");

@@ -1,0 +1,301 @@
+/* ==========================================================================
+   LIBRA LMS — FLOATING READING LAMP THEME SWITCHER
+   Dark Academia Aesthetic: Midnight Archive & Lavender Parchment
+   Fixed on the LEFT SIDE of the screen; intelligently repositioned on mobile.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. FLOATING READING LAMP DOCK CONTAINER (Left Edge Fixed Position)
+   -------------------------------------------------------------------------- */
+.floating-reading-lamp-dock {
+    position: fixed;
+    left: 20px;
+    top: 92px;
+    z-index: 990;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: auto;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: left 0.3s ease, top 0.3s ease, transform 0.3s ease;
+}
+
+.nav-lamp-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reading-lamp-stage {
+    position: relative;
+    width: 56px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: grab;
+    outline: none;
+    touch-action: none;
+}
+
+.reading-lamp-stage:focus-visible {
+    outline: 2px solid var(--color-primary-accent, #A58AB5);
+    outline-offset: 4px;
+    border-radius: 8px;
+}
+
+.reading-lamp-stage.is-dragging,
+.reading-lamp-stage:active {
+    cursor: grabbing;
+}
+
+/* --------------------------------------------------------------------------
+   2. AMBIENT GLOW & ILLUMINATION HALO
+   -------------------------------------------------------------------------- */
+.lamp-ambient-glow {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(165, 138, 181, 0.35) 0%, rgba(48, 42, 57, 0.15) 50%, transparent 75%);
+    pointer-events: none;
+    opacity: 0;
+    filter: blur(14px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* Illuminates brightly when toggled ON */
+.reading-lamp-stage.lamp-on .lamp-ambient-glow {
+    opacity: 0.9;
+    background: radial-gradient(circle, rgba(240, 236, 243, 0.45) 0%, rgba(165, 138, 181, 0.25) 45%, transparent 75%);
+    transform: translateX(-50%) scale(1.08);
+}
+
+/* --------------------------------------------------------------------------
+   3. LAMP SVG ANATOMY & SHADE DETAILS (Dark Metal & Muted Purple)
+   -------------------------------------------------------------------------- */
+.reading-lamp-svg {
+    width: 56px;
+    height: 160px;
+    overflow: visible;
+}
+
+/* Suspension Mount & Rod: Brushed Dark Pewter */
+.lamp-mount-plate {
+    fill: #24212C;
+    stroke: rgba(194, 178, 206, 0.25);
+    stroke-width: 0.8;
+}
+
+.lamp-mount-rod {
+    stroke: #302A39;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+}
+
+.lamp-socket-collar {
+    fill: #24212C;
+    stroke: rgba(194, 178, 206, 0.2);
+    stroke-width: 0.8;
+}
+
+/* Lampshade Dome: Dark Metal with subtle highlights */
+.lamp-shade-dome {
+    fill: url(#metal-shade-dark);
+    stroke: rgba(194, 178, 206, 0.22);
+    stroke-width: 0.8;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+/* Rolled Rim Trim: Muted Purple */
+.lamp-shade-rim {
+    fill: url(#purple-trim-grad);
+    stroke: rgba(194, 178, 206, 0.3);
+    stroke-width: 0.8;
+}
+
+/* --------------------------------------------------------------------------
+   4. BULB ILLUMINATION & DOWNWARD LIGHT CONE
+   -------------------------------------------------------------------------- */
+.lamp-bulb-glass {
+    fill: #3C3547;
+    stroke: rgba(194, 178, 206, 0.2);
+    stroke-width: 0.7;
+    transition: fill 0.3s ease, filter 0.3s ease;
+}
+
+.lamp-bulb-core {
+    fill: #735681;
+    opacity: 0.6;
+    transition: fill 0.3s ease, opacity 0.3s ease;
+}
+
+/* Light Beam downwards */
+.lamp-light-beam {
+    fill: url(#lamp-light-cone-grad);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+}
+
+/* When Lamp is ON (Light Mode Active): Radiant Illumination */
+.reading-lamp-stage.lamp-on .lamp-bulb-glass {
+    fill: #FFFDF8;
+    stroke: rgba(240, 236, 243, 0.9);
+    filter: drop-shadow(0 0 8px rgba(240, 236, 243, 0.9)) drop-shadow(0 0 16px rgba(165, 138, 181, 0.75));
+}
+
+.reading-lamp-stage.lamp-on .lamp-bulb-core {
+    fill: #FFFFFF;
+    opacity: 1;
+}
+
+.reading-lamp-stage.lamp-on .lamp-light-beam {
+    opacity: 0.75;
+}
+
+/* --------------------------------------------------------------------------
+   5. TACTILE HANGING PULL CORD & FOB
+   -------------------------------------------------------------------------- */
+.lamp-cord-container {
+    transition: transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: 28px 51px;
+}
+
+.lamp-cord-line {
+    stroke: #8E8296;
+    stroke-width: 1.2;
+    stroke-dasharray: 2, 2.5;
+    stroke-linecap: round;
+    transition: stroke 0.2s ease;
+}
+
+.lamp-pull-bead {
+    fill: #A58AB5;
+}
+
+.lamp-pull-handle {
+    fill: url(#pull-fob-metal);
+    stroke: rgba(194, 178, 206, 0.35);
+    stroke-width: 0.7;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
+}
+
+.lamp-pull-ring {
+    stroke: #C2B2CE;
+    stroke-width: 0.8;
+}
+
+.lamp-pull-tip {
+    fill: #A58AB5;
+    stroke: rgba(194, 178, 206, 0.4);
+    stroke-width: 0.7;
+}
+
+/* Pull Hover / Focus Highlights */
+.reading-lamp-stage:hover .lamp-cord-line,
+.reading-lamp-stage:focus-visible .lamp-cord-line {
+    stroke: var(--color-primary-accent, #A58AB5);
+}
+
+.reading-lamp-stage:hover .lamp-pull-fob-group,
+.reading-lamp-stage:focus-visible .lamp-pull-fob-group {
+    filter: drop-shadow(0 2px 8px rgba(165, 138, 181, 0.5));
+}
+
+/* --------------------------------------------------------------------------
+   6. TOOLTIP HINT
+   -------------------------------------------------------------------------- */
+.lamp-dock-hint {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: rgba(23, 21, 29, 0.92);
+    color: var(--color-text-primary, #F0ECF3);
+    border: 1px solid var(--border-medium, rgba(194, 178, 206, 0.22));
+    font-family: var(--font-sans, "Plus Jakarta Sans", sans-serif);
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(8px);
+}
+
+.reading-lamp-stage:hover .lamp-dock-hint,
+.reading-lamp-stage:focus-visible .lamp-dock-hint {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+body.light .lamp-dock-hint {
+    background: rgba(243, 239, 245, 0.95);
+    color: var(--color-text-primary, #292330);
+    border-color: rgba(115, 86, 129, 0.2);
+    box-shadow: 0 4px 12px rgba(70, 50, 80, 0.1);
+}
+
+/* --------------------------------------------------------------------------
+   7. INTELLIGENT MOBILE REPOSITIONING
+   -------------------------------------------------------------------------- */
+@media (max-width: 991px) {
+    .floating-reading-lamp-dock {
+        left: 16px;
+        top: auto;
+        bottom: 22px;
+        background: rgba(23, 21, 29, 0.88);
+        border: 1px solid var(--border-medium, rgba(194, 178, 206, 0.22));
+        border-radius: 28px;
+        padding: 4px 2px 2px;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+    }
+
+    body.light .floating-reading-lamp-dock {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(115, 86, 129, 0.22);
+        box-shadow: 0 8px 24px rgba(70, 50, 80, 0.12);
+    }
+
+    .reading-lamp-stage {
+        width: 44px;
+        height: 110px;
+    }
+
+    .reading-lamp-svg {
+        width: 44px;
+        height: 110px;
+        transform: scale(0.82);
+        transform-origin: top center;
+    }
+
+    .lamp-dock-hint {
+        display: none;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   8. REDUCED MOTION PREFERENCE
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    .floating-reading-lamp-dock,
+    .lamp-ambient-glow,
+    .lamp-cord-container,
+    .lamp-bulb-glass,
+    .lamp-light-beam,
+    .lamp-dock-hint {
+        transition: none !important;
+        animation: none !important;
+    }
+}

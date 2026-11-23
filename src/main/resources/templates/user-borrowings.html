@@ -49,10 +49,10 @@
             margin: 10px 0 6px;
         }
 
-        .borrowing-hero-title .gold-accent {
+        .borrowing-hero-title .accent-lavender {
             font-style: italic;
             font-weight: 600;
-            color: var(--color-gold);
+            color: var(--color-dusty-purple);
         }
 
         .borrowing-hero-subtitle {
@@ -91,9 +91,9 @@
             height: 38px;
             border-radius: var(--radius-sm);
             font-size: 1.15rem;
-            background: var(--color-gold-subtle);
-            color: var(--color-gold);
-            border: 1px solid var(--color-gold-border);
+            background: var(--color-dusty-purple-subtle);
+            color: var(--color-dusty-purple);
+            border: 1px solid var(--color-dusty-purple-border);
         }
 
         .stat-card-number {
@@ -119,13 +119,13 @@
             padding: 16px 22px;
             margin-bottom: 28px;
             border-radius: var(--radius-md);
-            background: rgba(212, 175, 55, 0.06);
-            border: 1px solid var(--color-gold-border);
+            background: var(--color-primary-accent-subtle);
+            border: 1px solid var(--color-primary-accent-border);
         }
 
         .advisory-icon {
             font-size: 1.3rem;
-            color: var(--color-gold);
+            color: var(--color-dusty-purple);
             flex-shrink: 0;
         }
 
@@ -183,7 +183,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            background: #11151e;
+            background: var(--color-bg-base);
             padding: 4px;
             border-radius: var(--radius-md);
             border: 1px solid var(--border-medium);
@@ -206,10 +206,10 @@
         }
 
         .filter-tab-btn.active {
-            background: var(--color-gold);
+            background: var(--color-primary-accent);
             color: var(--color-text-inverse);
             font-weight: 700;
-            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.25);
+            box-shadow: 0 2px 8px var(--color-primary-accent-subtle);
         }
 
         /* Table Styling */
@@ -293,7 +293,7 @@
         .table-empty-icon {
             font-size: 2.2rem;
             margin-bottom: 12px;
-            color: var(--color-gold);
+            color: var(--color-dusty-purple);
         }
 
         /* Panel Footer */
@@ -333,8 +333,8 @@
 
 <!-- Ambient Warmth Layer -->
 <div class="ambient-glow-layer" aria-hidden="true">
-    <div class="ambient-light-orb orb-gold"></div>
-    <div class="ambient-light-orb orb-bronze"></div>
+    <div class="ambient-light-orb orb-purple"></div>
+    <div class="ambient-light-orb orb-plum"></div>
 </div>
 
 <!-- Shared Editorial Navigation Bar (Always shows profile when authenticated) -->
@@ -350,7 +350,7 @@
                 <div class="eyebrow">Personal Reading History</div>
 
                 <h1 class="borrowing-hero-title">
-                    My <span class="gold-accent">Borrowings</span>
+                    My <span class="accent-lavender">Borrowings</span>
                 </h1>
 
                 <p class="borrowing-hero-subtitle">
@@ -514,7 +514,7 @@
 
                         <td>
                             <span class="badge"
-                                  th:classappend="${record.dueDate != null and record.dueDate.isBefore(today) ? ' badge-danger' : ' badge-gold'}"
+                                  th:classappend="${record.dueDate != null and record.dueDate.isBefore(today) ? ' badge-danger' : ' badge-purple'}"
                                   th:text="${record.dueDate != null and record.dueDate.isBefore(today) ? '⚠ Overdue' : '● Active Loan'}">
                                 Active Loan
                             </span>
@@ -593,7 +593,7 @@
 
             <!-- Footer Meta Bar -->
             <div class="panel-footer-bar">
-                <span>Showing <strong id="visibleCount" style="color: var(--color-gold);">0</strong> records</span>
+                <span>Showing <strong id="visibleCount" style="color: var(--color-dusty-purple);">0</strong> records</span>
                 <span>Libra LMS &bull; Personal Study</span>
             </div>
 
@@ -668,6 +668,12 @@
         filterRecords();
     });
 </script>
+
+<!-- Motion & Animation Scripts (Deferred with Graceful Offline Fallback) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
+<script th:src="@{/js/cinematic-motion.js}" defer></script>
 
 </body>
 </html>

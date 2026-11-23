@@ -30,6 +30,7 @@ class GoogleOidcUserServiceTest {
     private LibraryUserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private AuditLogRepository auditLogRepository;
+    private LibrarianAccessPolicy librarianAccessPolicy;
     private GoogleOidcUserService service;
 
     @BeforeEach
@@ -39,7 +40,8 @@ class GoogleOidcUserServiceTest {
         auditLogRepository = mock(AuditLogRepository.class);
         when(passwordEncoder.encode(any())).thenReturn("encoded-password");
 
-        service = new GoogleOidcUserService(userRepository, passwordEncoder, auditLogRepository);
+        librarianAccessPolicy = new LibrarianAccessPolicy("lakson130208@gmail.com");
+        service = new GoogleOidcUserService(userRepository, passwordEncoder, auditLogRepository, librarianAccessPolicy);
     }
 
     private OidcUser createGoogleUser(String email, Boolean emailVerified, String name) {
@@ -79,8 +81,8 @@ class GoogleOidcUserServiceTest {
     }
 
     @Test
-    @DisplayName("Existing LIBRARIAN in database retains LIBRARIAN role even if not in hardcoded allowlist")
-    void existingLibrarian_notInAllowlist_retainsLibrarianRole() {
+    @DisplayName("Unauthorized account in database with LIBRARIAN role is demoted to USER role upon Google login")
+    void unauthorizedAccount_inDatabaseAsLibrarian_isDemotedToUserRole() {
         String email = "custom.librarian@college.edu";
         LibraryUser existingLibrarian = new LibraryUser();
         existingLibrarian.setEmail(email);
@@ -92,13 +94,13 @@ class GoogleOidcUserServiceTest {
         OidcUser googleUser = createGoogleUser(email, true, "Custom Librarian");
         OidcUser result = service.processOidcUser(googleUser);
 
-        assertThat(existingLibrarian.getRole()).isEqualTo("LIBRARIAN");
+        assertThat(existingLibrarian.getRole()).isEqualTo("USER");
         assertThat(result.getAuthorities())
                 .extracting("authority")
-                .contains("ROLE_LIBRARIAN")
-                .doesNotContain("ROLE_USER");
+                .contains("ROLE_USER")
+                .doesNotContain("ROLE_LIBRARIAN");
 
-        verify(userRepository).save(argThat(user -> "LIBRARIAN".equals(user.getRole())));
+        verify(userRepository).save(argThat(user -> "USER".equals(user.getRole())));
     }
 
     @Test
@@ -135,6 +137,34 @@ class GoogleOidcUserServiceTest {
 
         verify(userRepository).save(argThat(user ->
                 email.equals(user.getEmail()) && "LIBRARIAN".equals(user.getRole())));
+    }
+
+    @Test
+    @DisplayName("Authorized librarian email receives LIBRARIAN role case-insensitively")
+    void authorizedLibrarian_caseInsensitive_receivesLibrarianRole() {
+        String email = "LAKSON130208@GMAIL.COM";
+        when(userRepository.findByEmailIgnoreCase(email.toLowerCase())).thenReturn(Optional.empty());
+
+        OidcUser googleUser = createGoogleUser(email, true, "Lakson S");
+        OidcUser result = service.processOidcUser(googleUser);
+
+        assertThat(result.getAuthorities())
+                .extracting("authority")
+                .contains("ROLE_LIBRARIAN")
+                .doesNotContain("ROLE_USER");
+
+        verify(userRepository).save(argThat(user ->
+                "lakson130208@gmail.com".equals(user.getEmail()) && "LIBRARIAN".equals(user.getRole())));
+    }
+
+    @Test
+    @DisplayName("Unverified Google email for authorized address cannot obtain librarian privileges")
+    void unverifiedLibrarianEmail_throwsOAuth2AuthenticationException() {
+        OidcUser googleUser = createGoogleUser("lakson130208@gmail.com", false, "Lakson Unverified");
+
+        assertThatThrownBy(() -> service.processOidcUser(googleUser))
+                .isInstanceOf(OAuth2AuthenticationException.class)
+                .hasMessageContaining("missing or not verified");
     }
 
     @Test

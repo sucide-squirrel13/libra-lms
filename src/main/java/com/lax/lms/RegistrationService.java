@@ -54,6 +54,9 @@ public class RegistrationService {
         user.setFullName(fullName);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
+        // Security: password-based registration unconditionally assigns ROLE_USER.
+        // Even if the email matches configured librarian emails, librarian privileges
+        // require verified Google OAuth authentication and cannot be granted via form registration.
         user.setRole("USER");
 
         userRepository.save(user);
