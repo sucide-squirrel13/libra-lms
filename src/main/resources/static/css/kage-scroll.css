@@ -1300,18 +1300,40 @@ body.light .nav,
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* All nav links: Black / Dark color */
+/* Dark theme nav links: White color */
 .navbar .nav-link,
 .kage-home-active .navbar .nav-link,
 .nav-link,
 .navbar a.nav-link {
-  color: #0b0f14 !important;
+  color: #ffffff !important;
   font-weight: 700 !important;
 }
 
 .navbar .nav-link:hover,
 .kage-home-active .navbar .nav-link:hover,
 .nav-link:hover {
+  color: #ffffff !important;
+}
+
+/* Light theme nav links: Dark color on white translucent navbar */
+html.light .navbar .nav-link,
+body.light .navbar .nav-link,
+[data-theme="light"] .navbar .nav-link,
+html.light .nav-link,
+body.light .nav-link,
+[data-theme="light"] .nav-link,
+html.light .navbar a.nav-link,
+body.light .navbar a.nav-link,
+[data-theme="light"] .navbar a.nav-link {
+  color: #0b0f14 !important;
+}
+
+html.light .navbar .nav-link:hover,
+body.light .navbar .nav-link:hover,
+[data-theme="light"] .navbar .nav-link:hover,
+html.light .nav-link:hover,
+body.light .nav-link:hover,
+[data-theme="light"] .nav-link:hover {
   color: #000000 !important;
 }
 

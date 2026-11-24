@@ -100,7 +100,11 @@ body.light .navbar,
     gap: 6px;
 }
 
-.navbar .nav-link {
+.navbar .nav-link,
+.navbar .nav-link-home,
+.navbar .nav-link-login,
+.navbar .nav-link-dashboard,
+.navbar a.nav-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -108,7 +112,7 @@ body.light .navbar,
     min-height: 38px;
     padding: 6px 14px;
 
-    color: #0b0f14 !important;
+    color: #ffffff !important;
     font-family: var(--font-sans, "Plus Jakarta Sans", sans-serif);
     font-size: 0.78rem;
     font-weight: 700 !important;
@@ -125,25 +129,33 @@ body.light .navbar,
 }
 
 .navbar .nav-link:hover,
-.navbar .nav-link:focus-visible {
-    color: #000000 !important;
-    background: rgba(0, 0, 0, 0.08) !important;
-    border-color: rgba(0, 0, 0, 0.22) !important;
+.navbar .nav-link:focus-visible,
+.navbar a.nav-link:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.14) !important;
+    border-color: rgba(255, 255, 255, 0.28) !important;
     outline: none;
 }
 
-/* All nav links: Black / Dark color */
-.navbar .nav-link,
-.navbar .nav-link-home,
-.navbar .nav-link-login,
-.navbar .nav-link-dashboard,
-.navbar a.nav-link {
+/* Light theme nav links: keep dark text on white translucent navbar */
+html.light .navbar .nav-link,
+body.light .navbar .nav-link,
+[data-theme="light"] .navbar .nav-link,
+html.light .navbar a.nav-link,
+body.light .navbar a.nav-link,
+[data-theme="light"] .navbar a.nav-link {
     color: #0b0f14 !important;
-    font-weight: 700 !important;
 }
 
-.navbar .nav-link:hover,
-.navbar a.nav-link:hover {
+html.light .navbar .nav-link:hover,
+body.light .navbar .nav-link:hover,
+[data-theme="light"] .navbar .nav-link:hover,
+html.light .navbar .nav-link:focus-visible,
+body.light .navbar .nav-link:focus-visible,
+[data-theme="light"] .navbar .nav-link:focus-visible,
+html.light .navbar a.nav-link:hover,
+body.light .navbar a.nav-link:hover,
+[data-theme="light"] .navbar a.nav-link:hover {
     color: #000000 !important;
     background: rgba(0, 0, 0, 0.08) !important;
     border-color: rgba(0, 0, 0, 0.22) !important;

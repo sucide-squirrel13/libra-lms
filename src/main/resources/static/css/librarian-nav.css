@@ -129,7 +129,7 @@ body.light .librarian-navbar,
     gap: 8px;
     padding: 6px 14px;
     border-radius: 8px;
-    color: #0b0f14 !important;
+    color: #ffffff !important;
     text-decoration: none;
     font-family: var(--font-sans, "Plus Jakarta Sans", sans-serif);
     font-size: 0.78rem;
@@ -146,31 +146,72 @@ body.light .librarian-navbar,
 .librarian-nav-link .nav-icon {
     font-size: 0.95rem;
     opacity: 1 !important;
-    color: #0b0f14 !important;
+    color: #ffffff !important;
 }
 
 .librarian-nav-link:hover,
 .librarian-nav-link:focus-visible {
-    color: #000000 !important;
-    background: rgba(0, 0, 0, 0.08) !important;
-    border-color: rgba(0, 0, 0, 0.22) !important;
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.14) !important;
+    border-color: rgba(255, 255, 255, 0.28) !important;
     outline: none;
 }
 
 .librarian-nav-link:hover .nav-icon,
 .librarian-nav-link:focus-visible .nav-icon {
-    color: #000000 !important;
+    color: #ffffff !important;
 }
 
 .librarian-nav-link.active {
-    color: #000000 !important;
-    background: rgba(0, 0, 0, 0.12) !important;
-    border-color: rgba(0, 0, 0, 0.28) !important;
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.18) !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
     font-weight: 800 !important;
 }
 
 .librarian-nav-link.active .nav-icon {
     opacity: 1;
+    color: #ffffff !important;
+}
+
+/* Light theme librarian nav links: keep dark text on white translucent navbar */
+html.light .librarian-nav-link,
+body.light .librarian-nav-link,
+[data-theme="light"] .librarian-nav-link,
+html.light .librarian-nav-link .nav-icon,
+body.light .librarian-nav-link .nav-icon,
+[data-theme="light"] .librarian-nav-link .nav-icon {
+    color: #0b0f14 !important;
+}
+
+html.light .librarian-nav-link:hover,
+body.light .librarian-nav-link:hover,
+[data-theme="light"] .librarian-nav-link:hover,
+html.light .librarian-nav-link:focus-visible,
+body.light .librarian-nav-link:focus-visible,
+[data-theme="light"] .librarian-nav-link:focus-visible,
+html.light .librarian-nav-link:hover .nav-icon,
+body.light .librarian-nav-link:hover .nav-icon,
+[data-theme="light"] .librarian-nav-link:hover .nav-icon,
+html.light .librarian-nav-link:focus-visible .nav-icon,
+body.light .librarian-nav-link:focus-visible .nav-icon,
+[data-theme="light"] .librarian-nav-link:focus-visible .nav-icon {
+    color: #000000 !important;
+    background: rgba(0, 0, 0, 0.08) !important;
+    border-color: rgba(0, 0, 0, 0.22) !important;
+}
+
+html.light .librarian-nav-link.active,
+body.light .librarian-nav-link.active,
+[data-theme="light"] .librarian-nav-link.active {
+    color: #000000 !important;
+    background: rgba(0, 0, 0, 0.12) !important;
+    border-color: rgba(0, 0, 0, 0.28) !important;
+}
+
+html.light .librarian-nav-link.active .nav-icon,
+body.light .librarian-nav-link.active .nav-icon,
+[data-theme="light"] .librarian-nav-link.active .nav-icon {
     color: #000000 !important;
 }
 

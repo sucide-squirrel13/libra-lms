@@ -529,6 +529,12 @@
             color: rgba(184, 175, 191, 0.55);
         }
 
+        /* Suppress native browser password reveal/clear icons so only our toggle eye renders */
+        .input-wrap input::-ms-reveal,
+        .input-wrap input::-ms-clear {
+            display: none !important;
+        }
+
         /* CLEAN SVG EYE PASSWORD TOGGLE */
         .toggle-password {
             position: absolute;
