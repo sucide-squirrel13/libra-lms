@@ -684,6 +684,32 @@ function texSky() {
   return c;
 }
 
+/* radiant blue sky for light theme — clear azure with procedural clouds and sun bloom, no moon */
+function texSkyDay() {
+  const W = 512, H = 512, c = cvs(W, H), x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, 'rgb(35, 105, 205)');   // Deep cerulean zenith
+  g.addColorStop(0.35, 'rgb(65, 145, 235)');// Radiant sky blue
+  g.addColorStop(0.68, 'rgb(135, 195, 250)');// Soft daylight azure
+  g.addColorStop(0.88, 'rgb(185, 222, 255)');// Atmospheric horizon tint
+  g.addColorStop(1, 'rgb(212, 235, 255)');  // Warm mist meeting the ridge
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+
+  // Soft drifting white clouds
+  x.globalAlpha = 0.42; x.globalCompositeOperation = 'screen';
+  x.drawImage(fbmCanvas(W, H, 313, 5, 3, 0.9), 0, 0);
+
+  // Gentle sun radiance in upper right
+  x.globalAlpha = 1; x.globalCompositeOperation = 'source-over';
+  const sun = x.createRadialGradient(W * 0.72, H * 0.28, 6, W * 0.72, H * 0.28, W * 0.44);
+  sun.addColorStop(0, 'rgba(255, 255, 245, 0.9)');
+  sun.addColorStop(0.22, 'rgba(255, 242, 210, 0.45)');
+  sun.addColorStop(0.55, 'rgba(180, 220, 255, 0.15)');
+  sun.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  x.fillStyle = sun; x.fillRect(0, 0, W, H);
+  return c;
+}
+
 /* the wooded ridge the valley closes with — black, ragged, mostly fog */
 function texRidge() {
   const W = 2048, H = 512, c = cvs(W, H), x = c.getContext('2d');
@@ -1399,6 +1425,41 @@ function buildShell() {
       depthWrite: false, fog: false, toneMapped: false }));
   sky.position.set(0, 62, -108); sky.renderOrder = 0; scene.add(sky);
   WORLD.sky = sky;
+
+  /* Dynamically switch between night sky with moon and daytime blue sky without moon */
+  WORLD.applyTheme = function(theme) {
+    const isLight = (theme === 'light');
+    if (!WORLD.sky) return;
+
+    if (!WORLD.skyTexDay) WORLD.skyTexDay = tx(texSkyDay());
+    if (!WORLD.skyTexNight) WORLD.skyTexNight = tx(texSky());
+
+    WORLD.sky.material.map = isLight ? WORLD.skyTexDay : WORLD.skyTexNight;
+    WORLD.sky.material.color.set(isLight ? 0xffffff : hdr(.60, .70, .80));
+    WORLD.sky.material.needsUpdate = true;
+
+    // Celestial moon: visible in night theme, completely removed in light theme
+    if (WORLD.moon) WORLD.moon.visible = !isLight;
+    if (WORLD.moonHalo) WORLD.moonHalo.visible = !isLight;
+    if (WORLD.moonLight) WORLD.moonLight.visible = !isLight;
+    if (WORLD.moonKey) WORLD.moonKey.visible = !isLight;
+
+    // Daylight lighting
+    if (WORLD.sunLight) WORLD.sunLight.visible = isLight;
+    if (WORLD.ambientDay) WORLD.ambientDay.visible = isLight;
+
+    // Fog & Background
+    if (scene && scene.fog) {
+      scene.fog.color.setHex(isLight ? 0xb5d6f5 : 0x050a0e);
+      scene.fog.density = isLight ? 0.0075 : 0.0168;
+    }
+    if (scene && scene.background) {
+      scene.background.setHex(isLight ? 0x5a9fe8 : 0x060a0d);
+    }
+    if (renderer) {
+      renderer.setClearColor(isLight ? 0x5a9fe8 : 0x05070a, 1);
+    }
+  };
 
   /* the wooded ridge that closes the valley — three-quarters eaten by fog,
      which is the only reason the ground plane can just stop out there */
@@ -2902,7 +2963,7 @@ function buildLights() {
   const moonKey = new THREE.DirectionalLight(0x9f78db, .52);
   moonKey.position.set(26, 30, -60);
   moonKey.target.position.set(0, 8, -40); scene.add(moonKey.target);
-  scene.add(moonKey);
+  scene.add(moonKey); WORLD.moonKey = moonKey;
 
   /* The hall's own lamps. They light the podium and the top of the flight and
      nothing else — a range that reaches the roof turns the whole building into
@@ -2924,6 +2985,15 @@ function buildLights() {
   /* the flight is the spine of the composition — purple light reflecting on the stairs */
   const stairL = new THREE.PointLight(0xaf7ae6, 4.2, 17, 2);
   stairL.position.set(0, 7.6, -26.0); scene.add(stairL);
+
+  /* daylight lighting handles */
+  const sunLight = new THREE.DirectionalLight(0xfff3db, 1.4);
+  sunLight.position.set(24, 48, 12);
+  sunLight.target.position.set(0, 6, -20); scene.add(sunLight.target);
+  sunLight.visible = false; scene.add(sunLight); WORLD.sunLight = sunLight;
+
+  const ambientDay = new THREE.AmbientLight(0xdcebf8, 0.85);
+  ambientDay.visible = false; scene.add(ambientDay); WORLD.ambientDay = ambientDay;
 }
 /* ====================================================== 6 · planar mirror */
 /* ================================================== 7 · post-processing */
@@ -3864,6 +3934,28 @@ function start() {
   running = true; tPrev = performance.now();
   INTRO.t0 = shot !== null ? 0 : (REDUCE ? performance.now() - 4000 : performance.now());
   queue();
+
+  function checkHomeTheme() {
+    return document.documentElement.getAttribute('data-theme') ||
+           document.documentElement.dataset.theme ||
+           (document.body.classList.contains('light') ? 'light' : 'dark') ||
+           (function() { try { return localStorage.getItem('libra-theme') || 'dark'; } catch(e) { return 'dark'; } })();
+  }
+
+  WORLD.applyTheme(checkHomeTheme());
+
+  window.addEventListener('libra-theme-changed', (e) => {
+    if (e && e.detail && e.detail.theme) {
+      WORLD.applyTheme(e.detail.theme);
+    }
+  });
+
+  const homeThemeObserver = new MutationObserver(() => {
+    WORLD.applyTheme(checkHomeTheme());
+  });
+  homeThemeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+  homeThemeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
   window.__kage = window.__secret = { RIG: RIG, WORLD: WORLD, WORD: WORD, CAM: CAM, POST: POST, renderer: renderer, scene: scene, camera: camera, anchors: () => anchors };
 }
 
