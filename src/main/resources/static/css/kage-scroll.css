@@ -1300,6 +1300,25 @@ body.light .nav,
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
+/* Home, Login, and Librarian Dashboard nav links: Black / Dark color */
+.navbar .nav-link-home,
+.navbar .nav-link-login,
+.navbar .nav-link-dashboard,
+.navbar a[href="/"].nav-link,
+.navbar a[href="/login"].nav-link,
+.navbar a[href*="librarian"].nav-link,
+.navbar a[href*="dashboard"].nav-link,
+.kage-home-active .navbar a[href="/"],
+.kage-home-active .navbar a[href="/login"],
+.kage-home-active .navbar a[href*="librarian"],
+.kage-home-active .navbar a[href*="dashboard"],
+.nav-link.nav-link-home,
+.nav-link.nav-link-login,
+.nav-link.nav-link-dashboard {
+  color: #0b0f14 !important;
+  font-weight: 700 !important;
+}
+
 body.light,
 [data-theme="light"],
 [data-theme="light"] body {

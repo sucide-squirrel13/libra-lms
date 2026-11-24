@@ -168,6 +168,26 @@ body.light .librarian-navbar,
     color: var(--lib-nav-lavender);
 }
 
+/* Dashboard link: Black / Dark color */
+.librarian-navbar .nav-link-dashboard,
+.librarian-navbar a[data-view="dashboard"],
+.librarian-navbar a[href="/librarian"] {
+    color: #0b0f14 !important;
+    font-weight: 700;
+}
+
+.librarian-navbar .nav-link-dashboard .nav-icon,
+.librarian-navbar a[data-view="dashboard"] .nav-icon {
+    color: #0b0f14 !important;
+}
+
+.librarian-navbar .nav-link-dashboard:hover,
+.librarian-navbar a[data-view="dashboard"]:hover {
+    color: #000000 !important;
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.22);
+}
+
 /* ACTIONS AREA */
 .librarian-actions-area {
     display: flex;

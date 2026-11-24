@@ -39,12 +39,12 @@
     <nav class="nav-right" id="nav-right">
 
         <!-- HOME -->
-        <a class="nav-link" th:href="@{/}">
+        <a class="nav-link nav-link-home" th:href="@{/}">
             Home
         </a>
 
         <!-- DASHBOARD -->
-        <a class="nav-link"
+        <a class="nav-link nav-link-dashboard"
            th:href="${user != null and user.role != null and user.role.toString() == 'LIBRARIAN'}
                     ? @{/librarian}
                     : (${user != null} ? @{/user/dashboard} : @{/login})"
@@ -224,7 +224,7 @@
 
         <!-- AUTH ACTIONS (When Unauthenticated) -->
         <div class="auth-actions" th:if="${user == null}" style="display: flex; align-items: center; gap: 8px;">
-            <a class="nav-link" th:href="@{/login}">Log In</a>
+            <a class="nav-link nav-link-login" th:href="@{/login}">Log In</a>
         </div>
 
         <!-- THEME TOGGLE (Ink Bleed Reveal Transition) -->
