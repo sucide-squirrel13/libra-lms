@@ -656,3 +656,27 @@ body.light {
 @media (hover: none), (pointer: coarse) {
     .cur-dot { display: none !important; }
 }
+
+/* ---------- LIGHT THEME FROSTED GLASS PANELS ---------- */
+body.light .catalogue-card,
+[data-theme="light"] .catalogue-card {
+    background: rgba(255, 255, 255, 0.7) !important;
+    border-color: rgba(115, 86, 129, 0.2) !important;
+    box-shadow: 0 8px 32px rgba(70, 50, 80, 0.08) !important;
+}
+
+body.light .filter-console,
+[data-theme="light"] .filter-console {
+    background: rgba(255, 255, 255, 0.7) !important;
+    border-color: rgba(115, 86, 129, 0.2) !important;
+    box-shadow: 0 8px 32px rgba(70, 50, 80, 0.08) !important;
+}
+
+body.light .editorial-hero,
+[data-theme="light"] .editorial-hero,
+body.light .borrowing-hero,
+[data-theme="light"] .borrowing-hero {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(232, 224, 237, 0.9)) !important;
+    border-color: rgba(115, 86, 129, 0.22) !important;
+    box-shadow: 0 8px 30px rgba(70, 50, 80, 0.08) !important;
+}

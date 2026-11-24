@@ -2,6 +2,10 @@
  * AXON Background Motion — Sculpted GPU Particle Cloud with Fluid Cursor Interaction
  * Renders an organic sculpted particle ring/cloud on a fixed canvas behind the UI.
  *
+ * Theme-aware:
+ * - Dark theme: pure dark background (#08070c) with glowing white & lavender dots
+ * - Light theme: pure white background (#ffffff) with crisp black & plum dots
+ *
  * Excludes home page ('/') and login page ('/login').
  */
 (function () {
@@ -20,7 +24,22 @@
     if (window.__axonBackgroundInitialized) return;
     window.__axonBackgroundInitialized = true;
 
-    // 2. Ensure Canvas & Background Styles are Injected
+    // Helper to check if light theme is active
+    function isLightTheme() {
+        var dt = document.documentElement.getAttribute("data-theme");
+        if (dt === "light") return true;
+        if (dt === "dark") return false;
+        if (document.documentElement.classList.contains("light") || document.body.classList.contains("light")) {
+            return true;
+        }
+        try {
+            var s = localStorage.getItem("libra-theme");
+            if (s === "light") return true;
+        } catch(e) {}
+        return false;
+    }
+
+    // 2. Ensure Canvas & Theme Styles are Injected
     function setupCanvas() {
         if (!document.getElementById("axon-bg")) {
             var canvas = document.createElement("canvas");
@@ -45,6 +64,11 @@
                 "}",
                 "body {",
                 "    background: #08070c !important;",
+                "}",
+                "body.light,",
+                "[data-theme=\"light\"],",
+                "[data-theme=\"light\"] body {",
+                "    background: #ffffff !important;",
                 "}",
                 ".librarian-container, main, .container, .catalogue-wrapper,",
                 ".borrowing-wrapper, .settings-container, .content, .dashboard-wrapper {",
@@ -105,6 +129,8 @@
         var canvas = document.getElementById("axon-bg");
         if (!canvas) return;
 
+        var lightActive = isLightTheme();
+
         // Renderer
         var renderer;
         try {
@@ -122,7 +148,7 @@
         var dpr = Math.min(window.devicePixelRatio || 1, 2);
         renderer.setPixelRatio(dpr);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x08070c, 1.0);
+        renderer.setClearColor(lightActive ? 0xffffff : 0x08070c, 1.0);
 
         // Scene
         var scene = new THREE.Scene();
@@ -171,7 +197,7 @@
             var py = (R0 + r * Math.cos(v)) * Math.sin(u);
             var pz = r * Math.sin(v) + zBend;
 
-            // Mirror depth axis from brief: p.z = sqrt(p.z*p.z + 0.0215) - sqrt(0.012)
+            // Mirror depth axis: p.z = sqrt(p.z*p.z + 0.0215) - sqrt(0.012)
             pz = Math.sqrt(pz * pz + 0.0215) - Math.sqrt(0.012);
 
             // Apply quaternion rotation
@@ -188,7 +214,7 @@
             // Random attributes
             randoms[i4] = Math.random();     // grey brightness variation
             randoms[i4 + 1] = Math.random(); // sparkle phase
-            randoms[i4 + 2] = Math.random(); // lavender highlight weighting
+            randoms[i4 + 2] = Math.random(); // lavender / plum highlight weighting
             randoms[i4 + 3] = Math.random(); // curl scale
         }
 
@@ -304,6 +330,7 @@
 
         var fragmentShader = [
             "uniform float uTime;",
+            "uniform float uThemeMode;",
             "uniform sampler2D uMatcap;",
             "varying vec4 vRandom;",
             "varying float vDistToCam;",
@@ -313,8 +340,7 @@
             "  float dist = length(coord);",
             "  if (dist > 0.5) discard;",
             "",
-            "  // Soft round particle alpha",
-            "  float alpha = smoothstep(0.5, 0.12, dist);",
+            "  float alpha = smoothstep(0.5, 0.08, dist);",
             "",
             "  // Sample matcap",
             "  float angle = sin(uTime * 0.6 + vRandom.z * 20.0) * 0.5 + 1.0;",
@@ -323,22 +349,28 @@
             "  vec2 rotCoord = vec2(c * coord.x - s * coord.y, s * coord.x + c * coord.y) + vec2(0.5);",
             "  vec4 matcap = texture2D(uMatcap, clamp(rotCoord, 0.0, 1.0));",
             "",
-            "  // Base silvery-grey color",
-            "  vec3 baseColor = mix(vec3(0.32, 0.32, 0.36), vec3(0.85, 0.85, 0.9), vRandom.x);",
+            "  // --- DARK THEME: White & glowing lavender dots on black ---",
+            "  vec3 darkBase = mix(vec3(0.35, 0.35, 0.4), vec3(0.9, 0.9, 0.96), vRandom.x);",
+            "  vec3 darkLavender = vec3(0.72, 0.58, 0.88);",
+            "  vec3 darkColor = mix(darkBase, darkLavender, pow(vRandom.z, 12.0) * 0.95);",
+            "  float darkSparkle = 0.55 + (0.45 + sin(uTime * 3.5 + vRandom.y * 20.0)) * pow(vRandom.z, 6.0) * 2.2;",
+            "  darkColor *= darkSparkle;",
+            "  darkColor = mix(darkColor, darkColor * matcap.rgb * 1.7, 0.6);",
+            "  float darkAlpha = alpha * 0.88;",
             "",
-            "  // Sparse glowing lavender points matching LMS theme (#A58AB5 / #C2B2CE)",
-            "  vec3 lavender = vec3(0.72, 0.58, 0.88);",
-            "  float lavenderFactor = pow(vRandom.z, 12.0);",
-            "  vec3 col = mix(baseColor, lavender, lavenderFactor * 0.95);",
+            "  // --- LIGHT THEME: Black dots & deep plum highlights on white ---",
+            "  vec3 lightBase = mix(vec3(0.03, 0.02, 0.04), vec3(0.14, 0.12, 0.17), vRandom.x);",
+            "  vec3 lightPlum = vec3(0.42, 0.22, 0.48);",
+            "  vec3 lightColor = mix(lightBase, lightPlum, pow(vRandom.z, 8.0) * 0.92);",
+            "  float lightSparkle = 0.88 + 0.12 * sin(uTime * 2.5 + vRandom.y * 15.0);",
+            "  lightColor *= lightSparkle;",
+            "  float lightAlpha = alpha * 0.94;",
             "",
-            "  // Sparkling pulsation",
-            "  float sparkle = 0.55 + (0.45 + sin(uTime * 3.5 + vRandom.y * 20.0)) * pow(vRandom.z, 6.0) * 2.2;",
-            "  col *= sparkle;",
+            "  // Theme interpolation",
+            "  vec3 col = mix(darkColor, lightColor, uThemeMode);",
+            "  float finalAlpha = mix(darkAlpha, lightAlpha, uThemeMode);",
             "",
-            "  // Blend with matcap reflection",
-            "  col = mix(col, col * matcap.rgb * 1.7, 0.6);",
-            "",
-            "  gl_FragColor = vec4(col, alpha * 0.88);",
+            "  gl_FragColor = vec4(col, finalAlpha);",
             "}"
         ].join("\n");
 
@@ -347,6 +379,7 @@
             fragmentShader: fragmentShader,
             uniforms: {
                 uTime: { value: 0 },
+                uThemeMode: { value: lightActive ? 1.0 : 0.0 },
                 uMouse: { value: new THREE.Vector2(-999, -999) },
                 uMouseVelocity: { value: new THREE.Vector2(0, 0) },
                 uMouseStrength: { value: 0.0 },
@@ -354,7 +387,7 @@
                 uMatcap: { value: matcapTex }
             },
             transparent: true,
-            blending: THREE.AdditiveBlending,
+            blending: lightActive ? THREE.NormalBlending : THREE.AdditiveBlending,
             depthTest: true,
             depthWrite: false
         });
@@ -408,6 +441,24 @@
         }
         window.addEventListener("resize", onWindowResize);
 
+        // Theme sync listener
+        var lastIsLight = lightActive;
+        function updateTheme(isLight) {
+            if (isLight === lastIsLight) return;
+            lastIsLight = isLight;
+            material.uniforms.uThemeMode.value = isLight ? 1.0 : 0.0;
+            material.blending = isLight ? THREE.NormalBlending : THREE.AdditiveBlending;
+            material.needsUpdate = true;
+            renderer.setClearColor(isLight ? 0xffffff : 0x08070c, 1.0);
+        }
+
+        // MutationObserver to catch theme changes immediately
+        var themeObserver = new MutationObserver(function () {
+            updateTheme(isLightTheme());
+        });
+        themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "class"] });
+        themeObserver.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+
         // Animation Loop
         var clock = new THREE.Clock();
         var isVisible = true;
@@ -422,6 +473,12 @@
 
             var delta = clock.getDelta();
             var time = clock.getElapsedTime();
+
+            // Periodic theme check (handles cross-tab or fast toggles)
+            var currentLight = isLightTheme();
+            if (currentLight !== lastIsLight) {
+                updateTheme(currentLight);
+            }
 
             // Camera gaze lerp (factor 0.05)
             camera.position.x += (targetCamX - camera.position.x) * 0.05;

@@ -517,3 +517,101 @@ body.light {
     z-index: 2;
     clip-path: var(--ink-clip, circle(0px));
 }
+
+/* ---------- LIGHT THEME FROSTED GLASS PANELS ---------- */
+body.light .stat-card,
+[data-theme="light"] .stat-card {
+    background: rgba(255, 255, 255, 0.65) !important;
+    border-color: rgba(115, 86, 129, 0.22) !important;
+    box-shadow: 0 8px 32px rgba(70, 50, 80, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+    color: var(--lib-nav-text, #292330) !important;
+}
+
+body.light .stat-card:hover,
+[data-theme="light"] .stat-card:hover {
+    border-color: rgba(115, 86, 129, 0.5) !important;
+    box-shadow: 0 16px 48px rgba(70, 50, 80, 0.12), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+}
+
+body.light .stat-card p,
+[data-theme="light"] .stat-card p,
+body.light .stat-top,
+[data-theme="light"] .stat-top {
+    color: #655C6C !important;
+}
+
+body.light .stat-number,
+[data-theme="light"] .stat-number {
+    color: var(--lib-nav-purple, #735681) !important;
+}
+
+body.light .panel,
+[data-theme="light"] .panel,
+body.light .table-wrapper,
+[data-theme="light"] .table-wrapper {
+    background: rgba(255, 255, 255, 0.72) !important;
+    border-color: rgba(115, 86, 129, 0.2) !important;
+    box-shadow: 0 12px 48px rgba(70, 50, 80, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+body.light .panel-header,
+[data-theme="light"] .panel-header {
+    background: rgba(245, 240, 248, 0.7) !important;
+    border-bottom: 1px solid rgba(115, 86, 129, 0.14) !important;
+}
+
+body.light .notice,
+[data-theme="light"] .notice {
+    background: rgba(115, 86, 129, 0.08) !important;
+    border-color: rgba(115, 86, 129, 0.2) !important;
+    color: #4a3e52 !important;
+}
+
+body.light table,
+[data-theme="light"] table {
+    background: transparent !important;
+}
+
+body.light table th,
+[data-theme="light"] table th {
+    background: rgba(115, 86, 129, 0.08) !important;
+    color: var(--lib-nav-purple, #735681) !important;
+    border-bottom: 1px solid rgba(115, 86, 129, 0.14) !important;
+}
+
+body.light table td,
+[data-theme="light"] table td {
+    color: #292330 !important;
+    border-bottom: 1px solid rgba(115, 86, 129, 0.1) !important;
+}
+
+body.light table tbody tr:hover,
+[data-theme="light"] table tbody tr:hover {
+    background: rgba(115, 86, 129, 0.06) !important;
+}
+
+body.light .container,
+[data-theme="light"] .container {
+    background: rgba(255, 255, 255, 0.75) !important;
+    border-color: rgba(115, 86, 129, 0.2) !important;
+    box-shadow: 0 20px 60px rgba(70, 50, 80, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+body.light input,
+[data-theme="light"] input {
+    background: rgba(255, 255, 255, 0.85) !important;
+    color: #292330 !important;
+    border-color: rgba(115, 86, 129, 0.25) !important;
+}
+
+body.light h1,
+[data-theme="light"] h1,
+body.light h2,
+[data-theme="light"] h2 {
+    color: #292330 !important;
+}
+
+body.light .book-title,
+[data-theme="light"] .book-title {
+    color: #292330 !important;
+}
