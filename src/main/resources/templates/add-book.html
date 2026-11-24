@@ -49,7 +49,7 @@
 
         body {
             margin: 0;
-            padding: 30px 16px;
+            padding: 90px 16px 40px;
             font-family: var(--font-sans, "Plus Jakarta Sans", sans-serif);
             background: var(--bg);
             color: var(--text);
@@ -57,11 +57,14 @@
 
         .container {
             max-width: 650px;
-            margin: 35px auto;
-            padding: 30px;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 16px;
+            margin: 20px auto;
+            padding: 36px;
+            background: rgba(24, 20, 30, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(194, 178, 206, 0.18);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.07);
         }
 
         .top {
@@ -90,40 +93,69 @@
             width: 100%;
             padding: 12px;
             border-radius: 8px;
-            border: 1px solid var(--border);
-            background: var(--input);
+            border: 1px solid rgba(194, 178, 206, 0.22);
+            background: rgba(255, 255, 255, 0.05);
             color: var(--text);
+            transition: border-color 0.2s, background 0.2s;
         }
 
-        button, .back {
-            display: inline-block;
-            padding: 12px 16px;
-            border: 0;
+        input:focus {
+            outline: none;
+            border-color: rgba(165, 138, 181, 0.6);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .actions {
+            display: flex;
+            gap: 14px;
+            margin-top: 25px;
+            align-items: stretch;
+        }
+
+        .actions .submit {
+            flex: 1;
+            margin-top: 0;
+            padding: 13px 20px;
+            text-align: center;
             border-radius: 8px;
             background: var(--accent-purple, #88758F);
             color: #ffffff;
             font-weight: bold;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            text-decoration: none;
+            border: 0;
             transition: background 0.2s, transform 0.2s;
         }
 
-        button:hover, .back:hover {
+        .actions .submit:hover {
             background: #9b87a3;
             transform: translateY(-1px);
         }
 
-        .submit {
-            width: 100%;
-            margin-top: 25px;
-            background: var(--accent-purple, #88758F);
-            color: #ffffff;
-        }
-
-        .secondary {
+        .actions .back {
+            flex: 1;
+            padding: 13px 20px;
+            text-align: center;
+            border-radius: 8px;
             background: rgba(136, 117, 143, 0.15);
             border: 1px solid var(--border);
             color: var(--text);
+            font-weight: bold;
+            font-size: 15px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, transform 0.2s, border-color 0.2s;
+        }
+
+        .actions .back:hover {
+            background: rgba(136, 117, 143, 0.28);
+            border-color: rgba(194, 178, 206, 0.35);
+            transform: translateY(-1px);
         }
 
         .error {
@@ -141,10 +173,6 @@
 
     <div class="top">
         <h1>📚 Add a New Book</h1>
-
-        <button type="button" class="secondary" id="theme-toggle">
-            ☀️ Light
-        </button>
     </div>
 
     <p>Enter the book details to add it to your library catalogue.</p>
@@ -204,39 +232,17 @@
              th:if="${#fields.hasErrors('quantity')}"
              th:errors="*{quantity}"></div>
 
-        <button class="submit" type="submit">
-            Save Book to Library
-        </button>
+        <div class="actions">
+            <button class="submit" type="submit">
+                Save Book to Library
+            </button>
+            <a class="back" th:href="@{/librarian}">
+                ← Back to Dashboard
+            </a>
+        </div>
     </form>
 
-    <p>
-        <a class="back" th:href="@{/librarian}">
-            ← Back to Dashboard
-        </a>
-    </p>
-
 </div>
-
-<script>
-    const toggle = document.getElementById("theme-toggle");
-
-    function applyTheme(theme) {
-        document.body.classList.toggle("light", theme === "light");
-
-        toggle.textContent =
-            theme === "light" ? "🌙 Dark" : "☀️ Light";
-
-        localStorage.setItem("libra-theme", theme);
-    }
-
-    toggle.addEventListener("click", () => {
-        const isLight = document.body.classList.contains("light");
-
-        applyTheme(isLight ? "dark" : "light");
-    });
-
-    applyTheme(localStorage.getItem("libra-theme") || "dark");
-</script>
 
 <!-- Motion & Animation Scripts (Deferred with Graceful Offline Fallback) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>

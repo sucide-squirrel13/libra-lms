@@ -85,6 +85,7 @@
         .librarian-container {
             min-height: calc(100vh - 72px);
             width: 100%;
+            padding-top: 84px;
         }
 
         .brand {
@@ -271,16 +272,20 @@
 
         .stat-card {
             min-width: 0;
-            background: var(--panel);
-            border: 1px solid var(--border);
+            background: rgba(36, 33, 44, 0.55);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(194, 178, 206, 0.18);
             padding: 22px;
-            border-radius: 14px;
-            transition: transform .2s, border-color .2s;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            transition: transform .2s, border-color .2s, box-shadow .2s;
         }
 
         .stat-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent);
+            transform: translateY(-4px);
+            border-color: rgba(165, 138, 181, 0.45);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 20px rgba(165, 138, 181, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
 
         .stat-top {
@@ -312,11 +317,14 @@
         /* Panels and tables */
 
         .panel {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 14px;
+            background: rgba(24, 20, 30, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(194, 178, 206, 0.14);
+            border-radius: 18px;
             overflow: hidden;
             margin-bottom: 24px;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
 
         .panel-header {
@@ -326,6 +334,8 @@
             align-items: center;
             gap: 15px;
             flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.12);
+            border-bottom: 1px solid rgba(194, 178, 206, 0.1);
         }
 
         .panel-header h2 {
@@ -352,21 +362,33 @@
             border-collapse: collapse;
             text-align: left;
             white-space: nowrap;
+            background: transparent;
         }
 
         th, td {
             padding: 16px 20px;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid rgba(194, 178, 206, 0.1);
         }
 
         th {
             color: var(--muted);
             font-size: 12px;
             font-weight: 600;
+            background: rgba(165, 138, 181, 0.08);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         td {
             font-size: 14px;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: rgba(165, 138, 181, 0.07);
         }
 
         .book-title {

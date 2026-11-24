@@ -51,7 +51,7 @@
 
         body {
             margin: 0;
-            padding: 25px;
+            padding: 90px 25px 40px;
             min-height: 100vh;
             display: grid;
             place-items: center;
@@ -63,10 +63,13 @@
         .container {
             width: 100%;
             max-width: 650px;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 30px;
+            background: rgba(24, 20, 30, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(194, 178, 206, 0.18);
+            border-radius: 22px;
+            padding: 36px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.07);
         }
 
         .brand {
@@ -95,16 +98,18 @@
         input {
             width: 100%;
             padding: 12px;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(194, 178, 206, 0.22);
             border-radius: 9px;
-            background: var(--input);
+            background: rgba(255, 255, 255, 0.05);
             color: var(--text);
             font: inherit;
+            transition: border-color 0.2s, background 0.2s;
         }
 
         input:focus {
-            outline: 2px solid var(--accent);
-            outline-offset: 1px;
+            outline: none;
+            border-color: rgba(165, 138, 181, 0.6);
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .error {
@@ -168,10 +173,6 @@
 <header th:replace="~{fragments/librarian-nav :: librarian-navbar('books')}"></header>
 <div class="container">
 
-    <button type="button" class="theme-button" id="theme-toggle">
-        ☀️ Light mode
-    </button>
-
     <div class="brand">L Libra LMS</div>
 
     <h1>Edit Book</h1>
@@ -222,28 +223,6 @@
 
     </form>
 </div>
-
-<script>
-    const themeButton = document.getElementById("theme-toggle");
-
-    function applyTheme(theme) {
-        document.body.classList.toggle("light", theme === "light");
-
-        themeButton.textContent =
-            theme === "light" ? "🌙 Dark mode" : "☀️ Light mode";
-
-        localStorage.setItem("libra-theme", theme);
-    }
-
-    themeButton.addEventListener("click", () => {
-        const currentTheme =
-            document.body.classList.contains("light") ? "light" : "dark";
-
-        applyTheme(currentTheme === "light" ? "dark" : "light");
-    });
-
-    applyTheme(localStorage.getItem("libra-theme") || "dark");
-</script>
 
 <!-- Motion & Animation Scripts (Deferred with Graceful Offline Fallback) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
