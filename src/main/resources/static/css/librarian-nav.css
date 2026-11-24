@@ -129,11 +129,11 @@ body.light .librarian-navbar,
     gap: 8px;
     padding: 6px 14px;
     border-radius: 8px;
-    color: var(--lib-nav-muted);
+    color: #0b0f14 !important;
     text-decoration: none;
     font-family: var(--font-sans, "Plus Jakarta Sans", sans-serif);
     font-size: 0.78rem;
-    font-weight: 600;
+    font-weight: 700 !important;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     border: 1px solid transparent;
@@ -143,49 +143,35 @@ body.light .librarian-navbar,
     cursor: pointer;
 }
 
+.librarian-nav-link .nav-icon {
+    font-size: 0.95rem;
+    opacity: 1 !important;
+    color: #0b0f14 !important;
+}
+
 .librarian-nav-link:hover,
 .librarian-nav-link:focus-visible {
-    color: var(--lib-nav-text);
-    background: rgba(136, 117, 143, 0.16);
-    border-color: rgba(183, 169, 189, 0.2);
+    color: #000000 !important;
+    background: rgba(0, 0, 0, 0.08) !important;
+    border-color: rgba(0, 0, 0, 0.22) !important;
     outline: none;
 }
 
-.librarian-nav-link.active {
-    color: var(--lib-nav-text);
-    background: rgba(136, 117, 143, 0.24);
-    border-color: rgba(183, 169, 189, 0.35);
-    font-weight: 700;
+.librarian-nav-link:hover .nav-icon,
+.librarian-nav-link:focus-visible .nav-icon {
+    color: #000000 !important;
 }
 
-.librarian-nav-link .nav-icon {
-    font-size: 0.95rem;
-    opacity: 0.85;
+.librarian-nav-link.active {
+    color: #000000 !important;
+    background: rgba(0, 0, 0, 0.12) !important;
+    border-color: rgba(0, 0, 0, 0.28) !important;
+    font-weight: 800 !important;
 }
 
 .librarian-nav-link.active .nav-icon {
     opacity: 1;
-    color: var(--lib-nav-lavender);
-}
-
-/* Dashboard link: Black / Dark color */
-.librarian-navbar .nav-link-dashboard,
-.librarian-navbar a[data-view="dashboard"],
-.librarian-navbar a[href="/librarian"] {
-    color: #0b0f14 !important;
-    font-weight: 700;
-}
-
-.librarian-navbar .nav-link-dashboard .nav-icon,
-.librarian-navbar a[data-view="dashboard"] .nav-icon {
-    color: #0b0f14 !important;
-}
-
-.librarian-navbar .nav-link-dashboard:hover,
-.librarian-navbar a[data-view="dashboard"]:hover {
     color: #000000 !important;
-    background: rgba(0, 0, 0, 0.08);
-    border-color: rgba(0, 0, 0, 0.22);
 }
 
 /* ACTIONS AREA */

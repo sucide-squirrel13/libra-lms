@@ -108,10 +108,10 @@ body.light .navbar,
     min-height: 38px;
     padding: 6px 14px;
 
-    color: var(--color-text-secondary, #B7A9BD);
+    color: #0b0f14 !important;
     font-family: var(--font-sans, "Plus Jakarta Sans", sans-serif);
     font-size: 0.78rem;
-    font-weight: 600;
+    font-weight: 700 !important;
     letter-spacing: 0.12em;
     text-transform: uppercase;
 
@@ -126,34 +126,27 @@ body.light .navbar,
 
 .navbar .nav-link:hover,
 .navbar .nav-link:focus-visible {
-    color: #FFFFFF;
-    background: rgba(165, 138, 181, 0.16);
-    border-color: rgba(165, 138, 181, 0.32);
+    color: #000000 !important;
+    background: rgba(0, 0, 0, 0.08) !important;
+    border-color: rgba(0, 0, 0, 0.22) !important;
     outline: none;
 }
 
-/* Home, Login, and Librarian Dashboard / Dashboard nav links: Black / Dark color */
+/* All nav links: Black / Dark color */
+.navbar .nav-link,
 .navbar .nav-link-home,
 .navbar .nav-link-login,
 .navbar .nav-link-dashboard,
-.navbar a[href="/"].nav-link,
-.navbar a[href="/login"].nav-link,
-.navbar a[href*="librarian"].nav-link,
-.navbar a[href*="dashboard"].nav-link {
+.navbar a.nav-link {
     color: #0b0f14 !important;
-    font-weight: 700;
+    font-weight: 700 !important;
 }
 
-.navbar .nav-link-home:hover,
-.navbar .nav-link-login:hover,
-.navbar .nav-link-dashboard:hover,
-.navbar a[href="/"].nav-link:hover,
-.navbar a[href="/login"].nav-link:hover,
-.navbar a[href*="librarian"].nav-link:hover,
-.navbar a[href*="dashboard"].nav-link:hover {
+.navbar .nav-link:hover,
+.navbar a.nav-link:hover {
     color: #000000 !important;
-    background: rgba(0, 0, 0, 0.08);
-    border-color: rgba(0, 0, 0, 0.22);
+    background: rgba(0, 0, 0, 0.08) !important;
+    border-color: rgba(0, 0, 0, 0.22) !important;
 }
 
 /* AUTH ACTIONS */
