@@ -63,9 +63,11 @@ body.light,
 
 body.light .librarian-navbar,
 [data-theme="light"] .librarian-navbar {
-    background: rgba(243, 239, 245, 0.95);
-    border-bottom: 1px solid var(--lib-nav-border);
+    background: rgba(255, 255, 255, 0.22) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
     box-shadow: 0 4px 20px rgba(70, 50, 80, 0.06);
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
 }
 
 .librarian-navbar * {

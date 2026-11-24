@@ -1628,11 +1628,6 @@ function buildTemple() {
   rightRake.position.set(pedW / 4, F + colH + 1.95 + pedH / 2, colZ - 0.1);
   rightRake.rotation.z = -rakeAng; g.add(rightRake);
 
-  // Classical Tympanum Seal / Medallion
-  const medallion = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.22, 24), gold);
-  medallion.position.set(0, F + colH + 3.15, colZ + 0.02);
-  medallion.rotation.x = Math.PI / 2; g.add(medallion);
-
   // Acroteria finials at pediment apex and corners
   const apexAcro = new THREE.Mesh(new THREE.ConeGeometry(0.35, 1.1, 8), stone);
   apexAcro.position.set(0, F + colH + 1.95 + pedH + 0.55, colZ); g.add(apexAcro);
@@ -1644,36 +1639,8 @@ function buildTemple() {
     cornerAcro.position.set(side * (pedW / 2 - 0.2), F + colH + 2.375, colZ); g.add(cornerAcro);
   });
 
-  // 4. Stately Classical Library Rotunda & Dome
-  const drumH = 3.8, drumR = 4.6;
-  const drum = new THREE.Mesh(new THREE.CylinderGeometry(drumR, drumR, drumH, 24), stone);
-  drum.position.set(0, F + colH + 1.95 + drumH / 2, TEMPLE_Z - 0.5); drum.castShadow = true; g.add(drum);
-
-  // Arched clerestory drum windows around the rotunda
-  for (let rw = 0; rw < 6; rw++) {
-    const rAng = (rw / 6) * Math.PI - Math.PI / 2;
-    const rWin = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 2.0),
-      new THREE.MeshBasicMaterial({ color: hdr(1.2, 0.6, 0.22), fog: true }));
-    rWin.position.set(Math.sin(rAng) * (drumR + 0.05), F + colH + 3.85, TEMPLE_Z - 0.5 + Math.cos(rAng) * (drumR + 0.05));
-    rWin.rotation.y = rAng; g.add(rWin);
-  }
-
-  // Classical Copper Library Dome
-  const dome = new THREE.Mesh(
-    new THREE.SphereGeometry(drumR + 0.2, 28, 16, 0, Math.PI * 2, 0, Math.PI * 0.5),
-    copper
-  );
-  dome.scale.set(1, 0.85, 1);
-  dome.position.set(0, F + colH + 1.95 + drumH, TEMPLE_Z - 0.5); dome.castShadow = true; g.add(dome);
-
-  // Lantern Cupola atop the Dome
-  const cupola = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.25, 1.8, 16), stone);
-  cupola.position.set(0, F + colH + drumH + 4.8, TEMPLE_Z - 0.5); g.add(cupola);
-
-  const armillary = new THREE.Mesh(new THREE.SphereGeometry(0.44, 16, 16), gold);
-  armillary.position.set(0, F + colH + drumH + 6.0, TEMPLE_Z - 0.5); g.add(armillary);
-
-  WORLD.templeTop = F + colH + drumH + 6.6;
+  // Stately classical temple roofline (rotunda dome & circle behind building removed as requested)
+  WORLD.templeTop = F + colH + pedH + 1.2;
 
   // 5. Main Building Core (Behind Portico)
   const core = new THREE.Mesh(new THREE.BoxGeometry(15.2, colH + 2.0, 8.4), stone);
